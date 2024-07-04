@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:osma_wallet/assets/AppTheme.dart';
+import 'package:wallet/assets/AppTheme.dart';
 
 void main() {
   runApp(const MyApp());
