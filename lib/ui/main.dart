@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/assets/AppTheme.dart';
+import 'package:wallet/ui/screens/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +14,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Osma Wallet',
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const Login()
+      },
       theme: ThemeData(
         // This is the theme of your application.
         //
