@@ -7,6 +7,13 @@ class AppTheme {
   final BuildContext context;
   const AppTheme(this.context);
   static AppTheme of(BuildContext context) => AppTheme(context);
+  
+  Color get bgOfBottomSheet {
+    // If i want to use the mode dark or light, i discomment the lines below
+    // Brightness mode = MediaQuery.of(context).platformBrightness;
+    // if (mode == Brightness.light) return Colors.black; // Is an example
+    return Colors.transparent;
+  }
 
   Color get primary {
     return const Color.fromRGBO(255, 216, 78, 1);
