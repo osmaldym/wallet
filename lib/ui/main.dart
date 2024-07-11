@@ -37,8 +37,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.of(context).primary),
         brightness: Brightness.light,
         useMaterial3: true,
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: AppTheme.of(context).bgOfBottomSheet
+        )
       ),
       darkTheme: ThemeData(
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: AppTheme.of(context).bgOfBottomSheet
+        ),
         brightness: Brightness.dark,
         colorSchemeSeed: AppTheme.of(context).primary,
       ),
