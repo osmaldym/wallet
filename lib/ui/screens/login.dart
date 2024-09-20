@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/assets/AppTheme.dart';
+import 'package:wallet/assets/Config.dart';
 import 'package:wallet/ui/widgets/footer.dart';
 import 'package:wallet/ui/widgets/input.dart';
 
@@ -78,7 +79,7 @@ class Login extends StatelessWidget{
                       minimumSize: Size(googleBtnSize, googleBtnSize),
                       padding: EdgeInsets.zero,
                       backgroundColor: Color(
-                        MediaQuery.of(context).platformBrightness == Brightness.dark ? 0xFF131314 : 0xFFFFFFFF
+                        Config.isThemeDark ? 0xFF131314 : 0xFFFFFFFF
                       ) 
                     ),
                     child: Wrap(
