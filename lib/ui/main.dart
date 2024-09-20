@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/assets/AppTheme.dart';
+import 'package:wallet/assets/Config.dart';
 import 'package:wallet/ui/screens/login.dart';
 
 void main() {
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         colorSchemeSeed: AppTheme.of(context).primary,
       ),
-      themeMode: ThemeMode.system,
+      themeMode: Config.themeMode,
       home: const MyHomePage(),
     );
   }
