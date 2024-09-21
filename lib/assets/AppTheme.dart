@@ -7,6 +7,18 @@ class AppTheme {
   final BuildContext context;
   const AppTheme(this.context);
   static AppTheme of(BuildContext context) => AppTheme(context);
+
+  static ThemeMode themeMode = ThemeMode.light;
+
+  bool get isThemeDark { 
+    if (themeMode == ThemeMode.system) 
+      return MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return themeMode == ThemeMode.dark;
+  }
+
+  Color get textContrast {
+    return isThemeDark ? Color(0xFFFFFFFFF) : textBlack;
+  }
   
   Color get bgOfBottomSheet {
     // If i want to use the mode dark or light, i discomment the lines below
