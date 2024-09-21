@@ -40,37 +40,11 @@ class Login extends StatelessWidget{
                   CInput(
                     focus: true,
                   ),
-                  CInput(
-                    type: Types.pass
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: (){},
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 15
-                          ),
-                          child: Text(
-                            'Olvidé mi contraseña',
-                            style: TextStyle(
-                              fontSize: 14
-                            ),
-                            textAlign: TextAlign.end,
-                          ),
-                        )
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Divider(
-                          color: AppTheme.of(context).contrast
-                        )
-                      )
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: CInput(
+                      type: Types.pass
+                    ),
                   ),
                   OutlinedButton( // Google button
                     onPressed: (){},
@@ -78,7 +52,7 @@ class Login extends StatelessWidget{
                       minimumSize: Size(googleBtnSize, googleBtnSize),
                       padding: EdgeInsets.zero,
                       backgroundColor: Color(
-                        MediaQuery.of(context).platformBrightness == Brightness.dark ? 0xFF131314 : 0xFFFFFFFF
+                        AppTheme.of(context).isThemeDark ? 0xFF131314 : 0xFFFFFFFF
                       ) 
                     ),
                     child: Wrap(
@@ -95,24 +69,47 @@ class Login extends StatelessWidget{
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          const TextSpan(
-                            text: "¿No tienes cuenta? "
-                          ),
-                          TextSpan(
-                            text: "Registrate",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                            recognizer: TapGestureRecognizer()..onTap = () {
-                              // Add function
-                            }
+                    child: 
+                    Column(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: "¿No tienes cuenta? ",
+                                style: TextStyle(
+                                  color: AppTheme.of(context).textContrast,
+                                )
+                              ),
+                              TextSpan(
+                                text: "Registrate",
+                                style: TextStyle(
+                                  color: AppTheme.of(context).textContrast,
+                                  fontWeight: FontWeight.bold
+                                ),
+                                recognizer: TapGestureRecognizer()..onTap = () {
+                                  // Add function
+                                }
+                              )
+                            ]
                           )
-                        ]
-                      )
-                    ),
+                        ),
+                        GestureDetector(
+                          onTap: (){},
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 15
+                            ),
+                            child: Text(
+                              'Olvidé mi contraseña',
+                              style: TextStyle(
+                                fontSize: 14
+                              ),
+                            ),
+                          )
+                        )
+                      ],
+                    )
                   ),
                 ],
               ),
