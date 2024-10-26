@@ -15,110 +15,116 @@ class Login extends StatelessWidget{
     double googleImgSize = 20;
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-             const CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 100,
-              child: Padding(
-                padding: EdgeInsets.all(35),
-                  child: Image(
-                  image: AssetImage('assets/logo.png'),
-                  fit: BoxFit.contain,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 100,
+                  child: Padding(
+                    padding: EdgeInsets.all(35),
+                      child: Image(
+                      image: AssetImage('assets/logo.png'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 50
-              ),
-              child: Column(
-                children: <Widget>[
-                  CInput(
-                    focus: true,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 50
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: CInput(
-                      type: Types.pass
-                    ),
-                  ),
-                  OutlinedButton( // Google button
-                    onPressed: (){},
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: Size(googleBtnSize, googleBtnSize),
-                      padding: EdgeInsets.zero,
-                      backgroundColor: Color(
-                        AppTheme.of(context).isThemeDark ? 0xFF131314 : 0xFFFFFFFF
-                      ) 
-                    ),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: <Widget>[
-                        Image(
-                          width: googleImgSize,
-                          height: googleImgSize,
-                          image: const AssetImage("assets/brand_logos/google.png")
+                  child: Column(
+                    children: <Widget>[
+                      CInput(
+                        focus: true,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: CInput(
+                          type: Types.pass
                         ),
-                      ],
-                    )
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: 
-                    Column(
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: "¿No tienes cuenta? ",
-                                style: TextStyle(
-                                  color: AppTheme.of(context).textContrast,
-                                )
-                              ),
-                              TextSpan(
-                                text: "Registrate",
-                                style: TextStyle(
-                                  color: AppTheme.of(context).textContrast,
-                                  fontWeight: FontWeight.bold
-                                ),
-                                recognizer: TapGestureRecognizer()..onTap = () {
-                                  // Add function
-                                }
-                              )
-                            ]
-                          )
+                      ),
+                      OutlinedButton( // Google button
+                        onPressed: (){},
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: Size(googleBtnSize, googleBtnSize),
+                          padding: EdgeInsets.zero,
+                          backgroundColor: Color(
+                            AppTheme.of(context).isThemeDark ? 0xFF131314 : 0xFFFFFFFF
+                          ) 
                         ),
-                        GestureDetector(
-                          onTap: (){},
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 15
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: <Widget>[
+                            Image(
+                              width: googleImgSize,
+                              height: googleImgSize,
+                              image: const AssetImage("assets/brand_logos/google.png")
                             ),
-                            child: Text(
-                              'Olvidé mi contraseña',
-                              style: TextStyle(
-                                fontSize: 14
-                              ),
-                            ),
-                          )
+                          ],
                         )
-                      ],
-                    )
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: 
+                        Column(
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "¿No tienes cuenta? ",
+                                    style: TextStyle(
+                                      color: AppTheme.of(context).textContrast,
+                                    )
+                                  ),
+                                  TextSpan(
+                                    text: "Registrate",
+                                    style: TextStyle(
+                                      color: AppTheme.of(context).textContrast,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                    recognizer: TapGestureRecognizer()..onTap = () {
+                                      // Add function
+                                    }
+                                  )
+                                ]
+                              )
+                            ),
+                            GestureDetector(
+                              onTap: (){},
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 15
+                                ),
+                                child: Text(
+                                  'Olvidé mi contraseña',
+                                  style: TextStyle(
+                                    fontSize: 14
+                                  ),
+                                ),
+                              )
+                            )
+                          ],
+                        )
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          )
+        )
       ),
       bottomSheet: CFooter(
         onPressedBtn: (){},
+        showBg: true,
         btnText: "Iniciar sesión",
       ),
     );
