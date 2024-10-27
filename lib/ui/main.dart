@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/assets/AppTheme.dart';
 import 'package:wallet/ui/screens/login.dart';
 
@@ -14,6 +16,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Osma Wallet',
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: const [
+        Locale("en"),
+        Locale("es"),
+      ],
+      locale: const Locale('es'),
       initialRoute: '/login',
       routes: {
         '/login': (context) => const Login()

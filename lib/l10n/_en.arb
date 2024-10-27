@@ -1,0 +1,13 @@
+{
+    "email": "Email",
+    "password": "Password",
+    "text": "Text",
+    "number": "Number",
+    "numbers": "Numbers",
+    "name": "Name",
+    "dontHaveAccount": "You don't have an account?",
+    "signIn": "Sign in",
+    "logIn": "Log in",
+    "iForgotMyPassword": "I forgot my password",
+    "somethingWrongField": "Something is wrong with this field"
+}

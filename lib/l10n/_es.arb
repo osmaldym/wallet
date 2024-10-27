@@ -1,0 +1,13 @@
+{
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "text": "Texto",
+    "number": "Número",
+    "numbers": "Números",
+    "name": "Nombre",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "signIn": "Registrate",
+    "logIn": "Iniciar sesión",
+    "iForgotMyPassword": "Olvidé mi contraseña",
+    "somethingWrongField": "Algo está mal con este campo"
+}
