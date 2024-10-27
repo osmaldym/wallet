@@ -6,6 +6,8 @@ import 'package:wallet/assets/AppTheme.dart';
 import 'package:wallet/ui/widgets/footer.dart';
 import 'package:wallet/ui/widgets/input.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Login extends StatelessWidget{
   const Login({ super.key });
 
@@ -13,6 +15,7 @@ class Login extends StatelessWidget{
   Widget build(BuildContext context){
     double googleBtnSize = Platform.isIOS ? 44*1.2 : 40*1.2;
     double googleImgSize = 20;
+    AppLocalizations? tr = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -79,13 +82,13 @@ class Login extends StatelessWidget{
                               text: TextSpan(
                                 children: <TextSpan>[
                                   TextSpan(
-                                    text: "¿No tienes cuenta? ",
+                                    text: '${tr.dontHaveAccount} ',
                                     style: TextStyle(
                                       color: AppTheme.of(context).textContrast,
                                     )
                                   ),
                                   TextSpan(
-                                    text: "Registrate",
+                                    text: tr.signIn,
                                     style: TextStyle(
                                       color: AppTheme.of(context).textContrast,
                                       fontWeight: FontWeight.bold
@@ -99,13 +102,13 @@ class Login extends StatelessWidget{
                             ),
                             GestureDetector(
                               onTap: (){},
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
                                   vertical: 15
                                 ),
                                 child: Text(
-                                  'Olvidé mi contraseña',
-                                  style: TextStyle(
+                                  tr.iForgotMyPassword,
+                                  style: const TextStyle(
                                     fontSize: 14
                                   ),
                                 ),
@@ -125,7 +128,7 @@ class Login extends StatelessWidget{
       bottomSheet: CFooter(
         onPressedBtn: (){},
         showBg: true,
-        btnText: "Iniciar sesión",
+        btnText: tr.logIn,
       ),
     );
   }
