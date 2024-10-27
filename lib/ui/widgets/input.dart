@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CInput extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -11,7 +12,7 @@ class CInput extends StatelessWidget {
 
   CInput({
     super.key,
-    this.placeholder = 'Email',
+    this.placeholder = '',
     this.text = '',
     this.type = Types.email,
     this.error = "This field is required",
@@ -22,31 +23,32 @@ class CInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextInputType textType = TextInputType.name;
+    AppLocalizations? tr = AppLocalizations.of(context)!;
 
     switch (type) {
       case Types.email:
         textType = TextInputType.emailAddress;
-        placeholder = 'Email';
+        if (placeholder == '') placeholder = tr.email;
         break;
       
       case Types.pass:
         textType = TextInputType.visiblePassword;
-        placeholder = 'Password';
+        if (placeholder == '') placeholder = tr.password;
         break;
       
       case Types.text:
         textType = TextInputType.text;
-        placeholder = 'Text';
+        if (placeholder == '') placeholder = tr.text;
         break;
       
       case Types.number:
         textType = TextInputType.number;
-        placeholder = 'Numbers';
+        if (placeholder == '') placeholder = tr.numbers;
         break;
 
       default:
         textType = TextInputType.name;
-        placeholder = 'Name';
+        if (placeholder == '') placeholder = tr.name;
     }
 
     return TextFormField(
@@ -55,7 +57,7 @@ class CInput extends StatelessWidget {
       decoration: InputDecoration(
         border: const UnderlineInputBorder(),
         // errorText: error,
-        helperText: info,
+        helperText: tr.somethingWrongField,
         labelText: placeholder
       ),
     );
