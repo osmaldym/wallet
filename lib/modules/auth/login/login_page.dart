@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet/assets/AppTheme.dart';
-import 'package:wallet/ui/widgets/popupMenuBtns/change_lang_btn.dart';
-import 'package:wallet/ui/widgets/footer.dart';
-import 'package:wallet/ui/widgets/input.dart';
+import 'package:wallet/core/constants/app_images.dart';
+import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/modules/shared/widgets/changeLangBtn.dart';
+import 'package:wallet/modules/shared/widgets/footer.dart';
+import 'package:wallet/modules/shared/widgets/input.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -47,7 +48,7 @@ class Login extends StatelessWidget{
                   child: Padding(
                     padding: EdgeInsets.all(35),
                       child: Image(
-                      image: AssetImage('assets/logo.png'),
+                      image: AssetImage(AppImages.appLogo),
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -84,7 +85,7 @@ class Login extends StatelessWidget{
                             Image(
                               width: googleImgSize,
                               height: googleImgSize,
-                              image: const AssetImage("assets/brand_logos/google.png")
+                              image: const AssetImage(AppImages.googleLogo)
                             ),
                           ],
                         )
