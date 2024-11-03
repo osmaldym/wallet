@@ -1,15 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet/assets/AppTheme.dart';
+import 'package:wallet/controllers/LocaleNotifier.dart';
+import 'package:wallet/tools/LocalData.dart';
 import 'package:wallet/ui/screens/login.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() => runApp(
+  MultiProvider(providers: [ 
+    /*
+     If is created a new provider, set in this array depends if 
+     is ChangeNotifierProvider, only Provider, etc
+    */
+    ChangeNotifierProvider(create: (context) => LocaleNotifier())
+  ],
+  child: const MyApp())
+);
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class _MyAppState extends State<MyApp> {
+  late LocaleNotifier _localeNotifierProv; 
+  Locale _locale = const Locale("en");
+
+  @override
+  void initState() {
+    super.initState();
+    _getNewLocale();
+    _localeNotifierProv = context.read<LocaleNotifier>();
+    _localeNotifierProv.addListener(_getNewLocale);
+  }
+
+  void _getNewLocale() async => setState(
+    () async => _locale = Locale(await LocalData.get("locale"))
+  );
 
   // This widget is the root of your application.
   @override
@@ -26,7 +56,7 @@ class MyApp extends StatelessWidget {
         Locale("en"),
         Locale("es"),
       ],
-      locale: const Locale('es'),
+      locale: _locale,
       initialRoute: '/login',
       routes: {
         '/login': (context) => const Login()
