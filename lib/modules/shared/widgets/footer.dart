@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:wallet/assets/AppTheme.dart';
-import 'package:wallet/ui/widgets/button.dart';
+import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/modules/shared/widgets/button.dart';
 
 // ignore: must_be_immutable
 class CFooter extends StatelessWidget {

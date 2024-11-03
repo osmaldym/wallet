@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet/controllers/LocaleNotifier.dart';
-import 'package:wallet/tools/LocalData.dart';
-import 'package:wallet/ui/main.dart';
+import 'package:wallet/core/providers/LocaleNotifier.dart';
+import 'package:wallet/core/utils/LocalData.dart';
+import 'package:wallet/main/main.dart';
 
 class ChangeLangBtn extends StatelessWidget {
   ChangeLangBtn({ super.key });
