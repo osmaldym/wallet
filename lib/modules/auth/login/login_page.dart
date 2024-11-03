@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/app_images.dart';
 import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/modules/shared/widgets/brandLoginBtn.dart';
 import 'package:wallet/modules/shared/widgets/changeLangBtn.dart';
 import 'package:wallet/modules/shared/widgets/footer.dart';
 import 'package:wallet/modules/shared/widgets/input.dart';
@@ -15,8 +14,6 @@ class Login extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    double googleBtnSize = Platform.isIOS ? 44*1.2 : 40*1.2;
-    double googleImgSize = 20;
     AppLocalizations? tr = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -69,27 +66,7 @@ class Login extends StatelessWidget{
                           type: Types.pass
                         ),
                       ),
-                      OutlinedButton( // Google button
-                        onPressed: (){},
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: Size(googleBtnSize, googleBtnSize),
-                          padding: EdgeInsets.zero,
-                          backgroundColor: Color(
-                            AppTheme.of(context).isThemeDark ? 0xFF131314 : 0xFFFFFFFF
-                          ) 
-                        ),
-                        child: Wrap(
-                          alignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              width: googleImgSize,
-                              height: googleImgSize,
-                              image: const AssetImage(AppImages.googleLogo)
-                            ),
-                          ],
-                        )
-                      ),
+                      BrandLoginBtn(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Column(
