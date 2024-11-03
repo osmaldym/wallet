@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet/assets/AppTheme.dart';
-import 'package:wallet/controllers/LocaleNotifier.dart';
-import 'package:wallet/tools/LocalData.dart';
-import 'package:wallet/ui/screens/login.dart';
+import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/core/providers/LocaleNotifier.dart';
+import 'package:wallet/core/utils/LocalData.dart';
+import 'package:wallet/modules/auth/login/login_page.dart';
 
 void main() => runApp(
   MultiProvider(providers: [ 

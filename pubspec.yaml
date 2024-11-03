@@ -59,8 +59,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/
-    - assets/brand_logos/
+    - assets/icons/
+    - assets/icons/app/
+    - assets/icons/brands/
 
   generate: true
 
