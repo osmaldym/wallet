@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/assets/AppTheme.dart';
+import 'package:wallet/ui/widgets/popupMenuBtns/change_lang_btn.dart';
 import 'package:wallet/ui/widgets/footer.dart';
 import 'package:wallet/ui/widgets/input.dart';
 
@@ -18,12 +19,27 @@ class Login extends StatelessWidget{
     AppLocalizations? tr = AppLocalizations.of(context)!;
 
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30
+                  ),
+                  child: ChangeLangBtn(key: key),
+                ),
+              ],
+            ),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.only(top: 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CircleAvatar(
                   backgroundColor: Colors.white,
@@ -74,9 +90,8 @@ class Login extends StatelessWidget{
                         )
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: 
-                        Column(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
                           children: [
                             RichText(
                               text: TextSpan(
