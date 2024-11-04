@@ -12,6 +12,7 @@ class AppRoutes {
         const Login(),
         routes: [
           _newRoute('login', const Login()),
+          _newRoute('signin', const Signin()),
         ]
       )
     ]
