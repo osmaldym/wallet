@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/core/constants/app_routes.dart';
 import 'package:wallet/core/constants/theme/AppTheme.dart';
 import 'package:wallet/core/providers/LocaleNotifier.dart';
 import 'package:wallet/core/utils/LocalData.dart';
-import 'package:wallet/modules/auth/login/login_page.dart';
 
 void main() => runApp(
   MultiProvider(providers: [ 
@@ -37,14 +37,16 @@ class _MyAppState extends State<MyApp> {
     _localeNotifierProv.addListener(_getNewLocale);
   }
 
-  void _getNewLocale() async => setState(
-    () async => _locale = Locale(await LocalData.get("locale"))
-  );
+  void _getNewLocale() async {
+    Locale locale = Locale(await LocalData.get("locale"));
+    setState(() => _locale = locale);
+  } 
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: AppRoutes.pages,
       title: 'Osma Wallet',
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -57,10 +59,6 @@ class _MyAppState extends State<MyApp> {
         Locale("es"),
       ],
       locale: _locale,
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => const Login()
-      },
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -92,7 +90,6 @@ class _MyAppState extends State<MyApp> {
         colorSchemeSeed: AppTheme.of(context).primary,
       ),
       themeMode: AppTheme.themeMode,
-      home: const MyHomePage(),
     );
   }
 }
