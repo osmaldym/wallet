@@ -6,17 +6,19 @@ import '../../../core/constants/app_images.dart';
 import '../../../core/constants/theme/AppTheme.dart';
 
 class BrandLoginBtn extends StatelessWidget {
-  double btnSize = Platform.isIOS ? 44*1.2 : 40*1.2;
-  double imgSize = 0;
+  double btnSize;
+  double imgSize;
 
   BrandLoginBtn({
     super.key,
-    btnSize,
-    imgSize = 20,
+    this.btnSize = 40*1.2,
+    this.imgSize = 20,
   });
 
   @override
   Widget build(BuildContext context) {
+    btnSize = Platform.isIOS ? 44*1.2 : 40*1.2;
+
     return OutlinedButton( // Google button
       onPressed: (){},
       style: OutlinedButton.styleFrom(
