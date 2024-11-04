@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/app_images.dart';
 import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/modules/auth/login/login_controller.dart';
 import 'package:wallet/modules/shared/widgets/brandLoginBtn.dart';
 import 'package:wallet/modules/shared/widgets/changeLangBtn.dart';
 import 'package:wallet/modules/shared/widgets/footer.dart';
@@ -15,28 +16,33 @@ class Login extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     AppLocalizations? tr = AppLocalizations.of(context)!;
+    LoginController controller = LoginController();
+
+   // Creating here the appbar to get the height later
+    AppBar appBar = AppBar(
+      automaticallyImplyLeading: false,
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 30
+          ),
+          child: ChangeLangBtn(key: key),
+        ),
+      ],
+    );
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30
-                  ),
-                  child: ChangeLangBtn(key: key),
-                ),
-              ],
-            ),
-        ],
-      ),
+      appBar: appBar,
+      extendBodyBehindAppBar: true,
       body: SafeArea(
+        minimum: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+        top: false,
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 10),
+            padding: EdgeInsets.only(top: appBar.preferredSize.height + 10),
             child: Column(
               children: [
                 const CircleAvatar(
@@ -86,9 +92,7 @@ class Login extends StatelessWidget{
                                       color: AppTheme.of(context).textContrast,
                                       fontWeight: FontWeight.bold
                                     ),
-                                    recognizer: TapGestureRecognizer()..onTap = () {
-                                      // Add function
-                                    }
+                                    recognizer: TapGestureRecognizer()..onTap = () => controller.goToSignin(context)
                                   )
                                 ]
                               )
