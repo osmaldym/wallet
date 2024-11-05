@@ -8,12 +8,16 @@ class AppTheme {
   const AppTheme(this.context);
   static AppTheme of(BuildContext context) => AppTheme(context);
 
-  static ThemeMode themeMode = ThemeMode.light;
+  static ThemeMode themeMode = ThemeMode.system;
 
   bool get isThemeDark { 
     if (themeMode == ThemeMode.system) 
       return MediaQuery.of(context).platformBrightness == Brightness.dark;
     return themeMode == ThemeMode.dark;
+  }
+
+  Color get seedBgColor {
+    return Theme.of(context).colorScheme.surface;
   }
 
   Color get textContrast {
