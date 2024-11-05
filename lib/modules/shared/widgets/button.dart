@@ -5,7 +5,7 @@ class CButton extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   String? text;
   Color? bgColor;
-  Function onPressed;
+  void Function() onPressed;
 
   CButton({
     super.key,
@@ -20,7 +20,7 @@ class CButton extends StatelessWidget {
     Color bgCol = bgColor ?? AppTheme.of(context).primary;
 
     return TextButton(
-      onPressed: onPressed(),
+      onPressed: onPressed,
       style: TextButton.styleFrom(
         backgroundColor: bgCol,
         minimumSize: const Size.fromHeight(50),
