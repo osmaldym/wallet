@@ -126,7 +126,7 @@ class Signin extends StatelessWidget{
         )
       ),
       bottomSheet: CFooter(
-        onPressedBtn: (){},
+        onPressedBtn: () => controller.signin(context),
         showBg: true,
         btnText: tr.signIn,
       ),
