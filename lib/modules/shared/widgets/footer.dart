@@ -13,7 +13,7 @@ class CFooter extends StatelessWidget {
   Color? bgColor;
   double verticalPadding;
   double horizontalPadding;
-  Function onPressedBtn;
+  void Function() onPressedBtn;
 
   CFooter({
     super.key, 
