@@ -123,7 +123,7 @@ class Login extends StatelessWidget{
         )
       ),
       bottomSheet: CFooter(
-        onPressedBtn: (){},
+        onPressedBtn: () => controller.login(context),
         showBg: true,
         btnText: tr.logIn,
       ),
