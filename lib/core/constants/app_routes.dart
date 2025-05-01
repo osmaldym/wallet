@@ -8,10 +8,10 @@ import '../../modules/auth/signin/signin_page.dart';
 class AppRoutes {
   /// Pages routes
   static final GoRouter pages = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/',
     routes: <RouteBase>[
       _newRoot(
-        const Home(),
+        Home(),
         routes: [
           _newRoute('login', const Login()),
           _newRoute('signin', const Signin()),
