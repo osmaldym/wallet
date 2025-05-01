@@ -8,10 +8,12 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
   String title;
   IconData icon;
   double iconSize;
+  void Function()? onPressed;
   final double p = 25;
 
   CHeader({
     super.key, 
+    this.onPressed,
     this.height = 80.0,
     this.iconSize = 34.0,
     this.icon = Icons.chevron_left,
@@ -26,13 +28,16 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: EdgeInsets.fromLTRB(0, 0, p, 0),
           child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
               Padding(
                 padding: EdgeInsets.fromLTRB(p, 0, p, 0),
-                child: Icon(
-                  icon,
-                  size: iconSize,
+                child: IconButton(
+                  icon: Icon(icon),
+                  iconSize: iconSize,
+                  onPressed: onPressed ?? () {
+                    Navigator.pop(context);
+                  },
                 ),
               ),
               Text(
