@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CInput extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   String placeholder;
   String text;
   String error;

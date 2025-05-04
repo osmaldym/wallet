@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_images.dart';
-import '../../../core/constants/theme/AppTheme.dart';
+import '../../../core/constants/theme/app_theme.dart';
 
 class BrandLoginBtn extends StatelessWidget {
   double btnSize;

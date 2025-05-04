@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/widgets/button.dart';
 
 // ignore: must_be_immutable

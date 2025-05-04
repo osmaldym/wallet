@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/app_images.dart';
-import 'package:wallet/core/constants/theme/AppTheme.dart';
-import 'package:wallet/modules/shared/widgets/menuOption.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/modules/shared/widgets/menu_option.dart';
 
 class Menu extends Drawer {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -54,9 +54,6 @@ class Menu extends Drawer {
             )
           ),
           MenuOption(
-            onTap: () => context.go("/"),
-          ),
-          MenuOption(
             text: "Next pays",
             icon: Icons.money,
             onTap: () => context.go("/"),
@@ -86,7 +83,6 @@ class Menu extends Drawer {
             icon: Icons.settings,
             onTap: () => context.go("/"),
           )
-
         ],
       ),
     );

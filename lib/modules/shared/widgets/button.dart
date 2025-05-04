@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
 
 class CButton extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   String? text;
   Color? bgColor;
   void Function() onPressed;
