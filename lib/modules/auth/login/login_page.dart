@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/app_images.dart';
-import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/auth/login/login_controller.dart';
 import 'package:wallet/modules/shared/widgets/brand_login_btn.dart';
 import 'package:wallet/modules/shared/widgets/change_lang_btn.dart';

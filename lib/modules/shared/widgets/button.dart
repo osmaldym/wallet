@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wallet/core/constants/theme/AppTheme.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
 
 class CButton extends StatelessWidget {
   String? text;

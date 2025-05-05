@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AppTheme {
   final BuildContext context;
@@ -11,8 +8,7 @@ class AppTheme {
   static ThemeMode themeMode = ThemeMode.system;
 
   bool get isThemeDark { 
-    if (themeMode == ThemeMode.system) 
-      return MediaQuery.of(context).platformBrightness == Brightness.dark;
+    if (themeMode == ThemeMode.system) return MediaQuery.of(context).platformBrightness == Brightness.dark;
     return themeMode == ThemeMode.dark;
   }
 
@@ -21,7 +17,7 @@ class AppTheme {
   }
 
   Color get textContrast {
-    return isThemeDark ? Color(0xFFFFFFFFF) : textBlack;
+    return isThemeDark ? const Color(0xFFFFFFFF) : textBlack;
   }
   
   Color get bgOfBottomSheet {
