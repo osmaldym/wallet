@@ -25,7 +25,7 @@ class Account extends Card {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       elevation: 5,
-      shadowColor: isTotal ? Color.fromARGB(255, 29, 29, 29) : Colors.transparent,
+      shadowColor: isTotal ? const Color.fromARGB(255, 29, 29, 29) : Colors.transparent,
       color: isTotal ? theme.primary : Colors.transparent,
       child: IntrinsicWidth(
         child: ListTile(
