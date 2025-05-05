@@ -42,8 +42,9 @@ class Home extends StatelessWidget{
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
-        icon: Icons.menu,
-        onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+        leadingIcon: Icons.menu,
+        onLeadingPressed: () => _scaffoldKey.currentState!.openDrawer(),
+        onTrailingPressed: (){},
       ),
       drawer: Menu(),
       body: SafeArea(

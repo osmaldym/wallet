@@ -6,17 +6,21 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   double height;
   String title;
-  IconData icon;
+  IconData leadingIcon;
+  IconData trailingIcon;
   double iconSize;
-  void Function()? onPressed;
+  void Function()? onLeadingPressed;
+  void Function()? onTrailingPressed;
   final double p = 25;
 
   CHeader({
-    super.key, 
-    this.onPressed,
+    super.key,
+    this.onLeadingPressed,
+    this.onTrailingPressed,
     this.height = 80.0,
     this.iconSize = 34.0,
-    this.icon = Icons.chevron_left,
+    this.leadingIcon = Icons.chevron_left,
+    this.trailingIcon = Icons.add,
     this.title = "Wallet",
   });
 
@@ -33,19 +37,27 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
               Padding(
                 padding: EdgeInsets.fromLTRB(p, 0, p, 0),
                 child: IconButton(
-                  icon: Icon(icon),
+                  icon: Icon(leadingIcon),
                   iconSize: iconSize,
-                  onPressed: onPressed ?? () {
+                  onPressed: onLeadingPressed ?? () {
                     Navigator.pop(context);
                   },
                 ),
               ),
-              Text(
-                title,
-                style: GoogleFonts.urbanist(
-                  fontSize: 32,
-                )
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.urbanist(
+                    fontSize: 32,
+                  )
+                ),
               ),
+              if (onTrailingPressed != null)
+                IconButton(
+                  icon: Icon(trailingIcon),
+                  iconSize: iconSize,
+                  onPressed: onTrailingPressed,
+                ),
             ],
           ),
         ),
