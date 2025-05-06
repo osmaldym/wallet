@@ -49,14 +49,13 @@ class Home extends StatelessWidget{
       drawer: Menu(),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(top: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 height: 70,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10
+                  horizontal: 25
                 ),
                 alignment: Alignment.center,
                 child: ListView.builder(
