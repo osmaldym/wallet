@@ -6,6 +6,7 @@ import 'package:wallet/modules/shared/widgets/header.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/menu.dart';
+import 'package:wallet/modules/shared/widgets/modals/account.dart';
 
 class Home extends StatelessWidget{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -42,9 +43,14 @@ class Home extends StatelessWidget{
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
+        title: "Accounts",
         leadingIcon: Icons.menu,
         onLeadingPressed: () => _scaffoldKey.currentState!.openDrawer(),
-        onTrailingPressed: (){},
+        onTrailingPressed: () => showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (BuildContext context) => AccountModal()
+        ),
       ),
       drawer: Menu(),
       body: SafeArea(
