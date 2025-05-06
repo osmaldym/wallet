@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/app_images.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/auth/signin/signin_controller.dart';
-import 'package:wallet/modules/shared/widgets/brand_login_btn.dart';
-import 'package:wallet/modules/shared/widgets/change_lang_btn.dart';
+import 'package:wallet/modules/shared/widgets/fragments/brand_login_btn.dart';
+import 'package:wallet/modules/shared/widgets/fragments/change_lang_btn.dart';
 import 'package:wallet/modules/shared/widgets/footer.dart';
-import 'package:wallet/modules/shared/widgets/input.dart';
+import 'package:wallet/modules/shared/widgets/fragments/input.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
