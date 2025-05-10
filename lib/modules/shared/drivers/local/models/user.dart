@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wallet/core/utils/convertions.dart';
 
 class User {
   final int ?id;
@@ -23,9 +24,6 @@ class User {
 
   @override
   String toString(){
-    String toRet = "User {";
-    for(var entry in toMap().entries) toRet += entry.key + ': ' + entry.value.toString();
-    toRet += "}";
-    return toRet;
+    return Convertions.classToString("User", toMap());
   }
 }

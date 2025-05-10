@@ -15,4 +15,11 @@ class Convertions {
         Account(id: id, serverId: serverId, userId: userId, title: title)
     ];
   }
+
+  static String classToString(String className, Map<String, Object?> classMap) {
+    String toRet = "$className {";
+    for(var entry in classMap.entries) toRet += entry.key + ': ' + entry.value.toString() + ", ";
+    toRet += "}";
+    return toRet;
+  }
 }
