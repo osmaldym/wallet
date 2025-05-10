@@ -1,0 +1,8 @@
+class DBNames {
+  static const String walletLocal = "wallet_local.db";
+}
+
+class DBTables {
+  static const String user = "User";
+  static const String account = "Account";
+}
