@@ -3,13 +3,30 @@ import 'dart:async';
 import 'package:wallet/core/constants/app_db.dart';
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart' as Model;
+import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 
 class HomeController {
   late Dao daoLocal = Dao();
 
+  Future<void> createGuest() async {
+    List<User> users = await daoLocal.users();
+    if (users.isEmpty){
+      Map<String, Object?> data = {
+        "names": "Guest"
+      };
+      await daoLocal.insert(DBTables.user, data);
+    }
+  }
+
   Future<void> addAccount(String name) async {
-    Map<String, Object?> data = { "title": name };
+    List<User> users = await daoLocal.users();
+    User actualUser = users.first;
+
+    Map<String, Object?> data = { 
+      "title": name,
+      "user_id": actualUser.serverId ?? actualUser.id
+    };
     await daoLocal.insert(DBTables.account, data);
   }
 

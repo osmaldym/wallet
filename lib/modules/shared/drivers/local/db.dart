@@ -8,6 +8,7 @@ class DB {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id TEXT,
       email TEXT,
+      names TEXT,
       password text,
       img TEXT
     )

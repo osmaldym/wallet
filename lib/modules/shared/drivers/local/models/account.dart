@@ -1,3 +1,5 @@
+import 'package:wallet/core/utils/convertions.dart';
+
 class Account {
   final int ?id;
   final int ?serverId;
@@ -17,9 +19,6 @@ class Account {
 
   @override
   String toString(){
-    String toRet = "Account {";
-    for(var entry in toMap().entries) toRet += entry.key + ': ' + entry.value.toString();
-    toRet += "}";
-    return toRet;
+    return Convertions.classToString("Account", toMap());
   }
 }

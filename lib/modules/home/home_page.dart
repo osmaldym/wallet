@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
     super.initState();
     _controller = HomeController();
     _updateAccounts();
+    _controller.createGuest();
   }
 
   void _updateAccounts() => setState(() {
