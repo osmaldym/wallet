@@ -8,6 +8,7 @@ class CInput extends StatelessWidget {
   String info;
   bool focus;
   Types type;
+  void Function(String text) ?onChanged;
 
   CInput({
     super.key,
@@ -16,7 +17,8 @@ class CInput extends StatelessWidget {
     this.type = Types.email,
     this.error = "This field is required",
     this.info = "Something is wrong with this field",
-    this.focus = false
+    this.focus = false,
+    this.onChanged
   });
 
   @override
@@ -53,6 +55,7 @@ class CInput extends StatelessWidget {
     return TextFormField(
       keyboardType: textType,
       autofocus: focus,
+      onChanged: (val) => onChanged!(val),
       decoration: InputDecoration(
         border: const UnderlineInputBorder(),
         // errorText: error,

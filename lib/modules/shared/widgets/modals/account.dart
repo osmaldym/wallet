@@ -4,17 +4,27 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input.dart';
 
-class AccountModal extends SingleChildScrollView {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+class AccountModal extends StatefulWidget {
   int ?id;
+  void Function(String name) onSave;
 
   AccountModal({
     super.key,
-    this.id
+    required this.onSave,
+    this.id,
   });
 
   @override
+  _AccountModalState createState() => _AccountModalState();
+}
+
+class _AccountModalState extends State<AccountModal> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
+    String name = "";
+
     return SingleChildScrollView(
       key: _scaffoldKey,
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -34,7 +44,7 @@ class AccountModal extends SingleChildScrollView {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                id == null ? "New account" : "Editing account",
+                widget.id == null ? "New account" : "Editing account",
                 style: GoogleFonts.urbanist(
                     fontSize: 32,
                   )
@@ -45,13 +55,17 @@ class AccountModal extends SingleChildScrollView {
                   type: Types.text,
                   placeholder: "Account",
                   focus: true,
+                  onChanged: (String val) => name = val,
                 )
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 25),
                 child: CButton(
                   text: "Save",
-                  onPressed: () => Navigator.pop(context)
+                  onPressed: () {
+                    widget.onSave(name);
+                    Navigator.pop(context);
+                  }
                 )
               )
             ],

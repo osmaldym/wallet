@@ -8,37 +8,33 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/menu.dart';
 import 'package:wallet/modules/shared/widgets/modals/account.dart';
 
-class Home extends StatelessWidget{
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  List<Account> accs = [
-    Account(
-      isTotal: true,
-      quantity: "+180,000",
-      onTap: (){},
-    ),
-    Account(
-      name: "Qik",
-      quantity: "+131,000",
-      onTap: (){},
-    ),
-    Account(
-      name: "Popular",
-      quantity: "+20,000",
-      onTap: (){},
-    ),
-    Account(
-      name: "BDI",
-      quantity: "+200",
-      onTap: (){},
-    ),
-  ];
+class Home extends StatefulWidget {
+  const Home({ super.key });
 
-  Home({ super.key });
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late HomeController _controller;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  late Future<List<Account>> _accs;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = HomeController();
+    _updateAccounts();
+  }
+
+  void _updateAccounts() => setState(() {
+    _accs = _controller.getAccounts();
+  });
 
   @override
   Widget build(BuildContext context){
     AppLocalizations? tr = AppLocalizations.of(context)!;
-    HomeController controller = HomeController();
 
     return Scaffold(
       key: _scaffoldKey,
@@ -49,7 +45,12 @@ class Home extends StatelessWidget{
         onTrailingPressed: () => showModalBottomSheet(
           isScrollControlled: true,
           context: context,
-          builder: (BuildContext context) => AccountModal()
+          builder: (BuildContext context) => AccountModal(
+            onSave: (String name) async {
+              await _controller.addAccount(name);
+              _updateAccounts();
+            }
+          )
         ),
       ),
       drawer: Menu(),
@@ -64,16 +65,24 @@ class Home extends StatelessWidget{
                   horizontal: 25
                 ),
                 alignment: Alignment.center,
-                child: ListView.builder(
-                  clipBehavior: Clip.none,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, i) => Padding(
-                    padding: EdgeInsets.only(left: i > 0 ? 5 : 0),
-                    child: accs[i],
-                  ),
-                  itemCount: accs.length,
-                ),
+                child: FutureBuilder<List<Account>>(
+                  future: _accs,
+                  builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        clipBehavior: Clip.none,
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, i) => Padding(
+                          padding: EdgeInsets.only(left: i > 0 ? 5 : 0),
+                          child: snapshot.data?[i],
+                        ),
+                        itemCount: snapshot.data?.length,
+                      );
+                    }
+                    return const Text("You don't have any data to show");
+                  },
+                )
               )
             ],
           ),
