@@ -4,8 +4,8 @@ import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 class Convertions {
   static List<User> responseToUserList(List<Map<String, Object?>> response) {
     return [
-      for (final { 'id': id as int, 'server_id': serverId as int, 'email': email as String, 'img': img as String, 'password': password as String } in response)
-        User(id: id, serverId: serverId, email: email, img: img, password: password)
+      for (final { 'id': id as int, 'server_id': serverId as int, 'names': names as String, 'email': email as String, 'img': img as String, 'password': password as String } in response)
+        User(id: id, serverId: serverId, email: email, img: img, password: password, names: names)
     ];
   }
 
