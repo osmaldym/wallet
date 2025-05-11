@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/core/utils/convertions.dart';
+import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
-class User {
-  final int ?id;
-  final int ?serverId;
+class User extends Defs {
   final String ?names;
   final String ?email;
   final String ?password;
   final String ?img;
 
-  const User({
-    this.id,
-    this.serverId,
+  User({
+    super.id,
+    super.serverId,
     this.names,
     this.email,
     this.password,
