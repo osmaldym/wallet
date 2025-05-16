@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
-import 'package:wallet/modules/shared/widgets/fragments/input.dart';
 
 class AccountModal extends StatefulWidget {
   int ?id;
@@ -51,10 +50,11 @@ class _AccountModalState extends State<AccountModal> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 25),
-                child: CInput(
-                  type: Types.text,
-                  placeholder: "Account",
-                  focus: true,
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: "Account",
+                  ),
+                  autofocus: true,
                   onChanged: (String val) => name = val,
                 )
               ),

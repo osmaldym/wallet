@@ -6,7 +6,6 @@ import 'package:wallet/modules/auth/login/login_controller.dart';
 import 'package:wallet/modules/shared/widgets/fragments/brand_login_btn.dart';
 import 'package:wallet/modules/shared/widgets/fragments/change_lang_btn.dart';
 import 'package:wallet/modules/shared/widgets/footer.dart';
-import 'package:wallet/modules/shared/widgets/fragments/input.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -63,14 +62,12 @@ class Login extends StatelessWidget{
                   ),
                   child: Column(
                     children: <Widget>[
-                      CInput(
-                        focus: true,
+                      TextFormField(
+                        autofocus: true,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20),
-                        child: CInput(
-                          type: Types.pass
-                        ),
+                        child: TextFormField(),
                       ),
                       BrandLoginBtn(),
                       Padding(

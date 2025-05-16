@@ -6,7 +6,6 @@ import 'package:wallet/modules/auth/signin/signin_controller.dart';
 import 'package:wallet/modules/shared/widgets/fragments/brand_login_btn.dart';
 import 'package:wallet/modules/shared/widgets/fragments/change_lang_btn.dart';
 import 'package:wallet/modules/shared/widgets/footer.dart';
-import 'package:wallet/modules/shared/widgets/fragments/input.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -62,30 +61,29 @@ class Signin extends StatelessWidget{
                   ),
                   child: Column(
                     children: <Widget>[
-                      CInput(
-                        focus: true,
+                      TextFormField(
+                        autofocus: true,
                       ),
-                      CInput(
-                        placeholder: tr.name,
-                        type: Types.name,
-                        focus: true,
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: tr.name,
+                        ),
                       ),
-                      CInput(
-                        placeholder: tr.lastName,
-                        type: Types.name,
-                        focus: true,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: CInput(
-                          type: Types.pass
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: tr.lastName,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20),
-                        child: CInput(
-                          placeholder: tr.confirmPassword,
-                          type: Types.pass
+                        child: TextFormField(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: tr.confirmPassword,
+                          ),
                         ),
                       ),
                       BrandLoginBtn(),

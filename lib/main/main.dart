@@ -75,6 +75,9 @@ class _MyAppState extends State<MyApp> {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
+        inputDecorationTheme: const InputDecorationTheme(
+          border: UnderlineInputBorder(),
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.of(context).primary),
         brightness: Brightness.light,
         useMaterial3: true,
