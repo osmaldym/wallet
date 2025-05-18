@@ -4,17 +4,35 @@ import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 
 class Convertions {
   static List<User> responseToUserList(List<Map<String, Object?>> response) {
-    return [
-      for (final { 'id': id as int, 'server_id': serverId as int?, 'names': names as String, 'email': email as String?, 'img': img as String?, 'password': password as String? } in response)
-        User(id: id, serverId: serverId, email: email, img: img, password: password, names: names)
-    ];
+    return [ for (final resp in response) responseToUser(resp) ];
+  }
+
+  static User responseToUser(Map<String, Object?> response) {
+    return User(
+      id: response['id'] as int?,
+      serverId: response['server_id'] as int?,
+      names: response['names'] as String?,
+      email: response['email'] as String?,
+      img: response['img'] as String?,
+      password: response['password'] as String?,
+    );
   }
 
   static List<Account> responseToAccountList(List<Map<String, Object?>> response) {
-    return [
-      for (final { 'id': id as int, 'server_id': serverId as int?, 'user_id': userId as int, 'title': title as String } in response)
-        Account(id: id, serverId: serverId, userId: userId, title: title)
-    ];
+    return [ for (final resp in response) responseToAccount(resp) ];
+  }
+
+  static Account responseToAccount(Map<String, Object?> response) {
+    return Account(
+      id: response['id'] as int?,
+      serverId: response['server_id'] as int?,
+      userId: response['user_id'] as int?,
+      title: response['title'] as String?,
+    );
+  }
+
+  static List<Session> responseToSessionList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToSession(resp) ];
   }
 
   static Session responseToSession(Map<String, Object?> response) {
