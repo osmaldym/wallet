@@ -1,7 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:wallet/core/constants/app_db.dart';
 import 'package:wallet/core/utils/convertions.dart';
+import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
+import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 
@@ -25,6 +27,47 @@ class Dao {
 
   Future<void> deleteById(String tableName, int id) async {
     await (await _db.get()).delete(tableName, where: "id = ?", whereArgs: [id]);
+  }
+
+  // Session operations
+  Future<void> login() async {
+    if ((await users()).isEmpty){
+      Map<String, Object?> data = { "names": "Guest" };
+      await insert(DBTables.user, data);
+    }
+
+    if ((await getActualSession()).isEmpty)
+      insert(DBTables.session, Session(
+        userId: (await users()).first.id,
+        startedAt: DateTime.now(),
+        publicIp: await WebDao().getPublicIp(),
+      ).toMap());
+  }
+
+  Future<void> logout() async {
+    if ((await users()).isEmpty){
+      Map<String, Object?> data = { "names": "Guest" };
+      await insert(DBTables.user, data);
+    }
+
+    updateById(
+      DBTables.session,
+      Session(
+        finishedAt: DateTime.now(),
+        finishedByUser: true,
+      ).toMap(),
+      (await getActualSession())['id'] as int
+    );
+  }
+
+  Future<Map<String, Object?>> getActualSession() async {
+    final List<Map<String, Object?>> sessionAllData = (await (await _db.get()).query(DBTables.session, limit: 1, where: 'finished_at IS NULL', orderBy: 'started_at desc'));
+    if (sessionAllData.isNotEmpty) {
+      final Map<String, Object?> sessionData = sessionAllData.first;
+      Session session = Convertions.responseToSession(sessionData);
+      return { ...sessionData, 'user': (await user(session.userId!)).toMap() };
+    }
+    return {};
   }
 
   // User operations
