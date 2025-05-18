@@ -5,4 +5,5 @@ class DBNames {
 class DBTables {
   static const String user = "User";
   static const String account = "Account";
+  static const String session = "Session";
 }
