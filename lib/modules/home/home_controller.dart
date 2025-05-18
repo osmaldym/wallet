@@ -9,14 +9,8 @@ import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 class HomeController {
   late Dao daoLocal = Dao();
 
-  Future<void> createGuest() async {
-    List<User> users = await daoLocal.users();
-    if (users.isEmpty){
-      Map<String, Object?> data = {
-        "names": "Guest"
-      };
-      await daoLocal.insert(DBTables.user, data);
-    }
+  Future<void> createSession() async {
+    await daoLocal.login();
   }
 
   Future<void> addAccount(String name) async {

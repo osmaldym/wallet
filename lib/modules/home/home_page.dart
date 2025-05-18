@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:wallet/modules/home/home_controller.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
@@ -26,7 +25,7 @@ class _HomeState extends State<Home> {
     super.initState();
     _controller = HomeController();
     _updateAccounts();
-    _controller.createGuest();
+    _controller.createSession();
   }
 
   void _updateAccounts() => setState(() {
