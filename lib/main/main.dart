@@ -78,6 +78,9 @@ class _MyAppState extends State<MyApp> {
         inputDecorationTheme: const InputDecorationTheme(
           border: UnderlineInputBorder(),
         ),
+        dividerTheme: const DividerThemeData(
+          color: Colors.transparent
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.of(context).primary),
         brightness: Brightness.light,
         useMaterial3: true,
@@ -88,6 +91,12 @@ class _MyAppState extends State<MyApp> {
       darkTheme: ThemeData(
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: AppTheme.of(context).bgOfBottomSheet
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: UnderlineInputBorder(),
+        ),
+        dividerTheme: const DividerThemeData(
+          color: Colors.transparent
         ),
         brightness: Brightness.dark,
         colorSchemeSeed: AppTheme.of(context).primary,
