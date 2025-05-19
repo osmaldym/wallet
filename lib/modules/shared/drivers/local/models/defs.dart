@@ -1,6 +1,6 @@
 class Defs {
-  final int? id;
-  final int? serverId;
+  int? id;
+  int? serverId;
 
   Defs({
     this.id,

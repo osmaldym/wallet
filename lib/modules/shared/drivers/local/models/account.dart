@@ -2,8 +2,8 @@ import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
 class Account extends Defs {
-  final int ?userId;
-  final String ?title;
+  int ?userId;
+  String ?title;
 
   Account({
     super.id,

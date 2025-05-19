@@ -3,10 +3,10 @@ import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
 class User extends Defs {
-  final String ?names;
-  final String ?email;
-  final String ?password;
-  final String ?img;
+  String ?names;
+  String ?email;
+  String ?password;
+  String ?img;
 
   User({
     super.id,
