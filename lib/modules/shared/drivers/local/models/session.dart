@@ -2,12 +2,12 @@ import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
 class Session extends Defs {
-  final int? userId;
-  final DateTime? startedAt;
-  final DateTime? finishedAt;
-  final String? token;
-  final String? publicIp;
-  final bool? finishedByUser;
+  int? userId;
+  DateTime? startedAt;
+  DateTime? finishedAt;
+  String? token;
+  String? publicIp;
+  bool? finishedByUser;
 
   Session({
     super.id,
