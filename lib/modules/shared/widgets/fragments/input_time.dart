@@ -6,6 +6,8 @@ class InputTime extends StatefulWidget {
   TextInputType? keyboardType;
   bool showModal;
   void Function()? onTap;
+  void Function(TimeOfDay value)? onChanged;
+  TimeOfDay? selectedTime;
   
   InputTime({
     super.key,
@@ -14,6 +16,8 @@ class InputTime extends StatefulWidget {
     this.keyboardType,
     this.showModal = true,
     this.onTap,
+    this.onChanged,
+    this.selectedTime,
   });
 
   @override
@@ -21,12 +25,12 @@ class InputTime extends StatefulWidget {
 }
 
 class _InputTimeState extends State<InputTime> {
-  TimeOfDay? selectedTime;
-
   @override
   Widget build(BuildContext context) {
-    selectedTime ??= TimeOfDay.now();
-    String formatedTime = selectedTime!.format(context);
+    widget.selectedTime ??= TimeOfDay.now();
+    String formatedTime = widget.selectedTime!.format(context);
+
+    if (widget.onChanged != null) widget.onChanged!(widget.selectedTime!);
 
     return TextFormField(
       decoration: widget.decoration ?? const InputDecoration(
@@ -39,7 +43,7 @@ class _InputTimeState extends State<InputTime> {
       keyboardType: widget.keyboardType ?? TextInputType.datetime,
       onTap: () {
         if (widget.showModal) _selectTime();
-        widget.onTap!();
+        if (widget.onTap != null) widget.onTap!();
       },
     );
   }
@@ -51,7 +55,7 @@ class _InputTimeState extends State<InputTime> {
     );
 
     setState(() {
-      selectedTime = picked;
+      widget.selectedTime = picked;
     });
   }
 }
