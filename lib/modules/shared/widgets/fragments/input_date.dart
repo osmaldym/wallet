@@ -8,17 +8,17 @@ class InputDate extends StatefulWidget {
   bool showModal;
   void Function()? onTap;
   void Function(DateTime value)? onChanged;
-  DateTime? selectedDate;
+  DateTime selectedDate;
   
   InputDate({
     super.key,
+    required this.selectedDate,
     this.decoration,
     this.readOnly,
     this.keyboardType,
     this.showModal = true,
     this.onTap,
     this.onChanged,
-    this.selectedDate,
   });
 
   @override
@@ -28,10 +28,9 @@ class InputDate extends StatefulWidget {
 class _InputDateState extends State<InputDate> {
   @override
   Widget build(BuildContext context) {
-    widget.selectedDate ??= DateTime.now();
-    String formatedDate = DateFormat("dd/MM/yyyy").format(widget.selectedDate!);
+    String formatedDate = DateFormat("dd/MM/yyyy").format(widget.selectedDate);
 
-    if (widget.onChanged != null) widget.onChanged!(widget.selectedDate!);
+    if (widget.onChanged != null) widget.onChanged!(widget.selectedDate);
 
     return TextFormField(
       decoration: widget.decoration ?? const InputDecoration(
@@ -58,7 +57,7 @@ class _InputDateState extends State<InputDate> {
     );
 
     setState(() {
-      widget.selectedDate = picked;
+      widget.selectedDate = picked!;
     });
   }
 }
