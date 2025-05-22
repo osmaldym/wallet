@@ -7,14 +7,18 @@ class InputDate extends StatefulWidget {
   TextInputType? keyboardType;
   bool showModal;
   void Function()? onTap;
+  void Function(DateTime value)? onChanged;
+  DateTime selectedDate;
   
   InputDate({
     super.key,
+    required this.selectedDate,
     this.decoration,
     this.readOnly,
     this.keyboardType,
     this.showModal = true,
     this.onTap,
+    this.onChanged,
   });
 
   @override
@@ -22,25 +26,24 @@ class InputDate extends StatefulWidget {
 }
 
 class _InputDateState extends State<InputDate> {
-  DateTime? selectedDate;
-
   @override
   Widget build(BuildContext context) {
-    selectedDate ??= DateTime.now();
-    String formatedDate = DateFormat("dd/MM/yyyy").format(selectedDate!);
+    String formatedDate = DateFormat("dd/MM/yyyy").format(widget.selectedDate);
+
+    if (widget.onChanged != null) widget.onChanged!(widget.selectedDate);
 
     return TextFormField(
       decoration: widget.decoration ?? const InputDecoration(
         labelText: "Date"
       ),
       controller: TextEditingController(
-        text: formatedDate
+        text: formatedDate,
       ),
       readOnly: widget.readOnly ?? true,
       keyboardType: widget.keyboardType ?? TextInputType.datetime,
       onTap: () {
         if (widget.showModal) _selectDate();
-        widget.onTap!();
+        if (widget.onTap != null) widget.onTap!();
       },
     );
   }
@@ -48,13 +51,13 @@ class _InputDateState extends State<InputDate> {
   Future<void> _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: widget.selectedDate,
       firstDate: DateTime(DateTime.now().year - 5),
       lastDate: DateTime(DateTime.now().year + 5)
     );
 
     setState(() {
-      selectedDate = picked;
+      widget.selectedDate = picked!;
     });
   }
 }
