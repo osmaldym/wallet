@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/app_images.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/widgets/fragments/menu_option.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Menu extends Drawer {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -15,6 +16,7 @@ class Menu extends Drawer {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? tr = AppLocalizations.of(context)!;
     return Drawer(
       key: _scaffoldKey,
       width: width,
@@ -54,32 +56,32 @@ class Menu extends Drawer {
             )
           ),
           MenuOption(
-            text: "Next pays",
+            text: tr.nextPays,
             icon: Icons.money,
             onTap: () => context.go("/"),
           ),
           MenuOption(
-            text: "Records",
+            text: tr.records,
             icon: Icons.storage_rounded,
             onTap: () => context.go("/"),
           ),
           MenuOption(
-            text: "Statistics",
+            text: tr.statistics,
             icon: Icons.trending_up,
             onTap: () => context.go("/"),
           ),
           MenuOption(
-            text: "Goals",
+            text: tr.goals,
             icon: Icons.sports_score,
             onTap: () => context.go("/"),
           ),
           MenuOption(
-            text: "Budgets",
+            text: tr.budgets,
             icon: Icons.calculate,
             onTap: () => context.go("/"),
           ),
           MenuOption(
-            text: "Settings",
+            text: tr.settings,
             icon: Icons.settings,
             onTap: () => context.go("/"),
           )

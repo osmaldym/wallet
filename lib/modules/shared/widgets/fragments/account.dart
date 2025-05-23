@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Account extends Card {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -18,6 +19,7 @@ class Account extends Card {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? tr = AppLocalizations.of(context)!;
     AppTheme theme = AppTheme.of(context);
 
     return Card(
@@ -36,7 +38,7 @@ class Account extends Card {
           splashColor: Colors.grey,
           textColor: isTotal ? theme.textBlack : theme.textContrast,
           title: Text(
-            isTotal || (name == null) ? "Total" : name!,
+            isTotal || (name == null) ? tr.total : name!,
             textAlign: isTotal ? TextAlign.center : TextAlign.start,
             style: const TextStyle(
               fontSize: 20

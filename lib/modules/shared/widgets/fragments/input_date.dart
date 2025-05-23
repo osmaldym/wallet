@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputDate extends StatefulWidget {
   InputDecoration? decoration;
@@ -29,12 +30,13 @@ class _InputDateState extends State<InputDate> {
   @override
   Widget build(BuildContext context) {
     String formatedDate = DateFormat("dd/MM/yyyy").format(widget.selectedDate);
+    AppLocalizations? tr = AppLocalizations.of(context)!;
 
     if (widget.onChanged != null) widget.onChanged!(widget.selectedDate);
 
     return TextFormField(
-      decoration: widget.decoration ?? const InputDecoration(
-        labelText: "Date"
+      decoration: widget.decoration ?? InputDecoration(
+        labelText: tr.date
       ),
       controller: TextEditingController(
         text: formatedDate,
