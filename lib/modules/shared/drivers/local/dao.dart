@@ -3,6 +3,7 @@ import 'package:wallet/core/constants/app_db.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
+import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
@@ -90,5 +91,27 @@ class Dao {
   Future<Account> account(int id) async {
     List<Map<String, Object?>> account = await (await _db.get()).query(DBTables.account, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToAccountList(account).first;
+  }
+
+  // Scheduled pay operations
+  Future<void> insertScheduledPay(Map<String, Object?> pay, {bool orReplace = false}) async {
+    User sessionUser = Convertions.responseToUser((await getActualSession())['user'] as Map<String, Object?>);
+    pay['user_id'] = sessionUser.id;
+    await (orReplace ? put(DBTables.scheduledPay, pay) : insert(DBTables.scheduledPay, pay));
+  }
+
+  // Scheduled pay operations
+  Future<void> putScheduledPay(Map<String, Object?> pay) async {
+    await insertScheduledPay(pay, orReplace: true);
+  }
+
+  Future<List<ScheculedPay>> scheduledPays() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay);
+    return Convertions.responseToScheculedPayList(data);
+  }
+
+  Future<ScheculedPay> scheduledPay(int id) async {
+    List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay, where: "id = ?", whereArgs: [id], limit: 1);
+    return Convertions.responseToScheculedPayList(data).first;
   }
 }
