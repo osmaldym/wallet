@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/modules/home/home_page.dart';
-import 'package:wallet/modules/scheduled_pays/put/put.dart' as scheduled_pays;
+import 'package:wallet/modules/scheduled_pays/put/put_page.dart' as scheduled_pays;
 
 import '../../modules/auth/login/login_page.dart';
 import '../../modules/auth/signin/signin_page.dart';
