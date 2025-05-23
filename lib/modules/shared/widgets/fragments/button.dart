@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CButton extends StatelessWidget {
   String? text;
@@ -17,7 +18,8 @@ class CButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String txt = text ?? 'Guardar';
+    AppLocalizations? tr = AppLocalizations.of(context)!;
+    String txt = text ?? tr.save;
     Color bgCol = bgColor ?? AppTheme.of(context).primary;
 
     return TextButton(

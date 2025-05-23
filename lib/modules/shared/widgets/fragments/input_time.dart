@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputTime extends StatefulWidget {
   InputDecoration? decoration;
@@ -27,13 +28,14 @@ class InputTime extends StatefulWidget {
 class _InputTimeState extends State<InputTime> {
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? tr = AppLocalizations.of(context)!;
     String formatedTime = widget.selectedTime.format(context);
 
     if (widget.onChanged != null) widget.onChanged!(widget.selectedTime);
 
     return TextFormField(
-      decoration: widget.decoration ?? const InputDecoration(
-        labelText: "Time"
+      decoration: widget.decoration ?? InputDecoration(
+        labelText: tr.time
       ),
       controller: TextEditingController(
         text: formatedTime

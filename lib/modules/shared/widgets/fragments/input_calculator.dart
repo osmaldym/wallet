@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/shared/widgets/modals/calculator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputCalculator extends StatefulWidget {
   final bool? readOnly;
@@ -9,8 +9,8 @@ class InputCalculator extends StatefulWidget {
   final void Function()? onTap;
   final void Function(double value)? onChange;
   final double? controllerValue;
-  
-  final NumberFormat nFormat = NumberFormat("#,###.##", "en_US");
+  AppLocalizations? tr;
+  NumberFormat? nFormat;
 
   double? valueToShow = 0;
 
@@ -30,12 +30,14 @@ class InputCalculator extends StatefulWidget {
 class _InputCalculatorState extends State<InputCalculator> {
   @override
   Widget build(BuildContext context) {
+    widget.tr = AppLocalizations.of(context)!;
+    widget.nFormat = NumberFormat("#,###.##", widget.tr != null ? widget.tr!.localeName : "en_US" );
     return TextFormField(
-      decoration: widget.decoration ?? const InputDecoration(
-        labelText: "Amount"
+      decoration: widget.decoration ?? InputDecoration(
+        labelText: widget.tr!.amount
       ),
       controller: TextEditingController(
-        text: "\$ ${widget.nFormat.format(widget.controllerValue ?? widget.valueToShow)}",
+        text: "\$ ${widget.nFormat!.format(widget.controllerValue ?? widget.valueToShow)}",
       ),
       readOnly: widget.readOnly ?? true,
       onTap: () {
