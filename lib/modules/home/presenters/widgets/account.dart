@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountModal extends StatefulWidget {
   int ?id;
@@ -23,6 +24,7 @@ class _AccountModalState extends State<AccountModal> {
   @override
   Widget build(BuildContext context) {
     String name = "";
+    AppLocalizations? tr = AppLocalizations.of(context)!;
 
     return SingleChildScrollView(
       key: _scaffoldKey,
@@ -43,7 +45,7 @@ class _AccountModalState extends State<AccountModal> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                widget.id == null ? "New account" : "Editing account",
+                widget.id == null ? tr.newAccount : tr.editingAccount,
                 style: GoogleFonts.urbanist(
                     fontSize: 32,
                   )
@@ -51,8 +53,8 @@ class _AccountModalState extends State<AccountModal> {
               Padding(
                 padding: const EdgeInsets.only(top: 25),
                 child: TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Account",
+                  decoration: InputDecoration(
+                    labelText: tr.account,
                   ),
                   autofocus: true,
                   onChanged: (String val) => name = val,
@@ -61,7 +63,7 @@ class _AccountModalState extends State<AccountModal> {
               Padding(
                 padding: const EdgeInsets.only(top: 25),
                 child: CButton(
-                  text: "Save",
+                  text: tr.save,
                   onPressed: () {
                     widget.onSave(name);
                     Navigator.pop(context);

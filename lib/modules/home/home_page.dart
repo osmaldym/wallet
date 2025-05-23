@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
-        title: "Accounts",
+        title: tr.account,
         leadingIcon: Icons.menu,
         onLeadingPressed: () => _scaffoldKey.currentState!.openDrawer(),
         onTrailingPressed: () => showModalBottomSheet(
@@ -59,7 +59,7 @@ class _HomeState extends State<Home> {
         items: [
           ExpandableFabItem(
             icon: Icons.money,
-            helper: "New pay",
+            helper: tr.newPay,
             onTapped: () => context.go("/scheduled_pays/put"),
           )
         ],
@@ -91,7 +91,7 @@ class _HomeState extends State<Home> {
                         itemCount: snapshot.data?.length,
                       );
                     }
-                    return const Text("You don't have any data to show");
+                    return Text(tr.youDontHaveAnyDataToShow);
                   },
                 )
               )

@@ -12,6 +12,7 @@ import 'package:wallet/modules/shared/widgets/fragments/input_time.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_date.dart';
 import 'package:wallet/modules/shared/widgets/fragments/select.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Put extends StatefulWidget {
   const Put({ super.key });
@@ -37,12 +38,13 @@ class _PutState extends State<Put> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? tr = AppLocalizations.of(context)!;
     pay.type = incomeSelected ? ScheduledPayTypes.income.index : ScheduledPayTypes.expend.index;
     pay.date ??= DateTime.now();
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
-        title: "New pay",
+        title: tr.newPay,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -56,8 +58,8 @@ class _PutState extends State<Put> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "Title",
+                decoration: InputDecoration(
+                  labelText: tr.title,
                 ),
                 controller: TextEditingController(
                   text: pay.title,
@@ -77,7 +79,7 @@ class _PutState extends State<Put> {
                   Expanded(
                     child: component.Chip(
                       selected: expendSelected,
-                      text: "Expend",
+                      text: tr.expend,
                       txtColor: AppTheme.of(context).redLight,
                       onSelected: (bool isSelected) => setState(() {
                         expendSelected = isSelected;
@@ -88,7 +90,7 @@ class _PutState extends State<Put> {
                   Expanded(
                     child: component.Chip(
                       selected: incomeSelected,
-                      text: "Income",
+                      text: tr.income,
                       txtColor: AppTheme.of(context).greenDark,
                       onSelected: (bool isSelected) => setState(() {
                         incomeSelected = isSelected;
@@ -99,14 +101,14 @@ class _PutState extends State<Put> {
                 ],
               ),
               Select(
-                decoration: const InputDecoration(
-                  labelText: "Category"
+                decoration: InputDecoration(
+                  labelText: tr.category
                 ),
                 items: optionsExample,
               ),
               Select(
-                decoration: const InputDecoration(
-                  labelText: "Account"
+                decoration: InputDecoration(
+                  labelText: tr.account
                 ),
                 items: optionsExample,
               ),
@@ -122,8 +124,8 @@ class _PutState extends State<Put> {
                   Expanded(
                     child: Select(
                       expand: false,
-                      decoration: const InputDecoration(
-                        labelText: "Currency"
+                      decoration: InputDecoration(
+                        labelText: tr.currency
                       ),
                       items: optionsExample,
                     )
@@ -131,8 +133,8 @@ class _PutState extends State<Put> {
                 ],
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "Beneficiary",
+                decoration: InputDecoration(
+                  labelText: tr.beneficiary,
                 ),
                 controller: TextEditingController(
                   text: pay.beneficiary,
@@ -140,8 +142,8 @@ class _PutState extends State<Put> {
                 onChanged: (val) => pay.beneficiary = val,
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "Note",
+                decoration: InputDecoration(
+                  labelText: tr.note,
                 ),
                 controller: TextEditingController(
                   text: pay.note,
@@ -151,7 +153,7 @@ class _PutState extends State<Put> {
                 onChanged: (val) => pay.note = val,
               ),
               Text(
-                "Date and frecuency:",
+                tr.dateAndFrecuency,
                 style: GoogleFonts.urbanist(
                   fontSize: 18
                 ),
@@ -181,14 +183,14 @@ class _PutState extends State<Put> {
                 ],
               ),
               Select(
-                decoration: const InputDecoration(
-                  labelText: "Notifications",
+                decoration: InputDecoration(
+                  labelText: tr.notifications,
                 ),
                 items: optionsExample,
               ),
               Select(
-                decoration: const InputDecoration(
-                  labelText: "Frecuency",
+                decoration: InputDecoration(
+                  labelText: tr.frecuency,
                 ),
                 items: optionsExample,
               ),
