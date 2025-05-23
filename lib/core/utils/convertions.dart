@@ -1,4 +1,5 @@
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
+import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 
@@ -45,6 +46,31 @@ class Convertions {
       publicIp: response['public_ip'] as String?,
       token: response['token'] as String?,
       finishedByUser: response['finished_by_user'] as bool?,
+    );
+  }
+
+  static List<ScheculedPay> responseToScheculedPayList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToScheculedPay(resp) ];
+  }
+
+  static ScheculedPay responseToScheculedPay(Map<String, Object?> response) {
+    return ScheculedPay(
+      id: response["id"] as int?,
+      userId: response["user_id"] as int?,
+      serverId: response["server_id"] as int?,
+      imageId: response["image_id"] as int?,
+      categoryId: response["category_id"] as int?,
+      budgetId: response["budget_id"] as int?,
+      goalId: response["goal_id"] as int?,
+      frecuencyId: response["frecuency_id"] as int?,
+      paymentMethodId: response["payment_method_id"] as int?,
+      notificationId: response["notification_id"] as int?,
+      title: response["title"] as String?,
+      type: response["type"] as int?,
+      amount: response["amount"] as double?,
+      date: DateTime.tryParse(response["date"].toString()),
+      note: response["note"] as String?,
+      beneficiary: response["beneficiary"] as String?,
     );
   }
 
