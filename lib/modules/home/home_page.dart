@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/modules/home/home_controller.dart';
+import 'package:wallet/modules/shared/widgets/fragments/expandable_fab.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 
@@ -52,6 +54,15 @@ class _HomeState extends State<Home> {
             }
           )
         ),
+      ),
+      floatingActionButton: ExpandableFab(
+        items: [
+          ExpandableFabItem(
+            icon: Icons.money,
+            helper: "New pay",
+            onTapped: () => context.go("/scheduled_pays/put"),
+          )
+        ],
       ),
       drawer: Menu(),
       body: SafeArea(
