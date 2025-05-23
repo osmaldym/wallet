@@ -7,7 +7,7 @@ import 'package:wallet/modules/shared/widgets/header.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/menu.dart';
-import 'package:wallet/modules/shared/widgets/modals/account.dart';
+import 'package:wallet/modules/home/presenters/widgets/account.dart';
 
 class Home extends StatefulWidget {
   const Home({ super.key });
