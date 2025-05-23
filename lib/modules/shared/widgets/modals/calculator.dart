@@ -89,7 +89,7 @@ class _CalculatorModalState extends State<CalculatorModal> {
   }
 
   void _evalAndUpdate(String txt){
-    RegExp artimetic = RegExp(r'[\+\-\x\÷]');
+    RegExp aritmetic = RegExp(r'[\+\-\x\÷]');
     RegExp digit = RegExp(r'[0-9]');
     RegExp isNumber = RegExp(r'^([0-9]+)+$|^([0-9]+).([0-9]+)$');
     setState(() {
@@ -103,14 +103,20 @@ class _CalculatorModalState extends State<CalculatorModal> {
       } else if (txt == 'del') {
         widget.toShow = widget.toShow.substring(0, widget.toShow.length-1);
         if (widget.toShow != "0" && widget.toShow.isEmpty) widget.toShow = "0";
-      } else if (txt == "=" || (artimetic.hasMatch(txt) && (artimetic.hasMatch(widget.toShow)))) {
+      } else if (txt == "=" || (aritmetic.hasMatch(txt) && (aritmetic.hasMatch(widget.toShow)))) {
+        if (isNumber.hasMatch(widget.toShow) && !aritmetic.hasMatch(widget.toShow) && widget.onOkTap != null) {
+          widget.onOkTap!();
+          return;
+        }
+
         if (widget.toShow.endsWith("÷0")) {
           widget.toShow = "∞";
           return;
         }
+
         widget.operationNum = _calculate(widget.toShow) ?? 0;
         widget.toShow = widget.operationNum.toStringAsFixed(widget.operationNum > widget.operationNum.toInt() ? 2 : 0);
-        if (artimetic.hasMatch(txt)) widget.toShow += txt;
+        if (aritmetic.hasMatch(txt)) widget.toShow += txt;
       } else if (widget.toShow.endsWith("%")) {
         widget.toShow += "x$txt";
       } else {
@@ -120,7 +126,7 @@ class _CalculatorModalState extends State<CalculatorModal> {
         widget.toShow += txt;
       }
       print("${isNumber.hasMatch(widget.toShow)} / ${widget.toShow}");
-      if (isNumber.hasMatch(widget.toShow) && !artimetic.hasMatch(widget.toShow)) {
+      if (isNumber.hasMatch(widget.toShow) && !aritmetic.hasMatch(widget.toShow)) {
         widget.operationNum = double.parse(widget.toShow.replaceAll(",", ""));
       }
     });
