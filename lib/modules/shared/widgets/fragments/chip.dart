@@ -26,15 +26,10 @@ class Chip extends ChoiceChip {
   Widget build(BuildContext context) {
     return ChoiceChip(
       key: _scaffoldKey,
-      label: Container(
-        alignment: Alignment.center,
-        width: double.maxFinite,
-        child: text != null ? Text(
-          text!,
-          style: GoogleFonts.urbanist(
-            fontSize: 16
-          )
-        ) : label,
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      label: text != null ? Text(text!) : label,
+      labelStyle: GoogleFonts.urbanist(
+        color: txtColor ?? Colors.black,
       ),
       selected: selected,
       autofocus: autofocus,
@@ -51,10 +46,6 @@ class Chip extends ChoiceChip {
       backgroundColor: backgroundColor ?? Colors.black.withAlpha(10),
       disabledColor: disabledColor ?? Colors.black.withAlpha(10),
       selectedColor: selectedColor ?? AppTheme.of(context).primary,
-      labelStyle: TextStyle(
-        color: txtColor
-      ),
-
       onSelected: onSelected,
     );
   }
