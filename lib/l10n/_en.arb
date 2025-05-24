@@ -40,5 +40,9 @@
     "settings": "Settings",
     "newAccount": "New account",
     "editingAccount": "Editing account",
+    "pays": "Pays",
+    "all": "All",
+    "myIncome": "My income",
+    "myExpend": "Mi Expend",
     "youDontHaveAnyDataToShow": "You don't have any data to show"
 }
