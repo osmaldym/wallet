@@ -40,5 +40,9 @@
     "settings": "Configuraciones",
     "newAccount": "Nueva cuenta",
     "editingAccount": "Editando cuenta",
+    "pays": "Pagos",
+    "all": "Todo",
+    "myIncome": "Mi ingreso",
+    "myExpend": "Mi gasto",
     "youDontHaveAnyDataToShow": "No tienes datos para mostrar"
 }
