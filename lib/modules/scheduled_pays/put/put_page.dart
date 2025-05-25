@@ -74,13 +74,15 @@ class _PutState extends State<Put> {
                 textAlign: TextAlign.left,
               ),
               Row(
+                mainAxisSize: MainAxisSize.max,
                 spacing: 15,
                 children: [
                   Expanded(
                     child: component.Chip(
                       selected: expendSelected,
                       text: tr.expend,
-                      txtColor: AppTheme.of(context).redLight,
+                      width: double.maxFinite,
+                      txtColor: expendSelected ? AppTheme.of(context).redDark : AppTheme.of(context).redContrast,
                       onSelected: (bool isSelected) => setState(() {
                         expendSelected = isSelected;
                         incomeSelected = !isSelected;
@@ -91,7 +93,8 @@ class _PutState extends State<Put> {
                     child: component.Chip(
                       selected: incomeSelected,
                       text: tr.income,
-                      txtColor: AppTheme.of(context).greenDark,
+                      width: double.maxFinite,
+                      txtColor: incomeSelected ? AppTheme.of(context).greenDark : AppTheme.of(context).greenContrast,
                       onSelected: (bool isSelected) => setState(() {
                         incomeSelected = isSelected;
                         expendSelected = !isSelected;
