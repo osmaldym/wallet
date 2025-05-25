@@ -101,6 +101,7 @@ class _ExpandableFabState extends State<ExpandableFab> with TickerProviderStateM
             FloatingActionButton(
               backgroundColor: bgColor,
               mini: true,
+              heroTag: index,
               child: Icon(widget.items[index].icon, color: fgColor),
               onPressed: () => _onTapped(index),
             ),

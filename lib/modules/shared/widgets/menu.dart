@@ -58,7 +58,7 @@ class Menu extends Drawer {
           MenuOption(
             text: tr.nextPays,
             icon: Icons.money,
-            onTap: () => context.go("/"),
+            onTap: () => context.go("/scheduled_pays"),
           ),
           MenuOption(
             text: tr.records,
