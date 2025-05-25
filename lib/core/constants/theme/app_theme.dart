@@ -19,6 +19,14 @@ class AppTheme {
   Color get textContrast {
     return isThemeDark ? const Color(0xFFFFFFFF) : textBlack;
   }
+
+  Color get greenContrast {
+    return isThemeDark ? greenLight : greenDark;
+  }
+
+  Color get redContrast {
+    return isThemeDark ? redLight : redDark;
+  }
   
   Color get bgOfBottomSheet {
     // If i want to use the mode dark or light, i discomment the lines below
@@ -54,7 +62,7 @@ class AppTheme {
   Color get textGreen { return greenDark; }
 
   Color get redLight {
-    return const Color.fromRGBO(137, 0, 0, 1);
+    return const Color.fromRGBO(198, 0, 0, 1);
   }
 
   Color get textRed { return redLight; }
