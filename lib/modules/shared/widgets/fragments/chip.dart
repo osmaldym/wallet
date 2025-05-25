@@ -6,6 +6,7 @@ class Chip extends ChoiceChip {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   String? text;
   Color? txtColor;
+  double? width;
 
   Chip({
     super.key,
@@ -22,6 +23,7 @@ class Chip extends ChoiceChip {
     super.onSelected,
     super.avatar,
     super.padding,
+    this.width,
   });
 
   @override
@@ -29,7 +31,13 @@ class Chip extends ChoiceChip {
     return ChoiceChip(
       key: _scaffoldKey,
       padding: padding ?? const EdgeInsets.symmetric(horizontal: 15),
-      label: text != null ? Text(text!) : label,
+      label: text != null ? SizedBox(
+        width: width,
+        child: Text(
+          text!,
+          textAlign: TextAlign.center,
+        ),
+      ) : label,
       labelStyle: GoogleFonts.urbanist(
         color: txtColor ?? Colors.black,
       ),
@@ -46,8 +54,8 @@ class Chip extends ChoiceChip {
         color: Colors.transparent
       ),
       avatar: avatar,
-      backgroundColor: backgroundColor ?? Colors.black.withAlpha(10),
-      disabledColor: disabledColor ?? Colors.black.withAlpha(10),
+      backgroundColor: backgroundColor ?? Colors.grey.withAlpha(30),
+      disabledColor: disabledColor ?? Colors.grey.withAlpha(30),
       selectedColor: selectedColor ?? AppTheme.of(context).primary,
       onSelected: onSelected,
     );
