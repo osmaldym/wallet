@@ -19,14 +19,16 @@ class Chip extends ChoiceChip {
     super.showCheckmark,
     super.side,
     super.shape,
-    super.onSelected
+    super.onSelected,
+    super.avatar,
+    super.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return ChoiceChip(
       key: _scaffoldKey,
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 15),
       label: text != null ? Text(text!) : label,
       labelStyle: GoogleFonts.urbanist(
         color: txtColor ?? Colors.black,
@@ -43,6 +45,7 @@ class Chip extends ChoiceChip {
         width: 0,
         color: Colors.transparent
       ),
+      avatar: avatar,
       backgroundColor: backgroundColor ?? Colors.black.withAlpha(10),
       disabledColor: disabledColor ?? Colors.black.withAlpha(10),
       selectedColor: selectedColor ?? AppTheme.of(context).primary,
