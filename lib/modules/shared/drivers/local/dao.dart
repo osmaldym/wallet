@@ -105,8 +105,16 @@ class Dao {
     await insertScheduledPay(pay, orReplace: true);
   }
 
-  Future<List<ScheculedPay>> scheduledPays() async {
-    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay);
+  Future<List<ScheculedPay>> scheduledPays({ int? type }) async {
+    String? where = "";
+    List<Object?> params = [];
+
+    if (type != null) {
+      where += "type = ?";
+      params.add(type);
+    }
+
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay, where: where.isNotEmpty ? where : null, whereArgs: params.isNotEmpty ? params : null);
     return Convertions.responseToScheculedPayList(data);
   }
 
