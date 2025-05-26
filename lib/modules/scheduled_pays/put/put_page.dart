@@ -67,7 +67,7 @@ class _PutState extends State<Put> {
                 onChanged: (val) => pay.title = val,
               ),
               Text(
-                "Type:",
+                tr.type,
                 style: const TextStyle(fontSize: 18),
                 textAlign: TextAlign.left,
               ),
