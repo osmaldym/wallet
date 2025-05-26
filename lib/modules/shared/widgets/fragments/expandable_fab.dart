@@ -91,7 +91,7 @@ class _ExpandableFabState extends State<ExpandableFab> with TickerProviderStateM
                     ),
                     child: Text(
                       widget.items[index].helper!,
-                      style: GoogleFonts.urbanist(
+                      style: TextStyle(
                         color: fgColor
                       ),
                     ),

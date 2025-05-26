@@ -68,9 +68,7 @@ class _PutState extends State<Put> {
               ),
               Text(
                 "Type:",
-                style: GoogleFonts.urbanist(
-                  fontSize: 18
-                ),
+                style: const TextStyle(fontSize: 18),
                 textAlign: TextAlign.left,
               ),
               Row(
@@ -157,9 +155,7 @@ class _PutState extends State<Put> {
               ),
               Text(
                 tr.dateAndFrecuency,
-                style: GoogleFonts.urbanist(
-                  fontSize: 18
-                ),
+                style: const TextStyle(fontSize: 18),
                 textAlign: TextAlign.left,
               ),
               Row(

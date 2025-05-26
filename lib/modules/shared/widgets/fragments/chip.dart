@@ -38,7 +38,7 @@ class Chip extends ChoiceChip {
           textAlign: TextAlign.center,
         ),
       ) : label,
-      labelStyle: GoogleFonts.urbanist(
+      labelStyle: TextStyle(
         color: txtColor ?? Colors.black,
       ),
       selected: selected,

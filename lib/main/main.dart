@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet/core/constants/app_routes.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
@@ -75,6 +76,7 @@ class _MyAppState extends State<MyApp> {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
+        textTheme: GoogleFonts.urbanistTextTheme(),
         inputDecorationTheme: const InputDecorationTheme(
           border: UnderlineInputBorder(),
         ),
@@ -89,6 +91,7 @@ class _MyAppState extends State<MyApp> {
         )
       ),
       darkTheme: ThemeData(
+        textTheme: GoogleFonts.urbanistTextTheme(),
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: AppTheme.of(context).bgOfBottomSheet
         ),

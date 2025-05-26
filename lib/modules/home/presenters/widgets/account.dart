@@ -46,9 +46,7 @@ class _AccountModalState extends State<AccountModal> {
             children: [
               Text(
                 widget.id == null ? tr.newAccount : tr.editingAccount,
-                style: GoogleFonts.urbanist(
-                    fontSize: 32,
-                  )
+                style: const TextStyle(fontSize: 32)
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 25),
