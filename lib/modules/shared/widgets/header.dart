@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
 
 // ignore: must_be_immutable
 class CHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -44,13 +45,17 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 32)
+                style: TextStyle(
+                  color: AppTheme.of(context).textContrast,
+                  fontSize: 32
+                )
               ),
             ),
             if (onTrailingPressed != null)
               IconButton(
                 icon: Icon(trailingIcon),
                 iconSize: iconSize,
+                color: AppTheme.of(context).textContrast,
                 onPressed: onTrailingPressed,
               ),
           ],
