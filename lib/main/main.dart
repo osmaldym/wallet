@@ -76,7 +76,10 @@ class _MyAppState extends State<MyApp> {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        textTheme: GoogleFonts.urbanistTextTheme(),
+        textTheme: GoogleFonts.urbanistTextTheme().apply(
+          bodyColor: AppTheme.of(context).textContrast,
+          displayColor: AppTheme.of(context).textContrast,
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           border: UnderlineInputBorder(),
         ),
@@ -91,7 +94,10 @@ class _MyAppState extends State<MyApp> {
         )
       ),
       darkTheme: ThemeData(
-        textTheme: GoogleFonts.urbanistTextTheme(),
+        textTheme: GoogleFonts.urbanistTextTheme().apply(
+          bodyColor: AppTheme.of(context).textContrast,
+          displayColor: AppTheme.of(context).textContrast,
+        ),
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: AppTheme.of(context).bgOfBottomSheet
         ),
