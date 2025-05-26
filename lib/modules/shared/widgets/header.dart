@@ -44,9 +44,7 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
             Expanded(
               child: Text(
                 title,
-                style: GoogleFonts.urbanist(
-                  fontSize: 32,
-                )
+                style: const TextStyle(fontSize: 32)
               ),
             ),
             if (onTrailingPressed != null)
