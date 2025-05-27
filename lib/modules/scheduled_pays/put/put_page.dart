@@ -25,7 +25,7 @@ class _PutState extends State<Put> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final PutController _controller = PutController();
   final Utils _utils = Utils();
-  ScheculedPay pay = ScheculedPay();
+  ScheduledPay pay = ScheduledPay();
 
   bool incomeSelected = false;
   bool expendSelected = true;

@@ -3,7 +3,7 @@ import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
 enum ScheduledPayTypes { expend, income }
 
-class ScheculedPay extends Defs{
+class ScheduledPay extends Defs{
   int? imageId;
   int? userId;
   int? categoryId;
@@ -19,7 +19,7 @@ class ScheculedPay extends Defs{
   String? note;
   String? beneficiary;
 
-  ScheculedPay({
+  ScheduledPay({
     super.id,
     super.serverId,
     this.userId,
