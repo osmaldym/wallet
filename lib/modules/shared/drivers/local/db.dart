@@ -3,7 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:wallet/core/constants/app_db.dart';
 
 class DB {
-  final String _SQL_CREATE_USER = """
+  final List<String> allCreateQueries = [
+    """
     CREATE TABLE IF NOT EXISTS ${DBTables.user}(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id TEXT,
@@ -12,9 +13,8 @@ class DB {
       password text,
       img TEXT
     )
-  """;
-
-  final String _SQL_CREATE_ACCOUNTS = """
+    """,
+    """
     CREATE TABLE IF NOT EXISTS ${DBTables.account}(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id INTEGER,
@@ -22,9 +22,8 @@ class DB {
       title TEXT,
       FOREIGN KEY(user_id) REFERENCES User(id)
     )
-  """;
-
-  final String _SQL_CREATE_SESSION = """
+    """,
+    """
     CREATE TABLE IF NOT EXISTS ${DBTables.session}(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id INTEGER,
@@ -36,9 +35,8 @@ class DB {
       finished_by_user BOOLEAN,
       FOREIGN KEY(user_id) REFERENCES User(id)
     )
-  """;
-
-  final String _SQL_CREATE_SCHEDULED_PAY = """
+    """,
+    """
     CREATE TABLE IF NOT EXISTS ${DBTables.scheduledPay}(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id INTEGER,
@@ -58,16 +56,16 @@ class DB {
       beneficiary TEXT,
       FOREIGN KEY(user_id) REFERENCES User(id)
     )
-  """;
+    """
+  ];
 
   Future<Database> get() async {
     return openDatabase(
       join(await getDatabasesPath(), DBNames.walletLocal),
       onCreate: (db, version) {
-        db.execute(_SQL_CREATE_USER);
-        db.execute(_SQL_CREATE_ACCOUNTS);
-        db.execute(_SQL_CREATE_SESSION);
-        db.execute(_SQL_CREATE_SCHEDULED_PAY);
+        for (final query in allCreateQueries) {
+          db.execute(query);
+        }
       },
       version: 1
     );
