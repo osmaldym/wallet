@@ -17,7 +17,7 @@ class ScheduledPays extends StatefulWidget {
 
 class _ScheduledPaysState extends State<ScheduledPays> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  late Future<List<ScheculedPay>> _pays;
+  late Future<List<ScheduledPay>> _pays;
   late  ScheduledPaysController _controller;
 
   bool allSelected = true;
@@ -111,9 +111,9 @@ class _ScheduledPaysState extends State<ScheduledPays> {
               Container(
                 height: double.maxFinite,
                 alignment: Alignment.topCenter,
-                child: FutureBuilder<List<ScheculedPay>>(
+                child: FutureBuilder<List<ScheduledPay>>(
                   future: _pays,
-                  builder: (BuildContext context, AsyncSnapshot<List<ScheculedPay>> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<List<ScheduledPay>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
                           return ListView.builder(

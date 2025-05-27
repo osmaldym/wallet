@@ -49,12 +49,12 @@ class Convertions {
     );
   }
 
-  static List<ScheculedPay> responseToScheculedPayList(List<Map<String, Object?>> response) {
+  static List<ScheduledPay> responseToScheculedPayList(List<Map<String, Object?>> response) {
     return [ for (final resp in response) responseToScheculedPay(resp) ];
   }
 
-  static ScheculedPay responseToScheculedPay(Map<String, Object?> response) {
-    return ScheculedPay(
+  static ScheduledPay responseToScheculedPay(Map<String, Object?> response) {
+    return ScheduledPay(
       id: response["id"] as int?,
       userId: response["user_id"] as int?,
       serverId: response["server_id"] as int?,
