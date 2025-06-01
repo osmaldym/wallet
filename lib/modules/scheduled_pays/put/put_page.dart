@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_controller.dart';
+import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
@@ -34,7 +34,46 @@ class _PutState extends State<Put> {
   DateTime? date;
   TimeOfDay? time;
 
-  List<String> optionsExample = ["One", "Two", "Three"];
+  final List<DropdownMenuItem> _itemsExamples = [
+    const DropdownMenuItem(
+      value: "one",
+      child: Text("one"),
+    ),
+    const DropdownMenuItem(
+      value: "two",
+      child: Text("two"),
+    ),
+    const DropdownMenuItem(
+      value: "three",
+      child: Text("three"),
+    )
+  ];
+
+  final List<DropdownMenuItem> _itemsAccountsSelect = [
+    DropdownMenuItem(
+      value: Account(title: "Total"),
+      child: const Text("Total"),
+    )
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    getAll();
+  }
+
+  Future<void> getAll() async {
+    List<Account> accs  = await _controller.getAllAccounts();
+    
+    for (final account in accs){
+      _itemsAccountsSelect.add(
+        DropdownMenuItem(
+          value: account,
+          child: Text(account.title!),
+        )
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,13 +144,13 @@ class _PutState extends State<Put> {
                 decoration: InputDecoration(
                   labelText: tr.category
                 ),
-                items: optionsExample,
+                items: _itemsExamples,
               ),
               Select(
                 decoration: InputDecoration(
                   labelText: tr.account
                 ),
-                items: optionsExample,
+                items: _itemsAccountsSelect,
               ),
               Row(
                 spacing: 15,
@@ -128,7 +167,7 @@ class _PutState extends State<Put> {
                       decoration: InputDecoration(
                         labelText: tr.currency
                       ),
-                      items: optionsExample,
+                      items: _itemsExamples,
                     )
                   )
                 ],
@@ -185,13 +224,13 @@ class _PutState extends State<Put> {
                 decoration: InputDecoration(
                   labelText: tr.notifications,
                 ),
-                items: optionsExample,
+                items: _itemsExamples,
               ),
               Select(
                 decoration: InputDecoration(
                   labelText: tr.frecuency,
                 ),
-                items: optionsExample,
+                items: _itemsExamples,
               ),
             ],
           ),
