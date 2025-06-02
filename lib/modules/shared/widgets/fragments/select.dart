@@ -28,6 +28,7 @@ class _SelectState extends State<Select> {
     dropdownValue ??= widget.items!.first.value;
 
     return DropdownButtonFormField(
+      key: widget.key,
       value: dropdownValue,
       decoration: widget.decoration,
       items: widget.items ?? [],
