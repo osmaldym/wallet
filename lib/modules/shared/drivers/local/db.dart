@@ -43,6 +43,7 @@ class DB {
       user_id INTEGER,
       image_id INTEGER,
       category_id INTEGER,
+      account_id INTEGER,
       budget_id INTEGER,
       goal_id INTEGER,
       frecuency_id INTEGER,
