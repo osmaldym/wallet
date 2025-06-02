@@ -34,6 +34,8 @@ class _PutState extends State<Put> {
   DateTime? date;
   TimeOfDay? time;
 
+  final GlobalKey<FormFieldState> _selectAccountKey = GlobalKey<FormFieldState>();
+
   final List<DropdownMenuItem> _itemsExamples = [
     const DropdownMenuItem(
       value: "one",
@@ -147,10 +149,15 @@ class _PutState extends State<Put> {
                 items: _itemsExamples,
               ),
               Select(
+                key: _selectAccountKey,
                 decoration: InputDecoration(
                   labelText: tr.account
                 ),
                 items: _itemsAccountsSelect,
+                onChanged: (value) {
+                  Account acc = value as Account;
+                  pay.accountId = acc.id;
+                },
               ),
               Row(
                 spacing: 15,
@@ -249,6 +256,7 @@ class _PutState extends State<Put> {
               pay = Convertions.responseToScheculedPay(payMap);
               setState(() {
                 pay.date = DateTime.now();
+                _selectAccountKey.currentState!.didChange(_itemsAccountsSelect[0].value);
                 loading = false;
               });
             },
