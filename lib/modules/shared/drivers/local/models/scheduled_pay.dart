@@ -12,6 +12,7 @@ class ScheduledPay extends Defs{
   int? frecuencyId;
   int? paymentMethodId;
   int? notificationId;
+  int? accountId;
   int? type;
   String? title;
   double? amount;
@@ -25,6 +26,7 @@ class ScheduledPay extends Defs{
     this.userId,
     this.imageId,
     this.categoryId,
+    this.accountId,
     this.budgetId,
     this.goalId,
     this.frecuencyId,
@@ -45,6 +47,7 @@ class ScheduledPay extends Defs{
       'server_id' : serverId,
       'image_id': imageId,
       'category_id': categoryId,
+      'account_id': accountId,
       'budget_id': budgetId,
       'goal_id': goalId,
       'frecuency_id': frecuencyId,

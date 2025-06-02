@@ -60,6 +60,7 @@ class Convertions {
       serverId: response["server_id"] as int?,
       imageId: response["image_id"] as int?,
       categoryId: response["category_id"] as int?,
+      accountId: response["account_id"] as int?,
       budgetId: response["budget_id"] as int?,
       goalId: response["goal_id"] as int?,
       frecuencyId: response["frecuency_id"] as int?,
