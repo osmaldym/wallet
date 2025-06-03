@@ -45,6 +45,7 @@ dependencies:
   sqflite: ^2.3.3+1
   path: ^1.9.0
   dart_ipify: ^1.1.1
+  workmanager: ^0.6.0
 
 dev_dependencies:
   flutter_test:
