@@ -22,7 +22,7 @@ class Put extends StatefulWidget {
 }
 
 class _PutState extends State<Put> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); 
   final PutController _controller = PutController();
   final Utils _utils = Utils();
   ScheduledPay pay = ScheduledPay();
@@ -34,7 +34,7 @@ class _PutState extends State<Put> {
   DateTime? date;
   TimeOfDay? time;
 
-  final GlobalKey<FormFieldState> _selectAccountKey = GlobalKey<FormFieldState>();
+  dynamic _valueAccountsSelect;
 
   final List<DropdownMenuItem> _itemsExamples = [
     const DropdownMenuItem(
@@ -61,11 +61,16 @@ class _PutState extends State<Put> {
   @override
   void initState() {
     super.initState();
-    getAll();
+    _getAll();
+    _resetAllSelects();
   }
 
-  Future<void> getAll() async {
-    List<Account> accs  = await _controller.getAllAccounts();
+  void _resetAllSelects() {
+    _valueAccountsSelect = _itemsAccountsSelect[0].value;
+  }
+
+  Future<void> _getAll() async {
+    List<Account> accs = await _controller.getAllAccounts();
     
     for (final account in accs){
       _itemsAccountsSelect.add(
@@ -80,7 +85,7 @@ class _PutState extends State<Put> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? tr = AppLocalizations.of(context)!;
-    pay.type = incomeSelected ? ScheduledPayTypes.income.index : ScheduledPayTypes.expend.index;
+    pay.type = incomeSelected ? ScheduledPayTypes.expend.index : ScheduledPayTypes.income.index;
     pay.date ??= DateTime.now();
     return Scaffold(
       key: _scaffoldKey,
@@ -149,12 +154,13 @@ class _PutState extends State<Put> {
                 items: _itemsExamples,
               ),
               Select(
-                key: _selectAccountKey,
+                value: _valueAccountsSelect,
                 decoration: InputDecoration(
                   labelText: tr.account
                 ),
                 items: _itemsAccountsSelect,
                 onChanged: (value) {
+                  _valueAccountsSelect = value;
                   Account acc = value as Account;
                   pay.accountId = acc.id;
                 },
@@ -256,7 +262,7 @@ class _PutState extends State<Put> {
               pay = Convertions.responseToScheculedPay(payMap);
               setState(() {
                 pay.date = DateTime.now();
-                _selectAccountKey.currentState!.didChange(_itemsAccountsSelect[0].value);
+                _resetAllSelects();
                 loading = false;
               });
             },

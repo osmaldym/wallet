@@ -1,45 +1,35 @@
 import 'package:flutter/material.dart';
 
-class Select extends StatefulWidget {
+class Select extends StatelessWidget {
   List<DropdownMenuItem>? items;
   void Function(dynamic value)? onChanged;
   InputDecoration? decoration;
   bool? expand;
   Icon? icon;
+  dynamic value;
 
   Select({
     super.key,
     this.items,
     this.onChanged,
+    this.value,
     this.icon,
     this.expand,
     this.decoration,
   });
-  
-  @override
-  State<Select> createState() => _SelectState();
-}
-
-class _SelectState extends State<Select> {
-  dynamic dropdownValue;
 
   @override
   Widget build(BuildContext context) {
-    dropdownValue ??= widget.items!.first.value;
-
     return DropdownButtonFormField(
-      key: widget.key,
-      value: dropdownValue,
-      decoration: widget.decoration,
-      items: widget.items ?? [],
-      isExpanded: widget.expand ?? true,
+      value: value,
+      decoration: decoration,
+      items: items ?? [],
+      isExpanded: expand ?? true,
       onChanged: (dynamic value) {
-        setState(() {
-          dropdownValue = value;
-        });
-        if (widget.onChanged != null) widget.onChanged!(value);
+        value = value;
+        if (onChanged != null) onChanged!(value);
       },
-      icon: widget.icon ?? const Icon(Icons.keyboard_arrow_down),
+      icon: icon ?? const Icon(Icons.keyboard_arrow_down),
     );
   }
 }
