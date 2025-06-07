@@ -85,7 +85,7 @@ class _PutState extends State<Put> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? tr = AppLocalizations.of(context)!;
-    pay.type = incomeSelected ? ScheduledPayTypes.expend.index : ScheduledPayTypes.income.index;
+    pay.type = incomeSelected ? ScheduledPayTypes.income.index : ScheduledPayTypes.expend.index;
     pay.date ??= DateTime.now();
     pay.automatic ??= false;
     return Scaffold(
@@ -276,6 +276,8 @@ class _PutState extends State<Put> {
               setState(() {
                 pay.date = DateTime.now();
                 pay.automatic = false;
+                incomeSelected = false;
+                expendSelected = true;
                 _resetAllSelects();
                 loading = false;
               });
