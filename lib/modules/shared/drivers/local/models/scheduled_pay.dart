@@ -15,6 +15,7 @@ class ScheduledPay extends Defs{
   int? accountId;
   int? type;
   String? title;
+  bool? automatic;
   double? amount;
   DateTime? date;
   String? note;
@@ -34,6 +35,7 @@ class ScheduledPay extends Defs{
     this.notificationId,
     this.type,
     this.title,
+    this.automatic,
     this.amount,
     this.date,
     this.note,
@@ -55,6 +57,7 @@ class ScheduledPay extends Defs{
       'notification_id': notificationId,
       'type': type,
       'title': title,
+      'automatic': automatic,
       'amount': amount,
       'date': date!.toIso8601String(),
       'note': note, 

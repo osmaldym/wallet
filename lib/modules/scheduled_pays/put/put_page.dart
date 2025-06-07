@@ -87,6 +87,7 @@ class _PutState extends State<Put> {
     AppLocalizations? tr = AppLocalizations.of(context)!;
     pay.type = incomeSelected ? ScheduledPayTypes.expend.index : ScheduledPayTypes.income.index;
     pay.date ??= DateTime.now();
+    pay.automatic ??= false;
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
@@ -111,6 +112,18 @@ class _PutState extends State<Put> {
                   text: pay.title,
                 ),
                 onChanged: (val) => pay.title = val,
+              ),
+              CheckboxListTile(
+                value: pay.automatic,
+                onChanged: (isChecked) => setState(() { pay.automatic = isChecked!; }),
+                dense: false,
+                enabled: true,
+                enableFeedback: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 5,
+                ),
+                controlAffinity: ListTileControlAffinity.leading,
+                title: const Text("Automatic pay"),
               ),
               Text(
                 tr.type,
@@ -262,6 +275,7 @@ class _PutState extends State<Put> {
               pay = Convertions.responseToScheculedPay(payMap);
               setState(() {
                 pay.date = DateTime.now();
+                pay.automatic = false;
                 _resetAllSelects();
                 loading = false;
               });

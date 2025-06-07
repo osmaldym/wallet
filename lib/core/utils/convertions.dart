@@ -67,6 +67,7 @@ class Convertions {
       paymentMethodId: response["payment_method_id"] as int?,
       notificationId: response["notification_id"] as int?,
       title: response["title"] as String?,
+      automatic: (response['automatic'] as int?) != null && (response['automatic'] as int?)! > 0 ? true : false,
       type: response["type"] as int?,
       amount: response["amount"] as double?,
       date: DateTime.tryParse(response["date"].toString()),

@@ -51,6 +51,7 @@ class DB {
       notification_id INTEGER,
       type INTEGER,
       title TEXT,
+      automatic BOOL DEFAULT 0,
       amount REAL,
       date TEXT,
       note TEXT,
