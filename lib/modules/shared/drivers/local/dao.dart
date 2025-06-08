@@ -3,6 +3,7 @@ import 'package:wallet/core/constants/app_db.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
+import 'package:wallet/modules/shared/drivers/local/models/category_group.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
@@ -121,5 +122,16 @@ class Dao {
   Future<ScheduledPay> scheduledPay(int id) async {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToScheculedPayList(data).first;
+  }
+
+  // Category group operations
+  Future<List<CategoryGroup>> categoryGroups() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.categoryGroup);
+    return Convertions.responseToCategoryGroupList(data);
+  }
+
+  Future<CategoryGroup> categoryGroup(int id) async {
+    List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.categoryGroup, where: "id = ?", whereArgs: [id], limit: 1);
+    return Convertions.responseToCategoryGroupList(data).first;
   }
 }
