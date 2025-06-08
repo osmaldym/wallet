@@ -1,4 +1,5 @@
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
+import 'package:wallet/modules/shared/drivers/local/models/category_group.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
@@ -73,6 +74,21 @@ class Convertions {
       date: DateTime.tryParse(response["date"].toString()),
       note: response["note"] as String?,
       beneficiary: response["beneficiary"] as String?,
+    );
+  }
+
+  static List<CategoryGroup> responseToCategoryGroupList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToCategoryGroup(resp) ];
+  }
+
+  static CategoryGroup responseToCategoryGroup(Map<String, Object?> response) {
+    return CategoryGroup(
+      id: response['id'] as int, 
+      serverId: response['server_id'] as int?, 
+      userId: response['user_id'] as int?,
+      name: response['name'] as String?,
+      icon: response['icon'] as int?,
+      iconFontFamily: response['icon_font_family'] as String?,
     );
   }
 
