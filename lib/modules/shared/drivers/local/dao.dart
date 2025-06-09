@@ -6,6 +6,7 @@ import 'package:wallet/modules/shared/drivers/local/db.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category_group.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
+import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 
@@ -133,5 +134,16 @@ class Dao {
   Future<CategoryGroup> categoryGroup(int id) async {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.categoryGroup, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToCategoryGroupList(data).first;
+  }
+
+  // Subcategory operations
+  Future<List<Subcategories>> subcategories() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.subcategory);
+    return Convertions.responseToSubcategoryList(data);
+  }
+
+  Future<Subcategories> subcategory(int id) async {
+    List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.subcategory, where: "id = ?", whereArgs: [id], limit: 1);
+    return Convertions.responseToSubcategoryList(data).first;
   }
 }
