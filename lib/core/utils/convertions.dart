@@ -1,5 +1,5 @@
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
-import 'package:wallet/modules/shared/drivers/local/models/category_group.dart';
+import 'package:wallet/modules/shared/drivers/local/models/category.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
@@ -78,12 +78,12 @@ class Convertions {
     );
   }
 
-  static List<CategoryGroup> responseToCategoryGroupList(List<Map<String, Object?>> response) {
+  static List<Category> responseToCategoryGroupList(List<Map<String, Object?>> response) {
     return [ for (final resp in response) responseToCategoryGroup(resp) ];
   }
 
-  static CategoryGroup responseToCategoryGroup(Map<String, Object?> response) {
-    return CategoryGroup(
+  static Category responseToCategoryGroup(Map<String, Object?> response) {
+    return Category(
       id: response['id'] as int, 
       serverId: response['server_id'] as int?, 
       userId: response['user_id'] as int?,

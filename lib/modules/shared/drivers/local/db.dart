@@ -61,7 +61,7 @@ class DB {
     )
     """,
     """
-    CREATE TABLE IF NOT EXISTS ${DBTables.categoryGroup}(
+    CREATE TABLE IF NOT EXISTS ${DBTables.category}(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id INTEGER,
       user_id INTEGER,
@@ -86,7 +86,7 @@ class DB {
 
   final List<String> allFillQueries = [
     """
-    INSERT INTO ${DBTables.categoryGroup} (name, icon, icon_font_family) VALUES
+    INSERT INTO ${DBTables.category} (name, icon, icon_font_family) VALUES
       ('Food and drink', 0xe532, 'MaterialIcons'),
       ('Shopping', 0xf3ee, 'MaterialIcons'),
       ('House', 0xf114, 'MaterialIcons'),
@@ -99,7 +99,8 @@ class DB {
     """,
     """
     INSERT INTO ${DBTables.subcategory} (name, icon, icon_font_family, category_group_id) VALUES
-      ('Bar or liquor store', 0xe38c, 'MaterialIcons', 1), 
+      ('Bar or liquor store', 0xe38c, 'MaterialIcons', 1),
+      (null, null, null, 1),
       ('Restaurant or fast food', 0xf049, 'MaterialIcons', 1),
       ('Supermarket or grocery', 0xe112, 'MaterialIcons', 1),
       ('Babies or kids', 0xe612, 'MaterialIcons', 2),
