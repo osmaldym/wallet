@@ -1,13 +1,13 @@
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
-class CategoryGroup extends Defs {
+class Category extends Defs {
   int? userId;
   String? name;
   int? icon;
   String? iconFontFamily;
 
-  CategoryGroup({
+  Category({
     super.id,
     super.serverId,
     this.name,

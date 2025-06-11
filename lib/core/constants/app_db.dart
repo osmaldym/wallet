@@ -7,6 +7,6 @@ class DBTables {
   static const String account = "Account";
   static const String session = "Session";
   static const String scheduledPay = "ScheduledPay";
-  static const String categoryGroup = "CategoryGroup";
+  static const String category = "Category";
   static const String subcategory = "Subcategory";
 }
