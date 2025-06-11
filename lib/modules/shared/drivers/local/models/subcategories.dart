@@ -5,15 +5,17 @@ class Subcategories extends Defs {
   String? name;
   String? iconFontFamily;
   int? icon;
-  int? categoryGroupId;
+  int? categoryId;
+  bool? isCategoryReference;
 
   Subcategories({
     super.id,
     super.serverId,
     this.name,
     this.icon,
-    this.categoryGroupId,
+    this.categoryId,
     this.iconFontFamily,
+    this.isCategoryReference,
   });
 
   Map<String, Object?> toMap() {
@@ -23,7 +25,8 @@ class Subcategories extends Defs {
       'icon': icon,
       'name': name,
       'icon_font_family': iconFontFamily,
-      'category_group_id,': categoryGroupId,
+      'category_id,': categoryId,
+      'is_category_reference': isCategoryReference,
     };
   }
 

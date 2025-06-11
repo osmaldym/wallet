@@ -138,7 +138,21 @@ class Dao {
 
   // Subcategory operations
   Future<List<Subcategories>> subcategories() async {
-    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.subcategory);
+    final List<Map<String, Object?>> data = await (await _db.get()).rawQuery(
+      """
+      SELECT * FROM ${DBTables.subcategory} WHERE is_category_reference = false 
+      UNION
+      SELECT s.id, 
+             s.server_id,
+             c.name,
+             c.icon,
+             c.icon_font_family,
+             s.category_id,
+             s.is_category_reference
+      FROM ${DBTables.subcategory} s 
+      JOIN ${DBTables.category} c ON s.category_id = c.id WHERE s.is_category_reference = true
+      """
+    );
     return Convertions.responseToSubcategoryList(data);
   }
 

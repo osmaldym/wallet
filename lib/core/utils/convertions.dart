@@ -104,7 +104,8 @@ class Convertions {
       name: response['name'] as String?,
       icon: response['icon'] as int?,
       iconFontFamily: response['icon_font_family'] as String?,
-      categoryGroupId: response['category_group_id'] as int?,
+      categoryId: response['category_id'] as int?,
+      isCategoryReference: (response['is_category_reference'] as int?) != null && (response['is_category_reference'] as int?)! > 0 ? true : false,
     );
   }
 
