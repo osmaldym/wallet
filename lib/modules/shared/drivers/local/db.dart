@@ -87,7 +87,7 @@ class DB {
   final List<String> allFillQueries = [
     """
     INSERT INTO ${DBTables.categoryGroup} (name, icon, icon_font_family) VALUES
-      ('Food and drink', 0xe532, 'MaterialIcons'), 
+      ('Food and drink', 0xe532, 'MaterialIcons'),
       ('Shopping', 0xf3ee, 'MaterialIcons'),
       ('House', 0xf114, 'MaterialIcons'),
       ('Transport', 0xf18f, 'MaterialIcons'),
@@ -157,7 +157,12 @@ class DB {
       ('Donations or quotes', 0xf312, 'MaterialIcons', 8),
       ('Rental', 0xf114, 'MaterialIcons', 8),
       ('Counseling', 0xe33d, 'MaterialIcons', 8),
-      ('Family allowance', 0xf311, 'MaterialIcons', 8)
+      ('Family allowance', 0xf311, 'MaterialIcons', 8),
+      ('Savings', 0xf336, 'MaterialIcons', 9),
+      ('Real state', 0xf244, 'MaterialIcons', 9),
+      ('Collection', 0xe076, 'MaterialIcons', 9),
+      ('Financial invertions', 0xe67f, 'MaterialIcons', 9),
+      ('Cars or properties', 0xf0bf, 'MaterialIcons', 9)
     """,
   ];
 
