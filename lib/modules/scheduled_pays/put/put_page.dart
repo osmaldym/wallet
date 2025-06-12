@@ -3,6 +3,8 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_controller.dart';
+import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
+import 'package:wallet/modules/shared/widgets/fragments/input_categories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
@@ -30,6 +32,7 @@ class _PutState extends State<Put> {
   bool incomeSelected = false;
   bool expendSelected = true;
   bool loading = false;
+  Subcategories? selectedSubcategory;
 
   DateTime? date;
   TimeOfDay? time;
@@ -160,11 +163,15 @@ class _PutState extends State<Put> {
                   ),
                 ],
               ),
-              Select(
+              InputCategories(
                 decoration: InputDecoration(
-                  labelText: tr.category
+                  labelText: tr.category,
                 ),
-                items: _itemsExamples,
+                controllerValue: selectedSubcategory,
+                onChange: (subcategory) {
+                  selectedSubcategory = subcategory;
+                  pay.categoryId = subcategory.id;
+                }
               ),
               Select(
                 value: _valueAccountsSelect,
@@ -278,6 +285,7 @@ class _PutState extends State<Put> {
                 pay.automatic = false;
                 incomeSelected = false;
                 expendSelected = true;
+                selectedSubcategory = null;
                 _resetAllSelects();
                 loading = false;
               });
