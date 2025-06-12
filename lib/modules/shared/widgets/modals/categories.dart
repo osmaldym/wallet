@@ -3,6 +3,7 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart' as model;
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
+import 'package:wallet/modules/shared/widgets/fragments/input_search.dart';
 
 class CategoriesModal extends StatefulWidget {
   void Function(model.Subcategories category, int tabIndex)? onSelectedItem;
@@ -60,6 +61,29 @@ class _CategoriesModalState extends State<CategoriesModal> with TickerProviderSt
             spacing: 15,
             mainAxisSize: MainAxisSize.max,
             children: [
+              FutureBuilder<List<model.Subcategories>>(
+                future: dao.subcategories(),
+                builder: (BuildContext context, AsyncSnapshot<List<model.Subcategories>> snapshotSubcategories) {
+                  List<InputSearchElement> elemsToSearch = [];
+
+                  if (snapshotSubcategories.hasData) elemsToSearch = [ 
+                    for (final subcategory in snapshotSubcategories.data!)
+                      InputSearchElement(
+                        text: subcategory.name!,
+                        icon: subcategory.icon != null ? IconData(subcategory.icon!, fontFamily: subcategory.iconFontFamily) : null,
+                        element: subcategory,
+                      )
+                  ];
+
+                  return InputSearch<model.Subcategories>(
+                    items: elemsToSearch,
+                    onSelectedItem: (element) {
+                      if (widget.onSelectedItem != null) widget.onSelectedItem!(element, -1);
+                      Navigator.pop(context);
+                    }
+                  );
+                }
+              ),
               FutureBuilder<List<Category>>(
                 future: _categoryGroups,
                 builder: (BuildContext context, AsyncSnapshot<List<Category>> snapshotCategoryGroups) {
