@@ -10,6 +10,8 @@ class InputDate extends StatefulWidget {
   void Function()? onTap;
   void Function(DateTime value)? onChanged;
   DateTime selectedDate;
+  DateTime? firstDate;
+  DateTime? lastDate;
   
   InputDate({
     super.key,
@@ -20,6 +22,8 @@ class InputDate extends StatefulWidget {
     this.showModal = true,
     this.onTap,
     this.onChanged,
+    this.firstDate,
+    this.lastDate,
   });
 
   @override
@@ -54,8 +58,8 @@ class _InputDateState extends State<InputDate> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: widget.selectedDate,
-      firstDate: DateTime(DateTime.now().year - 5),
-      lastDate: DateTime(DateTime.now().year + 5)
+      firstDate: widget.firstDate ?? DateTime(DateTime.now().year - 5),
+      lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 5)
     );
 
     setState(() {
