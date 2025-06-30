@@ -21,4 +21,14 @@ class Utils {
   String toReadableDateTime(DateTime datetime) => "${_readableDateFormat.format(datetime)} ${_readableTimeFormat.format(datetime)}";
 
   String toReadableTime(DateTime datetime) => _readableTimeFormat.format(datetime);
+
+  bool? intToBool(int? number) => number != null ? number > 0 ? true : false : null;
+
+  int getWeekPositionInMonth(DateTime datetime) { 
+    return ((datetime.day / 7) is int ? (datetime.day / 7) : (datetime.day / 7) + 1).toInt();
+  }
+
+  bool isLastDayOfMonth(DateTime datetime){
+    return DateTime(datetime.year, datetime.month, datetime.day + 1).day == 1;
+  }
 }
