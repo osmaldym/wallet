@@ -1,11 +1,17 @@
+import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 
 class Convertions {
+  static final Utils _utils = Utils();
+
   static List<User> responseToUserList(List<Map<String, Object?>> response) {
     return [ for (final resp in response) responseToUser(resp) ];
   }
@@ -108,6 +114,51 @@ class Convertions {
       isCategoryReference: (response['is_category_reference'] as int?) != null && (response['is_category_reference'] as int?)! > 0 ? true : false,
     );
   }
+
+  static List<RecordRepetition> responseToRecordRepetitionList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToRecordRepetition(resp) ];
+  }
+
+  static RecordRepetition responseToRecordRepetition(Map<String, Object?> response) {
+    return RecordRepetition(
+      id: response['id'] as int, 
+      serverId: response['server_id'] as int?,
+      timesPlaced: response['times_placed'] as int?,
+      forDate: response['for_date'] != null ? DateTime.parse(response['for_date']! as String) : null,
+      repeatEvery: response['repeat_every'] != null ? RepeatEvery.values[response['repeat_every'] as int] : null,
+      rrFor: response['for'] != null ? RRFor.values[response['for'] as int] : null,
+      repeatedTimes: response['repeated_times'] as int?,
+    );
+  }
+
+  static List<RecordRepetitionWeekly> responseToRecordRepetitionWeeklyList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToRecordRepetitionWeekly(resp) ];
+  }
+
+  static RecordRepetitionWeekly responseToRecordRepetitionWeekly(Map<String, Object?> response) {
+    return RecordRepetitionWeekly(
+      id: response['id'] as int, 
+      serverId: response['server_id'] as int?,
+      daysOfWeek: (response['days_of_week'] as String?)?.split(",").map((el) => int.parse(el)).toList(),
+      recordRepetitionId: response['record_repetition_id'] as int?,
+    );
+  }
+  
+  static List<RecordRepetitionMonthly> responseToRecordRepetitionMonthlyList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToRecordRepetitionMonthly(resp) ];
+  }
+
+  static RecordRepetitionMonthly responseToRecordRepetitionMonthly(Map<String, Object?> response) {
+    return RecordRepetitionMonthly(
+      id: response['id'] as int, 
+      serverId: response['server_id'] as int?,
+      everyLastDayOfMonth: _utils.intToBool(response['every_last_day_of_month'] as int?),
+      sameDayOfMonth: _utils.intToBool(response['same_day_of_month'] as int?),
+      everyNumberDay: response['every_number_day'] as int?,
+      weekNumber: response['week_number'] as int?,
+    );
+  }
+
 
   static String classToString(String className, Map<String, Object?> classMap) {
     String toRet = "$className {";

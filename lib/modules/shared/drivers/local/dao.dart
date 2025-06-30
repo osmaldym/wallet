@@ -4,6 +4,9 @@ import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
@@ -15,12 +18,12 @@ class Dao {
 
   Dao() { _db = DB(); }
 
-  Future<void> put(String tableName, Map<String, Object?> data) async {
-    await (await _db.get()).insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<int> put(String tableName, Map<String, Object?> data) async {
+    return await (await _db.get()).insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<void> insert(String tableName, Map<String, Object?> data) async {
-    await (await _db.get()).insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.fail);
+  Future<int> insert(String tableName, Map<String, Object?> data) async {
+    return await (await _db.get()).insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.fail);
   }
 
   Future<void> updateById(String tableName, Map<String, Object?> data, int id) async {
@@ -159,5 +162,44 @@ class Dao {
   Future<Subcategories> subcategory(int id) async {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.subcategory, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToSubcategoryList(data).first;
+  }
+
+  // Record repetition
+  Future<int> insertRecordRepetition(Map<String, Object?> recordRepetition, {bool orReplace = false}) async {
+    return await (orReplace ? put(DBTables.recordRepetition, recordRepetition) : insert(DBTables.recordRepetition, recordRepetition));
+  }
+
+  Future<void> putRecordRepetition(Map<String, Object?> recordRepetition) async {
+    await insertRecordRepetition(recordRepetition, orReplace: true);
+  }
+
+  Future<List<RecordRepetition>> recordRepetitions() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetition);
+    return Convertions.responseToRecordRepetitionList(data);
+  }
+
+  Future<RecordRepetition> recordRepetition(int id) async {
+    List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetition, where: "id = ?", whereArgs: [id], limit: 1);
+    return Convertions.responseToRecordRepetitionList(data).first;
+  }
+  
+  // Record repetition weekly
+  Future<int> insertRecordRepetitionWeekly(Map<String, Object?> recordRepetitionWeekly, {bool orReplace = false}) async {
+    return await (orReplace ? put(DBTables.recordRepetitionWeekly, recordRepetitionWeekly) : insert(DBTables.recordRepetitionWeekly, recordRepetitionWeekly));
+  }
+
+  Future<List<RecordRepetitionWeekly>> recordRepetitionsWeekly() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetitionWeekly);
+    return Convertions.responseToRecordRepetitionWeeklyList(data);
+  }
+
+  // Record repetition monthly
+  Future<int> insertRecordRepetitionMonthly(Map<String, Object?> recordRepetitionMonthly, {bool orReplace = false}) async {
+    return await (orReplace ? put(DBTables.recordRepetitionMonthly, recordRepetitionMonthly) : insert(DBTables.recordRepetitionMonthly, recordRepetitionMonthly));
+  }
+
+  Future<List<RecordRepetitionMonthly>> recordRepetitionsMonthly() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetitionMonthly);
+    return Convertions.responseToRecordRepetitionMonthlyList(data);
   }
 }

@@ -3,6 +3,9 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_controller.dart';
+import 'package:wallet/modules/scheduled_pays/put/widgets/fragments/input_frecuencies.dart';
+import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_categories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
@@ -28,6 +31,7 @@ class _PutState extends State<Put> {
   final PutController _controller = PutController();
   final Utils _utils = Utils();
   ScheduledPay pay = ScheduledPay();
+  FrecuencyData frecuency = FrecuencyData();
 
   bool incomeSelected = false;
   bool expendSelected = true;
@@ -36,6 +40,8 @@ class _PutState extends State<Put> {
 
   DateTime? date;
   TimeOfDay? time;
+
+  ValueNotifier<DateTime?> dateMergedNotifier = ValueNotifier(null);
 
   dynamic _valueAccountsSelect;
 
@@ -66,10 +72,24 @@ class _PutState extends State<Put> {
     super.initState();
     _getAll();
     _resetAllSelects();
+    _resetFrecency();
   }
 
   void _resetAllSelects() {
     _valueAccountsSelect = _itemsAccountsSelect[0].value;
+  }
+
+  void _resetFrecency() {
+    frecuency.repeatEvery = RepeatEvery.once;
+    frecuency.rrFor = RRFor.ever;
+    frecuency.timesPlaced = 1;
+    frecuency.everyNumberDay = null;
+    frecuency.forDate = null;
+    frecuency.repeatedTimes = null;
+    frecuency.selectedDaysOfWeek = null;
+    frecuency.selectedMonthlyOption = null;
+    frecuency.weekNumber = null;
+    frecuency.title = null;
   }
 
   Future<void> _getAll() async {
@@ -239,15 +259,17 @@ class _PutState extends State<Put> {
                       onChanged: (val) {
                         date = val;
                         pay.date = _utils.toDateTime(date, time);
+                        dateMergedNotifier.value = pay.date;
                       }
                     )
                   ),
                   Expanded(
                     child: InputTime(
-                      selectedTime: TimeOfDay(hour: pay.date!.hour, minute: pay.date!.minute),
+                      selectedTime: TimeOfDay(hour: dateMergedNotifier.value != null ? dateMergedNotifier.value!.hour : pay.date!.hour, minute: dateMergedNotifier.value != null ? dateMergedNotifier.value!.minute : pay.date!.minute),
                       onChanged: (val) {
                         time = val;
                         pay.date = _utils.toDateTime(date, time);
+                        dateMergedNotifier.value = pay.date;
                       }
                     )
                   ),
@@ -259,12 +281,11 @@ class _PutState extends State<Put> {
                 ),
                 items: _itemsExamples,
               ),
-              Select(
-                decoration: InputDecoration(
-                  labelText: tr.frecuency,
-                ),
-                items: _itemsExamples,
-              ),
+              InputFrecuencies(
+                value: frecuency,
+                onChange: (data) => frecuency = data,
+                dateTimeBasedNotifier: dateMergedNotifier,
+              )
             ],
           ),
         ),
@@ -276,6 +297,7 @@ class _PutState extends State<Put> {
             isLoading: loading,
             onPressed: () async {
               setState(() { loading = true; });
+              pay.frecuencyId = await _controller.createFrecuency(frecuency);
               await _controller.createPay(pay);
               Map<String, Object?> payMap = pay.toMap();
               payMap.clear();
@@ -287,6 +309,7 @@ class _PutState extends State<Put> {
                 expendSelected = true;
                 selectedSubcategory = null;
                 _resetAllSelects();
+                _resetFrecency();
                 loading = false;
               });
             },
