@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:wallet/core/constants/app_db.dart';
@@ -81,6 +80,38 @@ class DB {
       category_id INTEGER,
       is_category_reference BOOL,
       FOREIGN KEY(category_id) REFERENCES Category(id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.recordRepetition}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      server_id INTEGER,
+      times_placed INTEGER,
+      repeated_times INTEGER,
+      for INTEGER,
+      for_date TEXT,
+      repeat_every INTEGER
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.recordRepetitionWeekly}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      server_id INTEGER,
+      record_repetition_id INTEGER,
+      days_of_week TEXT,
+      FOREIGN KEY(record_repetition_id) REFERENCES ${DBTables.recordRepetition}(id)
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.recordRepetitionMonthly}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      server_id INTEGER,
+      record_repetition_id INTEGER,
+      same_day_of_month BOOL,
+      every_last_day_of_month BOOL,
+      every_number_day INTEGER,
+      week_number INTEGER,
+      FOREIGN KEY(record_repetition_id) REFERENCES ${DBTables.recordRepetition}(id)
     )
     """,
   ];

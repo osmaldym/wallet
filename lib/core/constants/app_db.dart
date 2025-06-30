@@ -9,4 +9,7 @@ class DBTables {
   static const String scheduledPay = "ScheduledPay";
   static const String category = "Category";
   static const String subcategory = "Subcategory";
+  static const String recordRepetition = "RecordRepetition";
+  static const String recordRepetitionWeekly = "RecordRepetitionWeekly";
+  static const String recordRepetitionMonthly = "RecordRepetitionMonthly";
 }
