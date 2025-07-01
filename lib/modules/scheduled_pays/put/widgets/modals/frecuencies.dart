@@ -8,6 +8,7 @@ import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
 import 'package:wallet/modules/shared/widgets/fragments/input_date.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FrecuenciesModal extends StatefulWidget {
   void Function(FrecuencyData)? onCompleted;
@@ -28,7 +29,7 @@ class FrecuenciesModal extends StatefulWidget {
 class _FrecuenciesModalState extends State<FrecuenciesModal> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  final Iterable<String> _weekDays = DateFormat().dateSymbols.WEEKDAYS.map((el) => el[0].toUpperCase()[0]);  
+  late Iterable<String> _weekDays;  
 
   bool _chipOnceSelected = false;
   bool _chipDailySelected = false;
@@ -90,6 +91,10 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      _weekDays = DateFormat(null, AppLocalizations.of(context)!.localeName).dateSymbols.WEEKDAYS.map((el) => el[0].toUpperCase()[0]);
+    });
+
     _everyDaysFocus.requestFocus();
 
     _isLastDayOfMonth = _utils.isLastDayOfMonth(widget.datetimeBased);
@@ -154,7 +159,6 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
     if (widget.onCompleted != null) widget.onCompleted!(onCompletedData);
 
     if (onCompletedData.timesPlaced == null) {
-      onCompletedData.title = "Once";
       onCompletedData.repeatEvery = RepeatEvery.once;
     }
 
@@ -170,6 +174,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
   
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? tr = AppLocalizations.of(context)!;
     _chipsRepetition = [
       component.Chip(
         selected: _chipEverSelected,
@@ -182,7 +187,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
           });
         },
         txtColor: !_chipEverSelected ? AppTheme.of(context).textContrast : null,
-        text: "Ever",
+        text: tr.ever,
       ),
       component.Chip(
         selected: _chipToMaxDateSelect,
@@ -196,7 +201,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
           });
         },
         txtColor: !_chipToMaxDateSelect ? AppTheme.of(context).textContrast : null,
-        text: "To max date",
+        text: tr.toMaxDate,
       ),
       component.Chip(
         selected: _chipQuantityOfTimesSelect,
@@ -211,7 +216,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
           _timesFocus.requestFocus();
         },
         txtColor: !_chipQuantityOfTimesSelect ? AppTheme.of(context).textContrast : null,
-        text: "To quantity of times",
+        text: tr.toQuantityOfTimes,
       ),
     ];
 
@@ -223,12 +228,12 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
             setDefaultsAllTypes();
             _chipOnceSelected = selected;
             if (!isSomeChipTypeSelected) _chipOnceSelected = true;
-            _selectedConstancyTitle = "Once";
+            _selectedConstancyTitle = tr.once;
             _repeatEvery = RepeatEvery.once;
           });
         },
         txtColor: !_chipOnceSelected ? AppTheme.of(context).textContrast : null,
-        text: "Once",
+        text: tr.once,
       ),
       component.Chip(
         selected: _chipDailySelected,
@@ -237,13 +242,13 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
             setDefaultsAllTypes();
             _chipDailySelected = selected;
             if (!isSomeChipTypeSelected) _chipOnceSelected = true;
-            _selectedConstancyTitle = "Repeat daily";
+            _selectedConstancyTitle = tr.repeatDaily;
             _repeatEvery = RepeatEvery.day;
           });
           focusAndCursorEnd(_everyDaysFocus, _everyDaysController);
         },
         txtColor: !_chipDailySelected ? AppTheme.of(context).textContrast : null,
-        text: "Repeat daily",
+        text: tr.repeatDaily,
       ),
       component.Chip(
         selected: _chipWeeklySelected,
@@ -252,13 +257,13 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
             setDefaultsAllTypes();
             _chipWeeklySelected = selected;
             if (!isSomeChipTypeSelected) _chipOnceSelected = true;
-            _selectedConstancyTitle = "Repeat weekly";
+            _selectedConstancyTitle = tr.repeatWeekly;
             _repeatEvery = RepeatEvery.week;
           });
           focusAndCursorEnd(_everyDaysFocus, _everyDaysController);
         },
         txtColor: !_chipWeeklySelected ? AppTheme.of(context).textContrast : null,
-        text: "Repeat weekly",
+        text: tr.repeatWeekly,
       ),
       component.Chip(
         selected: _chipMonthlySelected,
@@ -267,14 +272,14 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
             setDefaultsAllTypes();
             _chipMonthlySelected = selected;
             if (!isSomeChipTypeSelected) _chipOnceSelected = true;
-            _selectedConstancyTitle = "Repeat monthly";
+            _selectedConstancyTitle = tr.repeatMonthly;
             _repeatEvery = RepeatEvery.month;
             _selectedMonthlyOption = FrecuencyMontlyOption.sameDay;
           });
           focusAndCursorEnd(_everyDaysFocus, _everyDaysController);
         },
         txtColor: !_chipMonthlySelected ? AppTheme.of(context).textContrast : null,
-        text: "Repeat monthly",
+        text: tr.repeatMonthly,
       ),
       component.Chip(
         selected: _chipAnnuallySelected,
@@ -283,13 +288,13 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
             setDefaultsAllTypes();
             _chipAnnuallySelected = selected;
             if (!isSomeChipTypeSelected) _chipDailySelected = true;
-            _selectedConstancyTitle = "Repeat annually";
+            _selectedConstancyTitle = tr.repeatAnnually;
             _repeatEvery = RepeatEvery.anual;
           });
           focusAndCursorEnd(_everyDaysFocus, _everyDaysController);
         },
         txtColor: !_chipAnnuallySelected ? AppTheme.of(context).textContrast : null,
-        text: "Repeat annually",
+        text: tr.repeatAnnually,
       ),
     ];
 
@@ -315,7 +320,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Constancy:", style: TextStyle(fontSize: 22)),
+                  Text("${tr.constancy}:", style: const TextStyle(fontSize: 22)),
                   IconButton(
                     icon: const Icon(Icons.done),
                     color: AppTheme.of(context).primary,
@@ -339,7 +344,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                   mainAxisSize: MainAxisSize.max,
                   spacing: 10,
                   children: [
-                    const Text("Every"),
+                    Text(tr.every),
                     SizedBox(
                       width: 40,
                       child: TextFormField(
@@ -355,10 +360,10 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                         autofocus: true,
                       ),
                     ),
-                    if (_chipDailySelected) const Text("days"),
-                    if (_chipWeeklySelected) const Text("weeks"),
-                    if (_chipMonthlySelected) const Text("months"),
-                    if (_chipAnnuallySelected) const Text("years"),
+                    if (_chipDailySelected) Text(tr.days),
+                    if (_chipWeeklySelected) Text(tr.weeks),
+                    if (_chipMonthlySelected) Text(tr.months),
+                    if (_chipAnnuallySelected) Text(tr.years),
                   ],
                 ),
 
@@ -366,7 +371,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
-                  children:  _weekDays.mapIndexed((i, text) =>
+                  children: _weekDays.mapIndexed((i, text) =>
                     TextButton(
                       onPressed: () => setState(() {
                         _daysOfWeekSelected.contains(i) ? _daysOfWeekSelected.remove(i) : _daysOfWeekSelected.add(i);
@@ -391,7 +396,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     RadioListTile<FrecuencyMontlyOption>(
-                      title: const Text("Same day of month"),
+                      title: Text(tr.sameDayOfMonth),
                       selected: FrecuencyMontlyOption.sameDay == _selectedMonthlyOption,
                       value: FrecuencyMontlyOption.sameDay,
                       groupValue: _selectedMonthlyOption,
@@ -401,7 +406,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                       onChanged: (FrecuencyMontlyOption? option) => setState(() { _selectedMonthlyOption = option; }),
                     ),
                     RadioListTile<FrecuencyMontlyOption>(
-                      title: Text("Every ${ _utils.getWeekPositionInMonth(widget.datetimeBased) } ${DateFormat("EEEE").format(widget.datetimeBased)}"),
+                      title: Text("${tr.every} ${ _utils.getWeekPositionInMonth(widget.datetimeBased) } ${DateFormat.EEEE(tr.localeName).format(widget.datetimeBased)}"),
                       selected: FrecuencyMontlyOption.everySemanalDay == _selectedMonthlyOption,
                       value: FrecuencyMontlyOption.everySemanalDay,
                       groupValue: _selectedMonthlyOption,
@@ -415,7 +420,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                       }),
                     ),
                     RadioListTile<FrecuencyMontlyOption>(
-                      title: const Text("Every last day of month"),
+                      title: Text(tr.everyLastDayOfMonth),
                       selected: FrecuencyMontlyOption.everyLastDay == _selectedMonthlyOption,
                       value: FrecuencyMontlyOption.everyLastDay,
                       groupValue: _selectedMonthlyOption,
@@ -428,7 +433,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                 ),
 
               if (!_chipOnceSelected) ...[
-                const Text("Repetition:", style: TextStyle(fontSize: 22)),
+                Text("${tr.repetition}:", style: const TextStyle(fontSize: 22)),
                 SizedBox(
                   height: 50,
                   child: ListView.builder(
@@ -470,7 +475,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
                           autofocus: true,
                         ),
                       ),
-                      const Text("times"),
+                      Text(tr.times),
                     ],
                   ),
               ]

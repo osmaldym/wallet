@@ -146,7 +146,7 @@ class _PutState extends State<Put> {
                   horizontal: 5,
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
-                title: const Text("Automatic pay"),
+                title: Text(tr.automaticPay),
               ),
               Text(
                 tr.type,
@@ -313,7 +313,7 @@ class _PutState extends State<Put> {
                 loading = false;
               });
             },
-            text: "Save",
+            text: tr.save,
           ),
         )
       ],

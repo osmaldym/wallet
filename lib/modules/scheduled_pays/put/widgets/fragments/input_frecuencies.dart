@@ -10,7 +10,6 @@ class InputFrecuencies extends StatefulWidget {
   final InputDecoration? decoration;
   final void Function(FrecuencyData value)? onChange;
   FrecuencyData? value;
-  AppLocalizations? tr;
   String? text;
   ValueNotifier<DateTime?>? dateTimeBasedNotifier;
 
@@ -30,24 +29,24 @@ class InputFrecuencies extends StatefulWidget {
 class _InputFrecuenciesState extends State<InputFrecuencies> {
   @override
   Widget build(BuildContext context) {
-
+    AppLocalizations? tr = AppLocalizations.of(context)!;
     if (widget.value != null) {
       if (widget.value?.title == null || (widget.value?.title! ?? "").isEmpty)
         switch(widget.value?.repeatEvery) {
           case RepeatEvery.once: 
-            widget.value?.title = "Once";
+            widget.value?.title = tr.once;
             break;
           case RepeatEvery.day: 
-            widget.value?.title = "Repeat daily";
+            widget.value?.title = tr.repeatDaily;
             break;
           case RepeatEvery.week: 
-            widget.value?.title = "Repeat weekly";
+            widget.value?.title = tr.repeatWeekly;
             break;
           case RepeatEvery.month: 
-            widget.value?.title = "Repeat monthly";
+            widget.value?.title = tr.repeatMonthly;
             break;
-          case RepeatEvery.anual: 
-            widget.value?.title = "Repeat annually";
+          case RepeatEvery.anual:
+            widget.value?.title = tr.repeatAnnually;
             break;
           default:
         }
@@ -55,10 +54,9 @@ class _InputFrecuenciesState extends State<InputFrecuencies> {
       widget.text = widget.value?.title;
     }
 
-    widget.tr = AppLocalizations.of(context)!;
     return TextFormField(
       decoration: InputDecoration(
-        labelText: widget.decoration?.labelText ?? widget.tr!.frecuency,
+        labelText: widget.decoration?.labelText ?? tr.frecuency,
         suffixIcon: widget.decoration?.suffixIcon ?? const Icon(Icons.keyboard_arrow_down_sharp),
         iconColor: widget.decoration?.iconColor ?? AppTheme.of(context).contrast,
         suffixIconConstraints: const BoxConstraints(maxWidth: 24),
