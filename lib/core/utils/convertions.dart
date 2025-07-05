@@ -1,6 +1,7 @@
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
+import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
@@ -159,6 +160,18 @@ class Convertions {
     );
   }
 
+  static List<Notifications> responseToNotificationList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToNotification(resp) ];
+  }
+
+  static Notifications responseToNotification(Map<String, Object?> response) {
+    return Notifications(
+      id: response['id'] as int, 
+      serverId: response['server_id'] as int?,
+      name: response['name'] as String?,
+      localeName: response['locale_name'] as String?,
+    );
+  }
 
   static String classToString(String className, Map<String, Object?> classMap) {
     String toRet = "$className {";
