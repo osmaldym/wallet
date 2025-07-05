@@ -114,6 +114,14 @@ class DB {
       FOREIGN KEY(record_repetition_id) REFERENCES ${DBTables.recordRepetition}(id)
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.notifications}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      server_id INTEGER,
+      name TEXT,
+      locale_name TEXT
+    )
+    """,
   ];
 
   final List<String> allFillQueries = [
@@ -205,14 +213,26 @@ class DB {
       ('Financial invertions', 0xe67f, 'MaterialIcons', 9, false),
       ('Cars or properties', 0xf0bf, 'MaterialIcons', 9, false)
     """,
+    """
+    INSERT INTO ${DBTables.notifications} (name, locale_name) VALUES
+      ('15 minutes before', 'fifteenMinutesBefore'),
+      ('30 minutes before', 'thirtyMinutesBefore'),
+      ('1 hour before', 'oneHourBefore'),
+      ('2 hours before', 'twoHoursBefore'),
+      ('3 hours before', 'threeHoursBefore'),
+      ('6 hours before', 'sixHoursBefore'),
+      ('8 hours before', 'eightHoursBefore'),
+      ('12 hours before', 'twelveHoursBefore'),
+      ('1 day before', 'oneDayBefore')
+    """,
   ];
 
   Future<Database> get() async {
     return openDatabase(
       join(await getDatabasesPath(), DBNames.walletLocal),
       onCreate: (db, version) {
-        for (final query in allCreateQueries) db.execute(query);
-        for (final query in allFillQueries) db.execute(query);
+        for (final query in allCreateQueries) db.execute(query).catchError((err) => print(err));
+        for (final query in allFillQueries) db.execute(query).catchError((err) => print(err));
       },
       version: 1
     );

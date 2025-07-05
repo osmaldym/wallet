@@ -4,6 +4,7 @@ import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
+import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
@@ -201,5 +202,11 @@ class Dao {
   Future<List<RecordRepetitionMonthly>> recordRepetitionsMonthly() async {
     final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetitionMonthly);
     return Convertions.responseToRecordRepetitionMonthlyList(data);
+  }
+
+  // Notifications
+  Future<List<Notifications>> notifications() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.notifications);
+    return Convertions.responseToNotificationList(data);
   }
 }

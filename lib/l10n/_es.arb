@@ -63,5 +63,14 @@
     "everyLastDayOfMonth": "Cada final de mes",
     "repetition": "Repetición",
     "times": "veces",
-    "automaticPay": "Pago automático"
+    "automaticPay": "Pago automático",
+    "fifteenMinutesBefore": "15 minutos antes",
+    "thirtyMinutesBefore": "30 minutos antes",
+    "oneHourBefore": "1 hora antes",
+    "twoHoursBefore": "2 horas antes",
+    "threeHoursBefore": "3 horas antes",
+    "sixHoursBefore": "6 horas antes",
+    "eightHoursBefore": "8 horas antes",
+    "twelveHoursBefore": "12 horas antes",
+    "oneDayBefore": "1 día antes"
 }

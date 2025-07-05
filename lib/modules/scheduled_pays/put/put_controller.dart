@@ -1,6 +1,7 @@
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
@@ -72,5 +73,9 @@ class PutController {
 
   Future<List<Account>> getAllAccounts() async {
     return await dao.accounts();
+  }
+
+  Future<List<Notifications>> getAllNotifications() async {
+    return await dao.notifications();
   }
 }
