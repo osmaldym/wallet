@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_controller.dart';
 import 'package:wallet/modules/scheduled_pays/put/widgets/fragments/input_frecuencies.dart';
 import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_categories.dart';
@@ -44,6 +46,7 @@ class _PutState extends State<Put> {
   ValueNotifier<DateTime?> dateMergedNotifier = ValueNotifier(null);
 
   dynamic _valueAccountsSelect;
+  dynamic _valueNotificationSelect;
 
   final List<DropdownMenuItem> _itemsExamples = [
     const DropdownMenuItem(
@@ -67,16 +70,18 @@ class _PutState extends State<Put> {
     )
   ];
 
+  final List<DropdownMenuItem> _itemsNotificationsSelect = [];
+
   @override
   void initState() {
     super.initState();
     _getAll();
-    _resetAllSelects();
     _resetFrecency();
   }
 
   void _resetAllSelects() {
     _valueAccountsSelect = _itemsAccountsSelect[0].value;
+    if (_itemsNotificationsSelect.isNotEmpty) _valueNotificationSelect = _itemsNotificationsSelect[0].value;
   }
 
   void _resetFrecency() {
@@ -94,15 +99,29 @@ class _PutState extends State<Put> {
 
   Future<void> _getAll() async {
     List<Account> accs = await _controller.getAllAccounts();
-    
-    for (final account in accs){
-      _itemsAccountsSelect.add(
-        DropdownMenuItem(
-          value: account,
-          child: Text(account.title!),
-        )
-      );
-    }
+    List<Notifications> notifications = await _controller.getAllNotifications();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
+        for (final account in accs) {
+        _itemsAccountsSelect.add(
+          DropdownMenuItem(
+            value: account,
+            child: Text(account.title!),
+          )
+        );
+      }
+
+      for (final notification in notifications) {
+        _itemsNotificationsSelect.add(
+          DropdownMenuItem(
+            value: notification,
+            child: Text(context.l10n!.getByString(notification.localeName)),
+          )
+        );
+      }
+      
+      _resetAllSelects();
+    }));
   }
 
   @override
@@ -276,10 +295,16 @@ class _PutState extends State<Put> {
                 ],
               ),
               Select(
+                value: _valueNotificationSelect,
                 decoration: InputDecoration(
                   labelText: tr.notifications,
                 ),
-                items: _itemsExamples,
+                items: _itemsNotificationsSelect,
+                onChanged: (value) {
+                  _valueNotificationSelect = value;
+                  Notifications notification = value as Notifications;
+                  pay.notificationId = notification.id;
+                },
               ),
               InputFrecuencies(
                 value: frecuency,
