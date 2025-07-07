@@ -1,5 +1,6 @@
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
+import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
@@ -77,5 +78,9 @@ class PutController {
 
   Future<List<Notifications>> getAllNotifications() async {
     return await dao.notifications();
+  }
+
+  Future<List<Currency>> getAllCurrencies() async {
+    return await dao.currencies();
   }
 }
