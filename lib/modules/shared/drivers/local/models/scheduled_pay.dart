@@ -13,6 +13,7 @@ class ScheduledPay extends Defs{
   int? paymentMethodId;
   int? notificationId;
   int? accountId;
+  int? currencyId;
   int? type;
   String? title;
   bool? automatic;
@@ -33,6 +34,7 @@ class ScheduledPay extends Defs{
     this.frecuencyId,
     this.paymentMethodId,
     this.notificationId,
+    this.currencyId,
     this.type,
     this.title,
     this.automatic,
@@ -61,7 +63,8 @@ class ScheduledPay extends Defs{
       'amount': amount,
       'date': date!.toIso8601String(),
       'note': note, 
-      'beneficiary': beneficiary, 
+      'beneficiary': beneficiary,
+      'currency_id': currencyId,
     };
   }
 

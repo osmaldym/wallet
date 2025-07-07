@@ -49,6 +49,7 @@ class DB {
       frecuency_id INTEGER,
       payment_method_id INTEGER,
       notification_id INTEGER,
+      currency_id INTEGER,
       type INTEGER,
       title TEXT,
       automatic BOOL DEFAULT 0,
