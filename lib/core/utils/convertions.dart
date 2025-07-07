@@ -1,6 +1,7 @@
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
+import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
@@ -171,6 +172,21 @@ class Convertions {
       serverId: response['server_id'] as int?,
       name: response['name'] as String?,
       localeName: response['locale_name'] as String?,
+    );
+  }
+
+  static List<Currency> responseToCurrencyList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToCurrency(resp) ];
+  }
+
+  static Currency responseToCurrency(Map<String, Object?> response) {
+    return Currency(
+      id: response['id'] as int, 
+      serverId: response['server_id'] as int?,
+      iso: response['iso'] as String?,
+      symbol: response['symbol'] as String?,
+      locale: response['locale'] as String?,
+      country: response['country'] as String?,
     );
   }
 
