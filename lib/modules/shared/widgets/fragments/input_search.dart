@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class InputSearchElement<T> {
   String text;
   IconData? icon;
+  Widget? leading;
+  List<String>? whereSearch;
   T? element;
 
   InputSearchElement({
     required this.text,
     this.icon,
+    this.leading,
+    this.whereSearch,
     this.element
   });
 }
@@ -41,13 +45,20 @@ class _InputSearchState<T> extends State<InputSearch<T>> {
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {
         if (widget.items != null) {
-          return widget.items!.where((el) => el.text.toLowerCase().contains(controller.text.toLowerCase())).map((el) => ListTile(
-            title: Text(el.text),
-            leading: Icon(el.icon),
-            onTap: () {
-              controller.closeView(el.text);              
-              if (widget.onSelectedItem != null) widget.onSelectedItem!(el.element);
-            },
+          return widget.items!.where((el) {
+            if (controller.text.isEmpty) return true;
+            if (el.whereSearch == null) el.whereSearch = [el.text];
+            for (final search in el.whereSearch!) {
+              if (search.toLowerCase().startsWith(controller.text.toLowerCase())) return true;
+            }
+            return false;
+          }).map((el) => ListTile(
+              title: Text(el.text),
+              leading: el.leading ?? Icon(el.icon),
+              onTap: () {
+                controller.closeView(el.text);              
+                if (widget.onSelectedItem != null) widget.onSelectedItem!(el.element);
+              },
           ));
         }
           
