@@ -49,6 +49,7 @@ class DB {
       frecuency_id INTEGER,
       payment_method_id INTEGER,
       notification_id INTEGER,
+      currency_id INTEGER,
       type INTEGER,
       title TEXT,
       automatic BOOL DEFAULT 0,
@@ -120,6 +121,16 @@ class DB {
       server_id INTEGER,
       name TEXT,
       locale_name TEXT
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.currencies}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      server_id INTEGER,
+      iso TEXT,
+      symbol TEXT,
+      locale TEXT,
+      country TEXT
     )
     """,
   ];
@@ -224,6 +235,24 @@ class DB {
       ('8 hours before', 'eightHoursBefore'),
       ('12 hours before', 'twelveHoursBefore'),
       ('1 day before', 'oneDayBefore')
+    """,
+    """
+    INSERT INTO ${DBTables.currencies} (iso, symbol, locale, country) VALUES
+      ('USD', '\$', 'en', 'us'),
+      ('EUR', '€', 'es', 'es'),
+      ('DOP', '\$', 'es', 'do'),
+      ('ARS', '\$', 'es', 'ar'),
+      ('BOB', 'Bs', 'es', 'bo'),
+      ('COP', '\$', 'es', 'co'),
+      ('CRC', '₡', 'es', 'cr'),
+      ('CUP', '\$', 'es', 'cu'),
+      ('GTQ', 'Q', 'es', 'gt'),
+      ('HNL', 'L', 'es', 'hn'),
+      ('MXN', '\$', 'es', 'mx'),
+      ('NIO', 'C\$', 'es', 'ni'),
+      ('PAB', '₲', 'es', 'py'),
+      ('UYU', '\$', 'es', 'uy'),
+      ('VED', 'Bs.D', 'es', 've')
     """,
   ];
 

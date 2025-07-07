@@ -4,7 +4,9 @@ import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_controller.dart';
+import 'package:wallet/modules/scheduled_pays/put/widgets/fragments/input_currency.dart';
 import 'package:wallet/modules/scheduled_pays/put/widgets/fragments/input_frecuencies.dart';
+import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
@@ -39,29 +41,12 @@ class _PutState extends State<Put> {
   bool expendSelected = true;
   bool loading = false;
   Subcategories? selectedSubcategory;
+  Currency? selectedCurrency;
 
   DateTime? date;
   TimeOfDay? time;
 
   ValueNotifier<DateTime?> dateMergedNotifier = ValueNotifier(null);
-
-  dynamic _valueAccountsSelect;
-  dynamic _valueNotificationSelect;
-
-  final List<DropdownMenuItem> _itemsExamples = [
-    const DropdownMenuItem(
-      value: "one",
-      child: Text("one"),
-    ),
-    const DropdownMenuItem(
-      value: "two",
-      child: Text("two"),
-    ),
-    const DropdownMenuItem(
-      value: "three",
-      child: Text("three"),
-    )
-  ];
 
   final List<DropdownMenuItem> _itemsAccountsSelect = [
     DropdownMenuItem(
@@ -69,14 +54,16 @@ class _PutState extends State<Put> {
       child: const Text("Total"),
     )
   ];
+  dynamic _valueAccountsSelect;
 
   final List<DropdownMenuItem> _itemsNotificationsSelect = [];
+  dynamic _valueNotificationSelect;
 
   @override
   void initState() {
-    super.initState();
     _getAll();
     _resetFrecency();
+    super.initState();
   }
 
   void _resetAllSelects() {
@@ -234,13 +221,13 @@ class _PutState extends State<Put> {
                     ),
                   ),
                   Expanded(
-                    child: Select(
-                      expand: false,
-                      decoration: InputDecoration(
-                        labelText: tr.currency
-                      ),
-                      items: _itemsExamples,
-                    )
+                    child: InputCurrency(
+                      controllerValue: selectedCurrency,
+                      onChange: (currency) {
+                        selectedCurrency = currency;
+                        pay.currencyId = currency.id;
+                      },
+                    ),
                   )
                 ],
               ),
@@ -333,6 +320,7 @@ class _PutState extends State<Put> {
                 incomeSelected = false;
                 expendSelected = true;
                 selectedSubcategory = null;
+                selectedCurrency = null;
                 _resetAllSelects();
                 _resetFrecency();
                 loading = false;
