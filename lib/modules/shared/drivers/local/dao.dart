@@ -216,4 +216,17 @@ class Dao {
     final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.currencies);
     return Convertions.responseToCurrencyList(data);
   }
+
+  Future<Currency> currency({ int? id }) async {  
+    String? where;
+    List<Object>? whereArgs;
+
+    if (id != null) {
+      where = "id = ?";
+      whereArgs = [id as Object];
+    }
+
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.currencies, where: where, limit: 1, whereArgs: whereArgs);
+    return Convertions.responseToCurrency(data.first);
+  }
 }
