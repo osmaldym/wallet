@@ -48,6 +48,8 @@ class _PutState extends State<Put> {
 
   ValueNotifier<DateTime?> dateMergedNotifier = ValueNotifier(null);
 
+  late List<Currency> currencies;
+
   final List<DropdownMenuItem> _itemsAccountsSelect = [
     DropdownMenuItem(
       value: Account(title: "Total"),
@@ -87,9 +89,10 @@ class _PutState extends State<Put> {
   Future<void> _getAll() async {
     List<Account> accs = await _controller.getAllAccounts();
     List<Notifications> notifications = await _controller.getAllNotifications();
+    selectedCurrency = await _controller.getFirstCurrency();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-        for (final account in accs) {
+      for (final account in accs) {
         _itemsAccountsSelect.add(
           DropdownMenuItem(
             value: account,
@@ -106,7 +109,7 @@ class _PutState extends State<Put> {
           )
         );
       }
-      
+
       _resetAllSelects();
     }));
   }
