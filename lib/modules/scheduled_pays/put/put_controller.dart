@@ -83,4 +83,8 @@ class PutController {
   Future<List<Currency>> getAllCurrencies() async {
     return await dao.currencies();
   }
+
+  Future<Currency> getFirstCurrency() async {
+    return await dao.currency();
+  }
 }
