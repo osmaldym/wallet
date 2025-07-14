@@ -9,6 +9,9 @@ import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record_repetition.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_subcategory.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
@@ -35,6 +38,12 @@ class Dao {
 
   Future<void> deleteById(String tableName, int id) async {
     await (await _db.get()).delete(tableName, where: "id = ?", whereArgs: [id]);
+  }
+
+  Future<Map<String, Object?>> getById(String tableName, int? id, { String idColumnName = "id" }) async {
+    if (id == null) return {};
+    List<Map<String, Object?>> data = (await (await _db.get()).query(tableName, where:  "$idColumnName = ?", whereArgs: [id]));
+    return data.isNotEmpty ? data.first : {};
   }
 
   // Session operations
@@ -96,8 +105,8 @@ class Dao {
   }
 
   Future<Account> account(int id) async {
-    List<Map<String, Object?>> account = await (await _db.get()).query(DBTables.account, where: "id = ?", whereArgs: [id], limit: 1);
-    return Convertions.responseToAccountList(account).first;
+    Map<String, Object?> account = await getById(DBTables.account, id);
+    return Convertions.responseToAccount(account);
   }
 
   // Scheduled pay operations
@@ -128,6 +137,31 @@ class Dao {
   Future<ScheduledPay> scheduledPay(int id) async {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToScheculedPayList(data).first;
+  }
+
+  Future<List<RelatedScheduledPay>> relatedScheduledPays({int? type}) async {
+    final List<ScheduledPay> scheduledPaysData = await scheduledPays(type: type);
+    List<RelatedScheduledPay> datas = [
+      for (final scheduledPayData in scheduledPaysData)
+        RelatedScheduledPay(
+          id: scheduledPayData.id,
+          serverId: scheduledPayData.serverId,
+          title: scheduledPayData.title,
+          type: scheduledPayData.type,
+          amount: scheduledPayData.amount,
+          automatic: scheduledPayData.automatic,
+          beneficiary: scheduledPayData.beneficiary,
+          note: scheduledPayData.note,
+          date: scheduledPayData.date,
+          account: await account(scheduledPayData.accountId ?? -1),
+          currency: await currency(id: scheduledPayData.currencyId),
+          frecuency: await relatedRecordRepetition(scheduledPayData.frecuencyId ?? -1),
+          notification: await notification(scheduledPayData.notificationId),
+          subcategory: await relatedSubcategory(scheduledPayData.categoryId ?? -1),
+        )
+    ];
+
+    return datas;
   }
 
   // Category group operations
@@ -166,6 +200,19 @@ class Dao {
     return Convertions.responseToSubcategoryList(data).first;
   }
 
+  Future<RelatedSubcategory> relatedSubcategory(int id) async {
+    Subcategories subcategoryData = await subcategory(id);
+    return RelatedSubcategory(
+      id: subcategoryData.id,
+      serverId: subcategoryData.serverId,
+      icon: subcategoryData.icon,
+      iconFontFamily: subcategoryData.iconFontFamily,
+      isCategoryReference: subcategoryData.isCategoryReference,
+      name: subcategoryData.name,
+      category: await categoryGroup(subcategoryData.categoryId ?? -1)
+    );
+  }
+
   // Record repetition
   Future<int> insertRecordRepetition(Map<String, Object?> recordRepetition, {bool orReplace = false}) async {
     return await (orReplace ? put(DBTables.recordRepetition, recordRepetition) : insert(DBTables.recordRepetition, recordRepetition));
@@ -184,6 +231,33 @@ class Dao {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetition, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToRecordRepetitionList(data).first;
   }
+
+  Future<RelatedRecordRepetition> relatedRecordRepetition(int idFrecuency) async {
+    final RecordRepetition recordRepetitionData = await recordRepetition(idFrecuency);
+
+    RelatedRecordRepetition relatedRecordRepetition = RelatedRecordRepetition(
+      id: recordRepetitionData.id,
+      serverId: recordRepetitionData.serverId,
+      forDate: recordRepetitionData.forDate,
+      timesPlaced: recordRepetitionData.timesPlaced,
+      repeatEvery: recordRepetitionData.repeatEvery,
+      repeatedTimes: recordRepetitionData.repeatedTimes,
+      rrFor: recordRepetitionData.rrFor,
+    );
+
+    switch (recordRepetitionData.repeatEvery) {
+      case RepeatEvery.week:
+        relatedRecordRepetition.recordRepetitionWeekly = await recordRepetitionWeekly(recordRepetitionId: idFrecuency);
+        break;
+      case RepeatEvery.month:
+        relatedRecordRepetition.recordRepetitionMonthly = await recordRepetitionMonthly(recordRepetitionId: idFrecuency);
+        break;
+      default:
+        // Nothing
+    }
+
+    return relatedRecordRepetition;
+  }
   
   // Record repetition weekly
   Future<int> insertRecordRepetitionWeekly(Map<String, Object?> recordRepetitionWeekly, {bool orReplace = false}) async {
@@ -193,6 +267,11 @@ class Dao {
   Future<List<RecordRepetitionWeekly>> recordRepetitionsWeekly() async {
     final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.recordRepetitionWeekly);
     return Convertions.responseToRecordRepetitionWeeklyList(data);
+  }
+
+  Future<RecordRepetitionWeekly> recordRepetitionWeekly({ int? recordRepetitionId }) async {
+    final Map<String, Object?> data = await getById(DBTables.recordRepetitionWeekly, recordRepetitionId, idColumnName: "record_repetition_id");
+    return Convertions.responseToRecordRepetitionWeekly(data);
   }
 
   // Record repetition monthly
@@ -205,10 +284,20 @@ class Dao {
     return Convertions.responseToRecordRepetitionMonthlyList(data);
   }
 
+    Future<RecordRepetitionMonthly> recordRepetitionMonthly({ int? recordRepetitionId }) async {
+    final Map<String, Object?> data = await getById(DBTables.recordRepetitionMonthly, recordRepetitionId, idColumnName: "record_repetition_id");
+    return Convertions.responseToRecordRepetitionMonthly(data);
+  }
+
   // Notifications
   Future<List<Notifications>> notifications() async {
     final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.notifications);
     return Convertions.responseToNotificationList(data);
+  }
+
+  Future<Notifications> notification(int? id) async {
+    final Map<String, Object?> data = await getById(DBTables.notifications, id);
+    return Convertions.responseToNotification(data);
   }
 
   // Currency

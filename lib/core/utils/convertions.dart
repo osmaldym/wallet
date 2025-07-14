@@ -48,7 +48,7 @@ class Convertions {
 
   static Session responseToSession(Map<String, Object?> response) {
     return Session(
-      id: response['id'] as int, 
+      id: response['id'] as int?,
       serverId: response['server_id'] as int?, 
       userId: response['user_id'] as int?,
       startedAt: DateTime.parse(response['started_at']! as String),
@@ -93,7 +93,7 @@ class Convertions {
 
   static Category responseToCategoryGroup(Map<String, Object?> response) {
     return Category(
-      id: response['id'] as int, 
+      id: response['id'] as int?,
       serverId: response['server_id'] as int?, 
       userId: response['user_id'] as int?,
       name: response['name'] as String?,
@@ -108,7 +108,7 @@ class Convertions {
 
   static Subcategories responseToSubcategory(Map<String, Object?> response) {
     return Subcategories(
-      id: response['id'] as int, 
+      id: response['id'] as int?,
       serverId: response['server_id'] as int?,
       name: response['name'] as String?,
       icon: response['icon'] as int?,
@@ -124,7 +124,7 @@ class Convertions {
 
   static RecordRepetition responseToRecordRepetition(Map<String, Object?> response) {
     return RecordRepetition(
-      id: response['id'] as int, 
+      id: response['id'] as int?,
       serverId: response['server_id'] as int?,
       timesPlaced: response['times_placed'] as int?,
       forDate: response['for_date'] != null ? DateTime.parse(response['for_date']! as String) : null,
@@ -140,7 +140,7 @@ class Convertions {
 
   static RecordRepetitionWeekly responseToRecordRepetitionWeekly(Map<String, Object?> response) {
     return RecordRepetitionWeekly(
-      id: response['id'] as int, 
+      id: response['id'] as int?,
       serverId: response['server_id'] as int?,
       daysOfWeek: (response['days_of_week'] as String?)?.split(",").map((el) => int.parse(el)).toList(),
       recordRepetitionId: response['record_repetition_id'] as int?,
@@ -153,7 +153,7 @@ class Convertions {
 
   static RecordRepetitionMonthly responseToRecordRepetitionMonthly(Map<String, Object?> response) {
     return RecordRepetitionMonthly(
-      id: response['id'] as int, 
+      id: response['id'] as int?, 
       serverId: response['server_id'] as int?,
       everyLastDayOfMonth: _utils.intToBool(response['every_last_day_of_month'] as int?),
       sameDayOfMonth: _utils.intToBool(response['same_day_of_month'] as int?),
@@ -168,7 +168,7 @@ class Convertions {
 
   static Notifications responseToNotification(Map<String, Object?> response) {
     return Notifications(
-      id: response['id'] as int, 
+      id: response['id'] as int?, 
       serverId: response['server_id'] as int?,
       name: response['name'] as String?,
       localeName: response['locale_name'] as String?,
@@ -181,7 +181,7 @@ class Convertions {
 
   static Currency responseToCurrency(Map<String, Object?> response) {
     return Currency(
-      id: response['id'] as int, 
+      id: response['id'] as int?,
       serverId: response['server_id'] as int?,
       iso: response['iso'] as String?,
       symbol: response['symbol'] as String?,

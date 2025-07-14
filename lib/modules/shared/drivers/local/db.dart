@@ -57,7 +57,12 @@ class DB {
       date TEXT,
       note TEXT,
       beneficiary TEXT,
-      FOREIGN KEY(user_id) REFERENCES User(id)
+      FOREIGN KEY(user_id) REFERENCES ${DBTables.user}(id),
+      FOREIGN KEY(category_id) REFERENCES ${DBTables.category}(id),
+      FOREIGN KEY(account_id) REFERENCES ${DBTables.account}(id),
+      FOREIGN KEY(frecuency_id) REFERENCES ${DBTables.recordRepetition}(id),
+      FOREIGN KEY(notification_id) REFERENCES ${DBTables.notifications}(id),
+      FOREIGN KEY(currency_id) REFERENCES ${DBTables.currencies}(id)
     )
     """,
     """
