@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/scheduled_pays/scheduled_pays_controller.dart';
 import 'package:wallet/modules/scheduled_pays/widgets/scheduled_pay_tile.dart';
-import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
@@ -17,7 +17,7 @@ class ScheduledPays extends StatefulWidget {
 
 class _ScheduledPaysState extends State<ScheduledPays> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  late Future<List<ScheduledPay>> _pays;
+  late Future<List<RelatedScheduledPay>> _pays;
   late  ScheduledPaysController _controller;
 
   bool allSelected = true;
@@ -111,15 +111,16 @@ class _ScheduledPaysState extends State<ScheduledPays> {
               Container(
                 height: double.maxFinite,
                 alignment: Alignment.topCenter,
-                child: FutureBuilder<List<ScheduledPay>>(
+                child: FutureBuilder<List<RelatedScheduledPay>>(
                   future: _pays,
-                  builder: (BuildContext context, AsyncSnapshot<List<ScheduledPay>> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<List<RelatedScheduledPay>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
                           return ListView.builder(
                           itemBuilder: (context, i) => Padding(
                             padding: EdgeInsets.only(top: i > 0 ? 15 : 0),
                             child: ScheduledPayTile(
+                              icon: snapshot.data?[i].subcategory?.icon != null ? IconData(snapshot.data?[i].subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].subcategory?.iconFontFamily!) : null,
                               title: snapshot.data?[i].title,
                               amount: snapshot.data?[i].amount,
                               isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
