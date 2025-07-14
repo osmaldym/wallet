@@ -191,9 +191,13 @@ class Convertions {
   }
 
   static String classToString(String className, Map<String, Object?> classMap) {
-    String toRet = "$className {";
-    for(var entry in classMap.entries) toRet += entry.key + ': ' + entry.value.toString() + ", ";
-    toRet += "}";
+    String toRet = "$className { ";
+    int i = 0;
+    for (var entry in classMap.entries) {
+      toRet += entry.key + ': ' + entry.value.toString() + (i < classMap.entries.length-1 ? ", " : "");
+      i++;
+    }
+    toRet += " }";
     return toRet;
   }
 }
