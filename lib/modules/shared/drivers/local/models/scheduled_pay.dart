@@ -1,3 +1,4 @@
+import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
@@ -44,29 +45,27 @@ class ScheduledPay extends Defs{
     this.beneficiary,
   });
 
-  Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'server_id' : serverId,
-      'image_id': imageId,
-      'category_id': categoryId,
-      'account_id': accountId,
-      'budget_id': budgetId,
-      'goal_id': goalId,
-      'frecuency_id': frecuencyId,
-      'payment_method_id': paymentMethodId,
-      'notification_id': notificationId,
-      'type': type,
-      'title': title,
-      'automatic': automatic,
-      'amount': amount,
-      'date': date!.toIso8601String(),
-      'note': note, 
-      'beneficiary': beneficiary,
-      'currency_id': currencyId,
-    };
-  }
+  Map<String, Object?> toMap() => {
+    'id': id,
+    'user_id': userId,
+    'server_id' : serverId,
+    'image_id': imageId,
+    'category_id': categoryId,
+    'account_id': accountId,
+    'budget_id': budgetId,
+    'goal_id': goalId,
+    'frecuency_id': frecuencyId,
+    'payment_method_id': paymentMethodId,
+    'notification_id': notificationId,
+    'type': type,
+    'title': title,
+    'automatic': automatic!.boolToInt(),
+    'amount': amount,
+    'date': date!.toIso8601String(),
+    'note': note, 
+    'beneficiary': beneficiary,
+    'currency_id': currencyId,
+  };
 
   @override
   String toString() {
