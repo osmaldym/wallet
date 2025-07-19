@@ -1,4 +1,4 @@
-import 'package:wallet/core/utils/utils.dart';
+import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
 import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
@@ -10,10 +10,9 @@ import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record.dart' as model;
 
 class Convertions {
-  static final Utils _utils = Utils();
-
   static List<User> responseToUserList(List<Map<String, Object?>> response) {
     return [ for (final resp in response) responseToUser(resp) ];
   }
@@ -55,7 +54,7 @@ class Convertions {
       finishedAt: response['finished_at'] != null ? DateTime.parse(response['finished_at']! as String) : null,
       publicIp: response['public_ip'] as String?,
       token: response['token'] as String?,
-      finishedByUser: response['finished_by_user'] as bool?,
+      finishedByUser: response['finished_by_user'].intToBool(),
     );
   }
 
@@ -155,8 +154,8 @@ class Convertions {
     return RecordRepetitionMonthly(
       id: response['id'] as int?, 
       serverId: response['server_id'] as int?,
-      everyLastDayOfMonth: _utils.intToBool(response['every_last_day_of_month'] as int?),
-      sameDayOfMonth: _utils.intToBool(response['same_day_of_month'] as int?),
+      everyLastDayOfMonth: response['every_last_day_of_month'].intToBool(),
+      sameDayOfMonth: response['same_day_of_month'].intToBool(),
       everyNumberDay: response['every_number_day'] as int?,
       weekNumber: response['week_number'] as int?,
     );
@@ -187,6 +186,22 @@ class Convertions {
       symbol: response['symbol'] as String?,
       locale: response['locale'] as String?,
       country: response['country'] as String?,
+    );
+  }
+
+  static List<model.Record?> responseToRecordList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToRecord(resp) ];
+  }
+
+  static model.Record? responseToRecord(Map<String, Object?> response) {
+    if (response.isEmpty) return null;
+    return model.Record(
+      id: response["id"] as int?,
+      serverId: response["server_id"] as int?,
+      scheduledPayId: response["scheduled_pay_id"] as int?,
+      date: DateTime.tryParse(response["date"].toString()),
+      paid: response['paid'].intToBool(),
+      expired: response['expired'].intToBool(),
     );
   }
 
