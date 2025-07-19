@@ -5,10 +5,12 @@ enum RRFor { ever, date, toTimes }
 enum RepeatEvery { once, day, week, month, anual }
 
 class RecordRepetition extends Defs {
+  /// Every x days | years
   int? timesPlaced;
   RRFor? rrFor;
   DateTime? forDate;
   RepeatEvery? repeatEvery;
+  /// X Times
   int? repeatedTimes;
 
   RecordRepetition({
@@ -21,17 +23,15 @@ class RecordRepetition extends Defs {
     this.repeatedTimes,
   });
 
-  Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'server_id': serverId,
-      'times_placed': timesPlaced,
-      'for': rrFor?.index,
-      'for_date': forDate?.toIso8601String(),
-      'repeat_every': repeatEvery?.index,
-      'repeated_times': repeatedTimes,
-    };
-  }
+  Map<String, Object?> toMap() => {
+    'id': id,
+    'server_id': serverId,
+    'times_placed': timesPlaced,
+    'for': rrFor?.index,
+    'for_date': forDate?.toIso8601String(),
+    'repeat_every': repeatEvery?.index,
+    'repeated_times': repeatedTimes,
+  };
 
   @override
   String toString() => Convertions.classToString("Record Repetition", toMap());
