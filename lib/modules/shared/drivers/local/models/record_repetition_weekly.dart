@@ -12,14 +12,12 @@ class RecordRepetitionWeekly extends Defs {
     this.daysOfWeek
   });
 
-  Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'server_id': serverId,
-      'record_repetition_id': recordRepetitionId,
-      'days_of_week': daysOfWeek?.join(", "),
-    };
-  }
+  Map<String, Object?> toMap() => {
+    'id': id,
+    'server_id': serverId,
+    'record_repetition_id': recordRepetitionId,
+    'days_of_week': daysOfWeek?.join(", "),
+  };
 
   @override
   String toString() => Convertions.classToString("Record Repetition Weekly", toMap());
