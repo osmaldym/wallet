@@ -32,7 +32,7 @@ class DB {
       finished_at TEXT,
       public_ip TEXT,
       token TEXT,
-      finished_by_user BOOLEAN,
+      finished_by_user INTEGER,
       FOREIGN KEY(user_id) REFERENCES User(id)
     )
     """,
@@ -52,7 +52,7 @@ class DB {
       currency_id INTEGER,
       type INTEGER,
       title TEXT,
-      automatic BOOL DEFAULT 0,
+      automatic INTEGER DEFAULT 0,
       amount REAL,
       date TEXT,
       note TEXT,
@@ -84,7 +84,7 @@ class DB {
       icon INTEGER,
       icon_font_family TEXT,
       category_id INTEGER,
-      is_category_reference BOOL,
+      is_category_reference INTEGER,
       FOREIGN KEY(category_id) REFERENCES Category(id)
     )
     """,
@@ -113,8 +113,8 @@ class DB {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       server_id INTEGER,
       record_repetition_id INTEGER,
-      same_day_of_month BOOL,
-      every_last_day_of_month BOOL,
+      same_day_of_month INTEGER,
+      every_last_day_of_month INTEGER,
       every_number_day INTEGER,
       week_number INTEGER,
       FOREIGN KEY(record_repetition_id) REFERENCES ${DBTables.recordRepetition}(id)
@@ -136,6 +136,19 @@ class DB {
       symbol TEXT,
       locale TEXT,
       country TEXT
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.record}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      server_id INTEGER,
+      user_id INTEGER,
+      scheduled_pay_id INTEGER,
+      date TEXT,
+      paid INTEGER,
+      expired INTEGER,
+      FOREIGN KEY(user_id) REFERENCES ${DBTables.user}(id),
+      FOREIGN KEY(scheduled_pay_id) REFERENCES ${DBTables.scheduledPay}(id)
     )
     """,
   ];

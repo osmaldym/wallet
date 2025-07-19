@@ -14,4 +14,5 @@ class DBTables {
   static const String recordRepetitionMonthly = "RecordRepetitionMonthly";
   static const String notifications = "Notifications";
   static const String currencies = "Currencies";
+  static const String record = "Record";
 }
