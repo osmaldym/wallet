@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:wallet/core/constants/app_db.dart';
+import 'package:wallet/core/extensions/datetime_ext.dart';
+import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
@@ -9,6 +11,7 @@ import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_subcategory.dart';
@@ -17,6 +20,7 @@ import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record.dart' as model;
 
 class Dao {
   late DB _db;
@@ -162,6 +166,26 @@ class Dao {
     ];
 
     return datas;
+  }
+
+  Future<RelatedScheduledPay> relatedScheduledPay(int id) async {
+    final ScheduledPay scheduledPayData = await scheduledPay(id);
+    return RelatedScheduledPay(
+      id: scheduledPayData.id,
+      serverId: scheduledPayData.serverId,
+      title: scheduledPayData.title,
+      type: scheduledPayData.type,
+      amount: scheduledPayData.amount,
+      automatic: scheduledPayData.automatic,
+      beneficiary: scheduledPayData.beneficiary,
+      note: scheduledPayData.note,
+      date: scheduledPayData.date,
+      account: await account(scheduledPayData.accountId ?? -1),
+      currency: await currency(id: scheduledPayData.currencyId),
+      frecuency: await relatedRecordRepetition(scheduledPayData.frecuencyId ?? -1),
+      notification: await notification(scheduledPayData.notificationId),
+      subcategory: await relatedSubcategory(scheduledPayData.categoryId ?? -1),
+    );
   }
 
   // Category group operations
@@ -317,5 +341,220 @@ class Dao {
 
     final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.currencies, where: where, limit: 1, whereArgs: whereArgs);
     return Convertions.responseToCurrency(data.first);
+  }
+
+  // Record operations
+  Future<List<model.Record?>> records({ int? scheculedPayId, bool? orderByDateDesc }) async {
+    String? where;
+    List<Object>? whereArgs;
+
+    if (scheculedPayId != null) {
+      where = "scheduled_pay_id = ?";
+      whereArgs = [scheculedPayId];
+    }
+
+    List<Map<String, Object?>> records = await (await _db.get()).query(DBTables.record, where: where, whereArgs: whereArgs, orderBy: orderByDateDesc.toBool() ? "date DESC" : null);
+    return Convertions.responseToRecordList(records);
+  }
+
+  Future<model.Record?> record({int? id, int? scheduledPayId, bool? orderByDateDesc}) async {
+    List<String> wheres = [];
+    List<Object?> whereArgs = [];
+
+    if (id != null) {
+      wheres.add("id = ?");
+      whereArgs.add(id);
+    }
+
+    if (scheduledPayId != null) {
+      wheres.add("scheduled_pay_id = ?");
+      whereArgs.add(scheduledPayId);
+    }
+
+    List<Map<String, Object?>> allData = await (await _db.get()).query(
+      DBTables.record, 
+      where: wheres.join(" AND "), 
+      whereArgs: whereArgs, 
+      limit: 1,
+      orderBy: orderByDateDesc.toBool() ? "date DESC" : null,
+    );
+    return Convertions.responseToRecord(allData.isEmpty ? {} : allData.first);
+  }
+
+  Future<int> insertRecord(Map<String, Object?> record) => insert(DBTables.record, record);
+
+  Future<RelatedRecord?> relatedRecord({int? id, int? scheduledPayId, bool? orderByDateDesc}) async {
+    model.Record? recordData = await record(id: id, scheduledPayId: scheduledPayId, orderByDateDesc: orderByDateDesc);
+    if (recordData == null) return null;
+    return RelatedRecord(
+      id: recordData.id,
+      serverId: recordData.serverId,
+      paid: recordData.paid,
+      date: recordData.date,
+      expired: recordData.expired,
+      scheduledPay: await relatedScheduledPay(recordData.scheduledPayId ?? -1)
+    );
+  }
+
+  Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDateDesc }) async {
+    List<model.Record?> recordsData = await records(scheculedPayId: scheduledPayId, orderByDateDesc: orderByDateDesc);
+    return [
+      for (final recordData in recordsData)
+        RelatedRecord(
+          id: recordData?.id,
+          serverId: recordData?.serverId,
+          paid: recordData?.paid,
+          date: recordData?.date,
+          expired: recordData?.expired,
+          scheduledPay: await relatedScheduledPay(recordData?.scheduledPayId ?? -1)
+        )
+    ];
+  }
+
+  Future<void> updateRecord(int id, Map<String, Object?> data) async => await updateById(DBTables.record, data, id);
+
+  Future<int> getRecordsCount({ int? scheduledPayId }) async {
+    List<String> wheres = [];
+    List<Object> whereArgs = [];
+
+    if (scheduledPayId != null) {
+      wheres.add("scheduled_pay_id = ?");
+      whereArgs.add(scheduledPayId);
+    }
+
+    return (await (await _db.get()).rawQuery(
+      "SELECT COUNT(*) as c FROM ${DBTables.record} ${wheres.isEmpty ? "" : "WHERE"} ${wheres.join(" AND ")}", 
+      whereArgs
+    )).first['c'] as int;
+  }
+  
+  Future<void> createRecordsIfNotExist({int? scheduledPayId, bool? paid}) async {
+    List<RelatedScheduledPay> pays = [];
+    RelatedRecord? lastRecord;
+
+    if (scheduledPayId != null) {
+      lastRecord = await relatedRecord(scheduledPayId: scheduledPayId, orderByDateDesc: true);
+      RelatedScheduledPay? pay;
+
+      if (lastRecord != null && lastRecord.scheduledPay != null) pay = lastRecord.scheduledPay;
+
+      pay ??= await relatedScheduledPay(scheduledPayId);
+      pays.add(pay);
+    }
+    
+    if (pays.isEmpty) pays = await relatedScheduledPays();
+
+    for (final pay in pays) {
+      DateTime recordDateToSet = lastRecord?.date ?? pay.date ?? DateTime.now();
+
+      List<int>? daysOfWeek = pay.frecuency?.recordRepetitionWeekly?.daysOfWeek;
+
+      /// If has 0 replacing it with 7 because the first day of week 
+      /// showing in "scheduled pay put" is Sunday instead of Monday
+      /// and his position is 0
+      int? indexOfZero = daysOfWeek?.indexOf(0);
+      if (indexOfZero != null && indexOfZero > -1) daysOfWeek?[indexOfZero] = 7;
+      daysOfWeek?.sort();
+
+      /// Getting list min and this never returns 0 because the previus
+      int? minDayOfWeekToRepeat = daysOfWeek?.first;
+
+      if (lastRecord != null) {
+        // Continue to avoid creating new records
+        if (lastRecord.expired.toBool()) continue;
+
+        int timesPlaced = (pay.frecuency?.timesPlaced ?? 1);
+
+        switch (pay.frecuency?.repeatEvery){
+          case RepeatEvery.once: continue;
+          case RepeatEvery.day:
+          case RepeatEvery.anual:
+            if (pay.automatic.toBool() && DateTime.now().difference(recordDateToSet).inDays < (pay.frecuency!.timesPlaced ?? 1)) continue;
+            bool isDay = pay.frecuency?.repeatEvery == RepeatEvery.day;
+
+            recordDateToSet = recordDateToSet.addx(
+              days: isDay ? timesPlaced : null,
+              years: !isDay ? timesPlaced : null
+            );
+            break;
+          case RepeatEvery.week:
+            /// Getting list max
+            int maxDayofWeekToRepeat = daysOfWeek?.last ?? 0;
+            int weekday = recordDateToSet.weekday;
+
+            int quantityOfWeeksInDays = (7 * timesPlaced);
+            DateTime recordDateToSetWithQuantityOfWeeks = recordDateToSet.add(Duration(days: quantityOfWeeksInDays));
+
+            if (weekday >= maxDayofWeekToRepeat && recordDateToSetWithQuantityOfWeeks.difference(recordDateToSet).inDays > 0) {
+              recordDateToSet = recordDateToSet.add(Duration(days: quantityOfWeeksInDays - recordDateToSet.weekday + (minDayOfWeekToRepeat ?? 0)));
+            } else if (minDayOfWeekToRepeat != null && weekday >= minDayOfWeekToRepeat) {
+              int? daysToAdd = daysOfWeek?.firstWhere((el) => el > weekday);
+              recordDateToSet = recordDateToSet.add(Duration(days: (daysToAdd ?? 0) - weekday));
+            } 
+            break;
+          case RepeatEvery.month:
+            RecordRepetitionMonthly? monthlyFrecuency = pay.frecuency?.recordRepetitionMonthly;
+            if (monthlyFrecuency?.everyLastDayOfMonth ?? false) {
+              recordDateToSet = recordDateToSet.recreate(
+                month: (recordDateToSet.month + timesPlaced) + 1,
+                day: 0,
+              );
+            } else if (monthlyFrecuency?.sameDayOfMonth ?? false) {
+              recordDateToSet = recordDateToSet.addx(months: timesPlaced);
+            } else if ((monthlyFrecuency?.weekNumber ?? 0) > 0) {
+              int? weekday = monthlyFrecuency?.everyNumberDay;
+              int weekPosition = (monthlyFrecuency?.weekNumber ?? 1) - 1;
+
+              DateTime nextMonthWithLastPosition = recordDateToSet.recreate(
+                month: recordDateToSet.month + timesPlaced,
+                day: 1
+              );
+
+              while (true) {
+                DateTime nextMonthWithLastPositionBefore = nextMonthWithLastPosition;
+                nextMonthWithLastPosition = nextMonthWithLastPosition.add(Duration(days: ((7 * weekPosition) + (weekday ?? 0)) - nextMonthWithLastPosition.weekday));
+
+                if (nextMonthWithLastPosition.getWeekPositionInMonth() - 1 == weekPosition) {
+                  recordDateToSet = nextMonthWithLastPosition;
+                  break;
+                }
+
+                nextMonthWithLastPosition = nextMonthWithLastPositionBefore.recreate(
+                  month: nextMonthWithLastPositionBefore.month + timesPlaced,
+                  day: 1
+                );
+              }
+            }
+            break;
+          default: // NOTHING
+        }
+      } else {
+        if (pay.frecuency?.repeatEvery == RepeatEvery.week) {
+          recordDateToSet = pay.date ?? DateTime.now();
+
+          if (minDayOfWeekToRepeat != null) {
+            if (recordDateToSet.weekday >= minDayOfWeekToRepeat) {
+              recordDateToSet = recordDateToSet.subtract(Duration(days: recordDateToSet.weekday - minDayOfWeekToRepeat));
+            } else {
+              recordDateToSet = recordDateToSet.add(Duration(days: minDayOfWeekToRepeat - recordDateToSet.weekday));
+            }
+          }
+        }
+      }
+
+      if ((pay.frecuency?.forDate?.difference(recordDateToSet).inMilliseconds ?? 0) < 0
+        || pay.frecuency?.repeatedTimes != null && (pay.frecuency?.repeatedTimes ?? 0) <= await getRecordsCount(scheduledPayId: pay.id)) {
+        
+        continue;
+      }
+
+      model.Record newRecord = model.Record(
+        date: recordDateToSet,
+        expired: paid != null ? false : !pay.automatic.toBool(),
+        paid: paid ?? pay.automatic.toBool(),
+        scheduledPayId: scheduledPayId,
+      );
+      insertRecord(newRecord.toMap());
+    }
   }
 }
