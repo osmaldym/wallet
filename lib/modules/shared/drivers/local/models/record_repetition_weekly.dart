@@ -3,7 +3,7 @@ import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 
 class RecordRepetitionWeekly extends Defs {
   int? recordRepetitionId;
-  List<int?>? daysOfWeek;
+  List<int>? daysOfWeek;
 
   RecordRepetitionWeekly({
     super.id,
