@@ -18,6 +18,13 @@ extension AppLocalizationsExtension on AppLocalizations {
       case "eightHoursBefore": return eightHoursBefore;
       case "twelveHoursBefore": return twelveHoursBefore;
       case "oneDayBefore": return oneDayBefore;
+      case "expired": return expired;
+      case "paid": return paid;
+      case "refused": return refused;
+      case "pending": return pending;
+      case "day": return day;
+      case "days": return days;
+
       default: return "";
     }
   }

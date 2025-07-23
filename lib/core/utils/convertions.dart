@@ -200,6 +200,7 @@ class Convertions {
       serverId: response["server_id"] as int?,
       scheduledPayId: response["scheduled_pay_id"] as int?,
       date: DateTime.tryParse(response["date"].toString()),
+      amount: response["amount"] as double?,
       paid: response['paid'].intToBool(),
       expired: response['expired'].intToBool(),
     );

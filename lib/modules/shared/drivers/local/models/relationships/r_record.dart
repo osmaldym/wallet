@@ -11,6 +11,7 @@ class RelatedRecord extends Record {
     super.date,
     super.expired,
     super.paid,
+    super.amount,
     this.scheduledPay,
   });
 
@@ -20,6 +21,7 @@ class RelatedRecord extends Record {
       'id': id,
       'server_id': serverId,
       'date': date,
+      'amount': amount,
       'expired': expired,
       'paid': paid,
       'scheduled_pay': scheduledPay,

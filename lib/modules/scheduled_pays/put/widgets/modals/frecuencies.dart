@@ -92,7 +92,7 @@ class _FrecuenciesModalState extends State<FrecuenciesModal> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timestamp) {
-      _weekDays = DateFormat(null, AppLocalizations.of(context)!.localeName).dateSymbols.WEEKDAYS.map((el) => el[0].toUpperCase()[0]);
+      _weekDays = DateFormat(null, AppLocalizations.of(context)!.localeName).dateSymbols.NARROWWEEKDAYS;
     });
 
     _everyDaysFocus.requestFocus();

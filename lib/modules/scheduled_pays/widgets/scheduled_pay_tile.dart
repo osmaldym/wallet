@@ -18,6 +18,7 @@ class ScheduledPayTile extends StatelessWidget {
     this.isIncome,
     this.amount,
     this.icon,
+    this.onTap,
   });
 
   @override

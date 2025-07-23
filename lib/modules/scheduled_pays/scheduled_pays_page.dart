@@ -124,6 +124,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                               title: snapshot.data?[i].title,
                               amount: snapshot.data?[i].amount,
                               isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
+                              onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]),
                             ),
                           ),
                           itemCount: snapshot.data?.length,
