@@ -405,6 +405,7 @@ class Dao {
           serverId: recordData?.serverId,
           paid: recordData?.paid,
           date: recordData?.date,
+          amount: recordData?.amount,
           expired: recordData?.expired,
           scheduledPay: await relatedScheduledPay(recordData?.scheduledPayId ?? -1)
         )
@@ -544,13 +545,13 @@ class Dao {
 
       if ((pay.frecuency?.forDate?.difference(recordDateToSet).inMilliseconds ?? 0) < 0
         || pay.frecuency?.repeatedTimes != null && (pay.frecuency?.repeatedTimes ?? 0) <= await getRecordsCount(scheduledPayId: pay.id)) {
-        
         continue;
       }
 
       model.Record newRecord = model.Record(
         date: recordDateToSet,
         expired: paid != null ? false : !pay.automatic.toBool(),
+        amount: pay.amount,
         paid: paid ?? pay.automatic.toBool(),
         scheduledPayId: scheduledPayId,
       );

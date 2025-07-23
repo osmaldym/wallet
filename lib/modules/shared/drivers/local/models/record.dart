@@ -5,6 +5,7 @@ import 'package:wallet/modules/shared/drivers/local/models/defs.dart';
 class Record extends Defs {
   int? scheduledPayId;
   DateTime? date;
+  double? amount;
   bool? paid;
   bool? expired;
 
@@ -15,6 +16,7 @@ class Record extends Defs {
     this.date,
     this.paid,
     this.expired,
+    this.amount,
   });
 
   Map<String, Object?> toMap() => {
@@ -22,6 +24,7 @@ class Record extends Defs {
     'server_id': serverId,
     'scheduled_pay_id': scheduledPayId,
     'date': date?.toIso8601String(),
+    'amount': amount,
     'paid': paid.boolToInt(),
     'expired': expired.boolToInt(),
   };
