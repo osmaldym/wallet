@@ -344,7 +344,7 @@ class Dao {
   }
 
   // Record operations
-  Future<List<model.Record?>> records({ int? scheculedPayId, bool? orderByDateDesc }) async {
+  Future<List<model.Record?>> records({ int? scheculedPayId, bool? orderByDatePaidDesc }) async {
     String? where;
     List<Object>? whereArgs;
 
@@ -353,11 +353,11 @@ class Dao {
       whereArgs = [scheculedPayId];
     }
 
-    List<Map<String, Object?>> records = await (await _db.get()).query(DBTables.record, where: where, whereArgs: whereArgs, orderBy: orderByDateDesc.toBool() ? "date DESC" : null);
+    List<Map<String, Object?>> records = await (await _db.get()).query(DBTables.record, where: where, whereArgs: whereArgs, orderBy: orderByDatePaidDesc.toBool() ? "date_paid DESC" : null);
     return Convertions.responseToRecordList(records);
   }
 
-  Future<model.Record?> record({int? id, int? scheduledPayId, bool? orderByDateDesc}) async {
+  Future<model.Record?> record({int? id, int? scheduledPayId, bool? orderByDatePaidDesc}) async {
     List<String> wheres = [];
     List<Object?> whereArgs = [];
 
@@ -376,28 +376,29 @@ class Dao {
       where: wheres.join(" AND "), 
       whereArgs: whereArgs, 
       limit: 1,
-      orderBy: orderByDateDesc.toBool() ? "date DESC" : null,
+      orderBy: orderByDatePaidDesc.toBool() ? "date_paid DESC" : null,
     );
     return Convertions.responseToRecord(allData.isEmpty ? {} : allData.first);
   }
 
   Future<int> insertRecord(Map<String, Object?> record) => insert(DBTables.record, record);
 
-  Future<RelatedRecord?> relatedRecord({int? id, int? scheduledPayId, bool? orderByDateDesc}) async {
-    model.Record? recordData = await record(id: id, scheduledPayId: scheduledPayId, orderByDateDesc: orderByDateDesc);
+  Future<RelatedRecord?> relatedRecord({int? id, int? scheduledPayId, bool? orderByDatePaidDesc}) async {
+    model.Record? recordData = await record(id: id, scheduledPayId: scheduledPayId, orderByDatePaidDesc: orderByDatePaidDesc);
     if (recordData == null) return null;
     return RelatedRecord(
       id: recordData.id,
       serverId: recordData.serverId,
       paid: recordData.paid,
       date: recordData.date,
+      datePaid: recordData.datePaid,
       expired: recordData.expired,
       scheduledPay: await relatedScheduledPay(recordData.scheduledPayId ?? -1)
     );
   }
 
-  Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDateDesc }) async {
-    List<model.Record?> recordsData = await records(scheculedPayId: scheduledPayId, orderByDateDesc: orderByDateDesc);
+  Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDatePaidDesc }) async {
+    List<model.Record?> recordsData = await records(scheculedPayId: scheduledPayId, orderByDatePaidDesc: orderByDatePaidDesc);
     return [
       for (final recordData in recordsData)
         RelatedRecord(
@@ -405,6 +406,7 @@ class Dao {
           serverId: recordData?.serverId,
           paid: recordData?.paid,
           date: recordData?.date,
+          datePaid: recordData?.datePaid,
           amount: recordData?.amount,
           expired: recordData?.expired,
           scheduledPay: await relatedScheduledPay(recordData?.scheduledPayId ?? -1)
@@ -429,12 +431,12 @@ class Dao {
     )).first['c'] as int;
   }
   
-  Future<void> createRecordsIfNotExist({int? scheduledPayId, bool? paid}) async {
+  Future<void> createRecordsIfNotExist({int? scheduledPayId, bool? paid, DateTime? datePaid}) async {
     List<RelatedScheduledPay> pays = [];
     RelatedRecord? lastRecord;
 
     if (scheduledPayId != null) {
-      lastRecord = await relatedRecord(scheduledPayId: scheduledPayId, orderByDateDesc: true);
+      lastRecord = await relatedRecord(scheduledPayId: scheduledPayId, orderByDatePaidDesc: true);
       RelatedScheduledPay? pay;
 
       if (lastRecord != null && lastRecord.scheduledPay != null) pay = lastRecord.scheduledPay;
@@ -550,6 +552,7 @@ class Dao {
 
       model.Record newRecord = model.Record(
         date: recordDateToSet,
+        datePaid: datePaid ?? recordDateToSet,
         expired: paid != null ? false : !pay.automatic.toBool(),
         amount: pay.amount,
         paid: paid ?? pay.automatic.toBool(),
