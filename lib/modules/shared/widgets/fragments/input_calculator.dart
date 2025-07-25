@@ -8,7 +8,7 @@ class InputCalculator extends StatefulWidget {
   final InputDecoration? decoration;
   final void Function()? onTap;
   final void Function(double value)? onChange;
-  final double? controllerValue;
+  double? controllerValue;
   AppLocalizations? tr;
   NumberFormat? nFormat;
 
@@ -46,6 +46,7 @@ class _InputCalculatorState extends State<InputCalculator> {
           builder: (BuildContext context) => CalculatorModal(
             onChange: (double value) {
               setState(() {
+                widget.controllerValue = value;
                 widget.valueToShow = value;
               });
               if (widget.onChange != null) widget.onChange!(value);
