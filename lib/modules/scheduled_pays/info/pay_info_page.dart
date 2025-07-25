@@ -39,22 +39,27 @@ class _PayInfoPageState extends State<PayInfoPage> {
   Widget build(BuildContext context) {
     bool isIncome = ScheduledPayTypes.values[widget.relatedScheduledPay?.type! ?? 0] == ScheduledPayTypes.income;
 
-    String every = context.l10n!.once;
+    String every = context.l10n!.every;
+    int? timesPlaced = widget.relatedScheduledPay?.frecuency?.timesPlaced;
+    bool timesPLacedGreatherThanOne = timesPlaced.toBool() && timesPlaced! > 1;
+
+    if (timesPLacedGreatherThanOne) every += " ${timesPlaced.toString()}";
 
     switch (widget.relatedScheduledPay?.frecuency?.repeatEvery) {
       case RepeatEvery.day:
-        every = context.l10n!.everyDay;
+        every = timesPLacedGreatherThanOne ? "$every ${context.l10n!.days}" : context.l10n!.everyDay;
         break;
       case RepeatEvery.week:
-        every = context.l10n!.everyWeek;
+        every = timesPLacedGreatherThanOne ? "$every ${context.l10n!.weeks}" : context.l10n!.everyWeek;
         break;
       case RepeatEvery.month:
-        every = context.l10n!.everyMonth;
+        every = timesPLacedGreatherThanOne ? "$every ${context.l10n!.months}" : context.l10n!.everyMonth;
         break;
       case RepeatEvery.anual:
-        every = context.l10n!.everyYear;
+        every = timesPLacedGreatherThanOne ? "$every ${context.l10n!.years}" : context.l10n!.everyYear;
         break;
       default:
+        every = context.l10n!.once;
         // NOTHING
     }
 
