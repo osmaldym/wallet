@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/extensions/datetime_ext.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_calculator.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_date.dart';
+import 'package:wallet/modules/shared/widgets/fragments/input_time.dart';
 
 class CustomPayData {
   DateTime? datetime;
@@ -15,7 +17,10 @@ class CustomPayData {
   });
 }
 
-class CustomPay extends StatefulWidget {
+class CustomPay extends StatelessWidget {
+  CustomPayData dataToReturn = CustomPayData();
+  bool loading = false;
+
   void Function(CustomPayData data)? onSave;
   DateTime? selectedDate;
   double? lastAmount;
@@ -28,24 +33,14 @@ class CustomPay extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _CustomPayState();
-}
-
-class _CustomPayState extends State<CustomPay> {
-  CustomPayData dataToReturn = CustomPayData();
-  bool loading = false;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    dataToReturn.amount = widget.lastAmount;
+  StatelessElement createElement() {
+    dataToReturn.amount = lastAmount;
+    return super.createElement();
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      key: _scaffoldKey,
       child: Container(
         width: double.maxFinite,
         decoration: BoxDecoration(
@@ -68,18 +63,31 @@ class _CustomPayState extends State<CustomPay> {
                   fontSize: 28
                 ),
               ),
-              InputDate(
-                selectedDate: widget.selectedDate ?? DateTime.now(),
-                onChanged: (datetime) => dataToReturn.datetime = datetime,
+              Row(
+                spacing: 10,
+                children: [
+                  Expanded(
+                    child: InputDate(
+                      selectedDate: selectedDate ?? DateTime.now(),
+                      onChanged: (datetime) => dataToReturn.datetime = datetime,
+                    ),
+                  ),
+                  Expanded(
+                    child: InputTime(
+                      selectedTime: selectedDate?.getTimeOfDay() ?? DateTime.now().getTimeOfDay(),
+                      onChanged: (timeOfDay) => dataToReturn.datetime = dataToReturn.datetime?.setTimeOfDay(timeOfDay),
+                    )
+                  )
+                ],
               ),
               InputCalculator(
                 controllerValue: dataToReturn.amount,
-                onChange: (amount) => setState(() { dataToReturn.amount = amount; }),
+                onChange: (amount) => dataToReturn.amount = amount,
               ),
               CButton(
                 text: context.l10n!.save,
                 onPressed: () {
-                  if (widget.onSave != null) widget.onSave!(dataToReturn);
+                  if (onSave != null) onSave!(dataToReturn);
                   Navigator.pop(context);
                 },
               )

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension DatetimeExt on DateTime {
   int getWeekPositionInMonth() => ((day / 7) is int ? (day / 7) : (day / 7) + 1).toInt();
 
@@ -14,6 +16,10 @@ extension DatetimeExt on DateTime {
       microsecond + (microseconds ?? 0),
     );
   }
+
+  TimeOfDay getTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
+
+  DateTime setTimeOfDay(TimeOfDay timeOfDay) => recreate(hour: timeOfDay.hour, minute: timeOfDay.minute);
 
   /// Returns a new DateTime istance with the datetime data replaced and the data of the last DateTime not replaced
   DateTime recreate({ int? year, int? month, int? day, int? hour, int? minute, int? second, int? millisecond, int? microsecond }) {

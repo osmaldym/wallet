@@ -147,6 +147,7 @@ class DB {
       date TEXT,
       amount REAL,
       paid INTEGER,
+      date_paid TEXT,
       expired INTEGER,
       FOREIGN KEY(user_id) REFERENCES ${DBTables.user}(id),
       FOREIGN KEY(scheduled_pay_id) REFERENCES ${DBTables.scheduledPay}(id)

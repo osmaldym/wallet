@@ -156,7 +156,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        DateFormat.yMd(context.l10n!.localeName).format(record.date!),
+                                        DateFormat.yMd(context.l10n!.localeName).format(record.datePaid ?? record.date!),
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: AppTheme.of(context).textContrast
@@ -199,7 +199,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                       builder: (context) => CustomPay(
                                                         lastAmount: record.scheduledPay?.amount,
                                                         selectedDate: record.date,
-                                                        onSave: (data) => setState(() {
+                                                        onSave: (data) => setState(() {                                                          
                                                           _records = _controller.updateLastRecordIfExist(
                                                             scheculedPayId: widget.relatedScheduledPay?.id,
                                                             recordId: record.id,
