@@ -20,6 +20,8 @@ class CustomPayData {
 class CustomPay extends StatelessWidget {
   CustomPayData dataToReturn = CustomPayData();
   bool loading = false;
+  bool? onlyShowDate;
+  String? title;
 
   void Function(CustomPayData data)? onSave;
   DateTime? selectedDate;
@@ -29,7 +31,9 @@ class CustomPay extends StatelessWidget {
     super.key,
     this.onSave,
     this.selectedDate,
-    this.lastAmount
+    this.lastAmount,
+    this.onlyShowDate,
+    this.title,
   });
 
   @override
@@ -58,7 +62,7 @@ class CustomPay extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Text(
-                context.l10n!.customPay, 
+                title ?? context.l10n!.customPay, 
                 style: const TextStyle(
                   fontSize: 28
                 ),
@@ -80,10 +84,11 @@ class CustomPay extends StatelessWidget {
                   )
                 ],
               ),
-              InputCalculator(
-                controllerValue: dataToReturn.amount,
-                onChange: (amount) => dataToReturn.amount = amount,
-              ),
+              if (!(onlyShowDate ?? false))
+                InputCalculator(
+                  controllerValue: dataToReturn.amount,
+                  onChange: (amount) => dataToReturn.amount = amount,
+                ),
               CButton(
                 text: context.l10n!.save,
                 onPressed: () {
