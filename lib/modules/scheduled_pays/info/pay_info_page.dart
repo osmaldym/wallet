@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/extensions/datetime_ext.dart';
 import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/modules/scheduled_pays/info/pay_info_controller.dart';
@@ -137,13 +138,13 @@ class _PayInfoPageState extends State<PayInfoPage> {
                   builder: (BuildContext context, AsyncSnapshot<List<RelatedRecord>> snapshotRecords) {
                     if (snapshotRecords.hasData) {
                       if (snapshotRecords.data!.isNotEmpty){
-                        DateTime now = DateTime.now();
+                        DateTime now = DateTime.now().recreateInTimeZero();
 
                         List<ListTile> allTiles = [];
                         for (final record in snapshotRecords.data!) {
-                          int diff = now.day - (record.date?.day ?? 0);
-                          bool lessThanToday = now.day > (record.date?.day ?? 0);
-                          bool isToday = record.date?.day == now.day;
+                          int diff = (record.date?.recreateInTimeZero().difference(now).inDays ?? 0);
+                          bool lessThanToday = diff < 0;
+                          bool isToday = diff == 0;
 
                           allTiles.add(
                             ListTile(

@@ -34,4 +34,7 @@ extension DatetimeExt on DateTime {
       microsecond ?? this.microsecond,
     );
   }
+
+  /// Returns a new DateTime istance with the datetime data replaced and the data of the last DateTime not replaced
+  DateTime recreateInTimeZero() => recreate(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
 }
