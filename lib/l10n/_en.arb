@@ -88,7 +88,9 @@
     "pay": "Pay",
     "refuse": "Refuse",
     "synchronize": "Synchronize",
+    "postpone": "Postpone",
     "customPay": "Custom pay",
+    "postponePay": "Postpone pay",
     "day": "Day",
     "days": "Days"
 }
