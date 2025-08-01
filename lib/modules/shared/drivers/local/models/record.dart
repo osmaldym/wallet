@@ -32,8 +32,13 @@ class Record extends Defs {
     'expired': expired.boolToInt(),
   };
 
-  Map<String, Object?> toCleanMap() {
+  Map<String, Object?> toCleanMap({ bool? zeroToNull = false }) {
     Map<String, Object?> map = toMap();
+
+    if (zeroToNull ?? false)
+      for (final entry in map.entries)
+        if (entry.value == 0) map[entry.key] = null;
+
     map.removeWhere((key, value) => value == null);
     return map;
   }

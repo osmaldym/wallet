@@ -202,6 +202,36 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                     onTap: () => showModalBottomSheet(
                                                       context: context,
                                                       builder: (context) => CustomPay(
+                                                        title: context.l10n!.postponePay,
+                                                        onlyShowDate: true,
+                                                        lastAmount: record.scheduledPay?.amount,
+                                                        selectedDate: record.date,
+                                                        onSave: (data) => setState(() {                                                          
+                                                          _records = _controller.postponeLastRecord(
+                                                            scheduledPayId: widget.relatedScheduledPay?.id,
+                                                            recordId: record.id,
+                                                            datetime: data.datetime
+                                                          );
+                                                        })
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      spacing: 10,
+                                                      children: [
+                                                        Icon(Icons.calendar_month, color: AppTheme.of(context).textContrast),
+                                                        Text(
+                                                          context.l10n!.postpone,
+                                                          style: TextStyle(
+                                                            color: AppTheme.of(context).textContrast
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ),
+                                                  PopupMenuItem(
+                                                    onTap: () => showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (context) => CustomPay(
                                                         lastAmount: record.scheduledPay?.amount,
                                                         selectedDate: record.date,
                                                         onSave: (data) => setState(() {                                                          
