@@ -89,7 +89,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
         onPressed: () => context.push("/scheduled_pays/put"),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             spacing: 15,
@@ -108,33 +108,36 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                   ),
                 )
               ),
-              Container(
-                height: double.maxFinite,
-                alignment: Alignment.topCenter,
-                child: FutureBuilder<List<RelatedScheduledPay>>(
-                  future: _pays,
-                  builder: (BuildContext context, AsyncSnapshot<List<RelatedScheduledPay>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasData) {
+              Flexible(
+                child: Card(
+                  elevation: 0,
+                  color: AppTheme.of(context).seedBgColor,
+                  child: FutureBuilder<List<RelatedScheduledPay>>(
+                    future: _pays,
+                    builder: (BuildContext context, AsyncSnapshot<List<RelatedScheduledPay>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
                           return ListView.builder(
-                          itemBuilder: (context, i) => Padding(
-                            padding: EdgeInsets.only(top: i > 0 ? 15 : 0),
-                            child: ScheduledPayTile(
-                              icon: snapshot.data?[i].subcategory?.icon != null ? IconData(snapshot.data?[i].subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].subcategory?.iconFontFamily!) : null,
-                              title: snapshot.data?[i].title,
-                              amount: snapshot.data?[i].amount,
-                              isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
-                              onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]),
+                            shrinkWrap: true,
+                            itemBuilder: (context, i) => Padding(
+                              padding: EdgeInsets.only(top: i > 0 ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
+                              child: ScheduledPayTile(
+                                icon: snapshot.data?[i].subcategory?.icon != null ? IconData(snapshot.data?[i].subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].subcategory?.iconFontFamily!) : null,
+                                title: snapshot.data?[i].title,
+                                amount: snapshot.data?[i].amount,
+                                isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
+                                onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]),
+                              ),
                             ),
-                          ),
-                          itemCount: snapshot.data?.length,
-                        );
+                            itemCount: snapshot.data?.length,
+                          );
+                        }
+                        return Text(tr.youDontHaveAnyDataToShow, textAlign: TextAlign.center,);
                       }
-                      return Text(tr.youDontHaveAnyDataToShow, textAlign: TextAlign.center,);
-                    }
-                    return const CircularProgressIndicator();
-                  },
-                ),
+                      return const CircularProgressIndicator();
+                    },
+                  ),
+                )
               )
             ],
           ),

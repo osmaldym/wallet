@@ -62,8 +62,6 @@ class _InputDateState extends State<InputDate> {
       lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 5)
     );
 
-    setState(() {
-      widget.selectedDate = picked!;
-    });
+    if (picked != null) setState(() { widget.selectedDate = picked; });
   }
 }
