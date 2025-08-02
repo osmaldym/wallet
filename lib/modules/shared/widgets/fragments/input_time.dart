@@ -55,8 +55,6 @@ class _InputTimeState extends State<InputTime> {
       initialTime: TimeOfDay.now(),
     );
 
-    setState(() {
-      widget.selectedTime = picked!;
-    });
+    if (picked != null) setState(() { widget.selectedTime = picked; });
   }
 }
