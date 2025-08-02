@@ -323,7 +323,6 @@ class _PutState extends State<Put> {
                 incomeSelected = false;
                 expendSelected = true;
                 selectedSubcategory = null;
-                selectedCurrency = null;
                 _resetAllSelects();
                 _resetFrecency();
                 loading = false;
