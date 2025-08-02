@@ -125,7 +125,6 @@ class _CalculatorModalState extends State<CalculatorModal> {
             || widget.toShow.length > 20) return;
         widget.toShow += txt;
       }
-      print("${isNumber.hasMatch(widget.toShow)} / ${widget.toShow}");
       if (isNumber.hasMatch(widget.toShow) && !aritmetic.hasMatch(widget.toShow)) {
         widget.operationNum = double.parse(widget.toShow.replaceAll(",", ""));
       }
