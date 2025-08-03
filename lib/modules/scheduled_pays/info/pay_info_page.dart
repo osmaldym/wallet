@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/extensions/datetime_ext.dart';
@@ -67,7 +68,10 @@ class _PayInfoPageState extends State<PayInfoPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
-        title: context.l10n!.payData
+        title: context.l10n!.payData,
+        trailingIcon: Icons.edit,
+        trailingIconSize: 22,
+        onTrailingPressed: () => context.push("/scheduled_pays/put", extra: widget.relatedScheduledPay),
       ),
       body: SafeArea(
         child: Container(

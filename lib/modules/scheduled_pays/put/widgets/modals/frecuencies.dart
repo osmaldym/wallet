@@ -29,7 +29,7 @@ class FrecuenciesModal extends StatefulWidget {
 class _FrecuenciesModalState extends State<FrecuenciesModal> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  late Iterable<String> _weekDays;  
+  Iterable<String> _weekDays = [];
 
   bool _chipOnceSelected = false;
   bool _chipDailySelected = false;

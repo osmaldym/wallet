@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class InputDate extends StatefulWidget {
   InputDecoration? decoration;
   bool? readOnly;
+  bool? enabled;
   TextInputType? keyboardType;
   bool showModal;
   void Function()? onTap;
@@ -21,6 +22,7 @@ class InputDate extends StatefulWidget {
     this.keyboardType,
     this.showModal = true,
     this.onTap,
+    this.enabled,
     this.onChanged,
     this.firstDate,
     this.lastDate,
@@ -42,6 +44,7 @@ class _InputDateState extends State<InputDate> {
       decoration: widget.decoration ?? InputDecoration(
         labelText: tr.date
       ),
+      enabled: widget.enabled ?? true,
       controller: TextEditingController(
         text: formatedDate,
       ),

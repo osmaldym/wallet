@@ -15,6 +15,7 @@
     "somethingWrongField": "Algo está mal con este campo",
     "account": "Cuenta",
     "newPay": "Nuevo pago",
+    "editPay": "Editar pago",
     "title": "Titulo",
     "type": "Tipo",
     "expend": "Gasto",
@@ -92,5 +93,6 @@
     "customPay": "Pago personalizado",
     "postponePay": "Posponer pago",
     "day": "Día",
-    "days": "Días"
+    "days": "Días",
+    "errorLoading": "Error al cargar"
 }

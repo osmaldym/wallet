@@ -10,6 +10,8 @@ import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/frecuency.dart';
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
+import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_categories.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
@@ -24,7 +26,12 @@ import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Put extends StatefulWidget {
-  const Put({ super.key });
+  RelatedScheduledPay? relatedScheduledPay;
+
+  Put({
+    super.key,
+    this.relatedScheduledPay,
+  });
 
   @override
   State<StatefulWidget> createState() => _PutState();
@@ -65,6 +72,7 @@ class _PutState extends State<Put> {
   void initState() {
     _getAll();
     _resetFrecency();
+    if (widget.relatedScheduledPay != null) setAllDataFromRScheculedPay();
     super.initState();
   }
 
@@ -114,6 +122,51 @@ class _PutState extends State<Put> {
     }));
   }
 
+  void setAllDataFromRScheculedPay() {
+    pay.id = widget.relatedScheduledPay?.id;
+
+    pay.title = widget.relatedScheduledPay?.title ?? "";
+    pay.automatic = widget.relatedScheduledPay?.automatic ?? false;
+
+    int typeIndex = (widget.relatedScheduledPay?.type ?? ScheduledPayTypes.expend.index);
+    expendSelected = typeIndex == ScheduledPayTypes.expend.index;
+    incomeSelected = typeIndex == ScheduledPayTypes.income.index;
+
+    pay.categoryId = widget.relatedScheduledPay?.subcategory?.categoryId;    
+    selectedSubcategory = widget.relatedScheduledPay?.subcategory;    
+
+    pay.accountId = widget.relatedScheduledPay?.account?.id;
+    pay.amount = widget.relatedScheduledPay?.amount;
+
+    pay.currencyId = widget.relatedScheduledPay?.currency?.id;
+    selectedCurrency = widget.relatedScheduledPay?.currency;
+
+    pay.beneficiary = widget.relatedScheduledPay?.beneficiary;
+    pay.note = widget.relatedScheduledPay?.note;
+
+    pay.date = widget.relatedScheduledPay?.date;
+
+    pay.notificationId = widget.relatedScheduledPay?.notification?.id;
+
+    pay.frecuencyId = widget.relatedScheduledPay?.frecuency?.id;
+    frecuency.forDate = widget.relatedScheduledPay?.frecuency?.forDate;
+    frecuency.repeatEvery = widget.relatedScheduledPay?.frecuency?.repeatEvery;
+    frecuency.repeatedTimes = widget.relatedScheduledPay?.frecuency?.repeatedTimes;
+    frecuency.rrFor = widget.relatedScheduledPay?.frecuency?.rrFor;
+    frecuency.selectedDaysOfWeek = widget.relatedScheduledPay?.frecuency?.recordRepetitionWeekly?.daysOfWeek;
+
+    RecordRepetitionMonthly? recordRepetitionMonthly = widget.relatedScheduledPay?.frecuency?.recordRepetitionMonthly;
+
+    frecuency.everyNumberDay = recordRepetitionMonthly?.everyNumberDay;
+    frecuency.weekNumber = recordRepetitionMonthly?.weekNumber;
+
+    if (recordRepetitionMonthly?.sameDayOfMonth ?? false) frecuency.selectedMonthlyOption = FrecuencyMontlyOption.sameDay;
+    if (recordRepetitionMonthly?.everyLastDayOfMonth ?? false) frecuency.selectedMonthlyOption = FrecuencyMontlyOption.everyLastDay;
+    if ((recordRepetitionMonthly?.weekNumber ?? -1) > 0) frecuency.selectedMonthlyOption = FrecuencyMontlyOption.everySemanalDay;
+
+    frecuency.timesPlaced = widget.relatedScheduledPay?.frecuency?.timesPlaced;
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLocalizations? tr = AppLocalizations.of(context)!;
@@ -123,7 +176,7 @@ class _PutState extends State<Put> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
-        title: tr.newPay,
+        title: widget.relatedScheduledPay != null ? tr.editPay : tr.newPay,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -264,6 +317,7 @@ class _PutState extends State<Put> {
                 children: [
                   Expanded(
                     child: InputDate(
+                      enabled: widget.relatedScheduledPay == null,
                       selectedDate: pay.date!,
                       onChanged: (val) {
                         date = val;
@@ -274,6 +328,7 @@ class _PutState extends State<Put> {
                   ),
                   Expanded(
                     child: InputTime(
+                      enabled: widget.relatedScheduledPay == null,
                       selectedTime: TimeOfDay(hour: dateMergedNotifier.value != null ? dateMergedNotifier.value!.hour : pay.date!.hour, minute: dateMergedNotifier.value != null ? dateMergedNotifier.value!.minute : pay.date!.minute),
                       onChanged: (val) {
                         time = val;
@@ -314,9 +369,11 @@ class _PutState extends State<Put> {
               setState(() { loading = true; });
               pay.frecuencyId = await _controller.createFrecuency(frecuency);
               await _controller.createPay(pay);
+              bool canExit = pay.id != null;
               Map<String, Object?> payMap = pay.toMap();
               payMap.clear();
               pay = Convertions.responseToScheculedPay(payMap);
+              if (canExit && context.mounted) Navigator.pop(context);
               setState(() {
                 pay.date = DateTime.now();
                 pay.automatic = false;

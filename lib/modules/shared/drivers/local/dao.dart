@@ -28,6 +28,7 @@ class Dao {
   Dao() { _db = DB(); }
 
   Future<int> put(String tableName, Map<String, Object?> data) async {
+    print("$tableName: $data");
     return await (await _db.get()).insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -44,9 +45,13 @@ class Dao {
     await (await _db.get()).delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
-  Future<Map<String, Object?>> getById(String tableName, int? id, { String idColumnName = "id" }) async {
-    if (id == null) return {};
+  Future<Map<String, Object?>> getById(String tableName, int id, { String idColumnName = "id" }) async {
     List<Map<String, Object?>> data = (await (await _db.get()).query(tableName, where:  "$idColumnName = ?", whereArgs: [id]));
+    return data.isNotEmpty ? data.first : {};
+  }
+
+  Future<Map<String, Object?>> getByIdOrFirst(String tableName, int? id, { String idColumnName = "id" }) async {
+    List<Map<String, Object?>> data = (await (await _db.get()).query(tableName, where: id == null ? null : "$idColumnName = ?", whereArgs: id == null ? null : [id], limit: 1));
     return data.isNotEmpty ? data.first : {};
   }
 
@@ -108,7 +113,8 @@ class Dao {
     return Convertions.responseToAccountList(accounts);
   }
 
-  Future<Account> account(int id) async {
+  Future<Account?> account(int? id) async {
+    if (id == null) return null;
     Map<String, Object?> account = await getById(DBTables.account, id);
     return Convertions.responseToAccount(account);
   }
@@ -143,34 +149,7 @@ class Dao {
     return Convertions.responseToScheculedPayList(data).first;
   }
 
-  Future<List<RelatedScheduledPay>> relatedScheduledPays({int? type}) async {
-    final List<ScheduledPay> scheduledPaysData = await scheduledPays(type: type);
-    List<RelatedScheduledPay> datas = [
-      for (final scheduledPayData in scheduledPaysData)
-        RelatedScheduledPay(
-          id: scheduledPayData.id,
-          serverId: scheduledPayData.serverId,
-          title: scheduledPayData.title,
-          type: scheduledPayData.type,
-          amount: scheduledPayData.amount,
-          automatic: scheduledPayData.automatic,
-          beneficiary: scheduledPayData.beneficiary,
-          note: scheduledPayData.note,
-          date: scheduledPayData.date,
-          account: await account(scheduledPayData.accountId ?? -1),
-          currency: await currency(id: scheduledPayData.currencyId),
-          frecuency: await relatedRecordRepetition(scheduledPayData.frecuencyId ?? -1),
-          notification: await notification(scheduledPayData.notificationId),
-          subcategory: await relatedSubcategory(scheduledPayData.categoryId ?? -1),
-        )
-    ];
-
-    return datas;
-  }
-
-  Future<RelatedScheduledPay> relatedScheduledPay(int id) async {
-    final ScheduledPay scheduledPayData = await scheduledPay(id);
-    return RelatedScheduledPay(
+  Future<RelatedScheduledPay> _toRelatedScheduledPay(ScheduledPay scheduledPayData) async => RelatedScheduledPay(
       id: scheduledPayData.id,
       serverId: scheduledPayData.serverId,
       title: scheduledPayData.title,
@@ -180,12 +159,24 @@ class Dao {
       beneficiary: scheduledPayData.beneficiary,
       note: scheduledPayData.note,
       date: scheduledPayData.date,
-      account: await account(scheduledPayData.accountId ?? -1),
+      account: await account(scheduledPayData.accountId),
       currency: await currency(id: scheduledPayData.currencyId),
-      frecuency: await relatedRecordRepetition(scheduledPayData.frecuencyId ?? -1),
+      frecuency: await relatedRecordRepetition(scheduledPayData.frecuencyId),
       notification: await notification(scheduledPayData.notificationId),
-      subcategory: await relatedSubcategory(scheduledPayData.categoryId ?? -1),
+      subcategory: await relatedSubcategory(scheduledPayData.categoryId),
     );
+
+  Future<List<RelatedScheduledPay>> relatedScheduledPays({int? type}) async {
+    final List<ScheduledPay> scheduledPaysData = await scheduledPays(type: type);
+    List<RelatedScheduledPay> datas = [
+      for (final scheduledPayData in scheduledPaysData)  await _toRelatedScheduledPay(scheduledPayData)
+    ];
+
+    return datas;
+  }
+
+  Future<RelatedScheduledPay> relatedScheduledPay(int id) async {
+    return _toRelatedScheduledPay(await scheduledPay(id));
   }
 
   // Category group operations
@@ -224,7 +215,8 @@ class Dao {
     return Convertions.responseToSubcategoryList(data).first;
   }
 
-  Future<RelatedSubcategory> relatedSubcategory(int id) async {
+  Future<RelatedSubcategory?> relatedSubcategory(int? id) async {
+    if (id == null) return null;
     Subcategories subcategoryData = await subcategory(id);
     return RelatedSubcategory(
       id: subcategoryData.id,
@@ -256,7 +248,8 @@ class Dao {
     return Convertions.responseToRecordRepetitionList(data).first;
   }
 
-  Future<RelatedRecordRepetition> relatedRecordRepetition(int idFrecuency) async {
+  Future<RelatedRecordRepetition?> relatedRecordRepetition(int? idFrecuency) async {
+    if (idFrecuency == null) return null;
     final RecordRepetition recordRepetitionData = await recordRepetition(idFrecuency);
 
     RelatedRecordRepetition relatedRecordRepetition = RelatedRecordRepetition(
@@ -293,7 +286,8 @@ class Dao {
     return Convertions.responseToRecordRepetitionWeeklyList(data);
   }
 
-  Future<RecordRepetitionWeekly> recordRepetitionWeekly({ int? recordRepetitionId }) async {
+  Future<RecordRepetitionWeekly?> recordRepetitionWeekly({ int? recordRepetitionId }) async {
+    if (recordRepetitionId == null) return null;
     final Map<String, Object?> data = await getById(DBTables.recordRepetitionWeekly, recordRepetitionId, idColumnName: "record_repetition_id");
     return Convertions.responseToRecordRepetitionWeekly(data);
   }
@@ -308,7 +302,8 @@ class Dao {
     return Convertions.responseToRecordRepetitionMonthlyList(data);
   }
 
-    Future<RecordRepetitionMonthly> recordRepetitionMonthly({ int? recordRepetitionId }) async {
+    Future<RecordRepetitionMonthly?> recordRepetitionMonthly({ int? recordRepetitionId }) async {
+    if (recordRepetitionId == null) return null;
     final Map<String, Object?> data = await getById(DBTables.recordRepetitionMonthly, recordRepetitionId, idColumnName: "record_repetition_id");
     return Convertions.responseToRecordRepetitionMonthly(data);
   }
@@ -319,7 +314,8 @@ class Dao {
     return Convertions.responseToNotificationList(data);
   }
 
-  Future<Notifications> notification(int? id) async {
+  Future<Notifications?> notification(int? id) async {
+    if (id == null) return null;
     final Map<String, Object?> data = await getById(DBTables.notifications, id);
     return Convertions.responseToNotification(data);
   }
@@ -330,17 +326,9 @@ class Dao {
     return Convertions.responseToCurrencyList(data);
   }
 
-  Future<Currency> currency({ int? id }) async {  
-    String? where;
-    List<Object>? whereArgs;
-
-    if (id != null) {
-      where = "id = ?";
-      whereArgs = [id as Object];
-    }
-
-    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.currencies, where: where, limit: 1, whereArgs: whereArgs);
-    return Convertions.responseToCurrency(data.first);
+  Future<Currency?> currency({int? id, bool? getFirst}) async {
+    final Map<String, Object?> data = await getByIdOrFirst(DBTables.currencies, id);
+    return Convertions.responseToCurrency(data);
   }
 
   // Record operations

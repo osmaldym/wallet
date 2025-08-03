@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/utils/app_localizations_x.dart';
+import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/scheduled_pays_controller.dart';
 import 'package:wallet/modules/scheduled_pays/widgets/scheduled_pay_tile.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
@@ -19,6 +21,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   late Future<List<RelatedScheduledPay>> _pays;
   late  ScheduledPaysController _controller;
+  final Utils _utils = Utils();
 
   bool allSelected = true;
   bool incomeSelected = false;
@@ -132,6 +135,9 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                             itemCount: snapshot.data?.length,
                           );
                         }
+
+                        if (snapshot.hasError) _utils.showSnackBarMessage(context, "${context.l10n?.errorLoading}: ${snapshot.error}", error: true);
+
                         return Text(tr.youDontHaveAnyDataToShow, textAlign: TextAlign.center,);
                       }
                       return const CircularProgressIndicator();
