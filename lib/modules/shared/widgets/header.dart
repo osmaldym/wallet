@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 
 // ignore: must_be_immutable
@@ -9,7 +8,9 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
   String title;
   IconData leadingIcon;
   IconData trailingIcon;
-  double iconSize;
+  double iconsSize;
+  double? trailingIconSize;
+  double? leadingIconSize;
   void Function()? onLeadingPressed;
   void Function()? onTrailingPressed;
   final double p = 25;
@@ -19,7 +20,9 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
     this.onLeadingPressed,
     this.onTrailingPressed,
     this.height = 80.0,
-    this.iconSize = 34.0,
+    this.iconsSize = 34.0,
+    this.trailingIconSize,
+    this.leadingIconSize,
     this.leadingIcon = Icons.chevron_left,
     this.trailingIcon = Icons.add,
     this.title = "Wallet",
@@ -38,7 +41,7 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
               padding: EdgeInsets.only(right: p),
               child: IconButton(
                 icon: Icon(leadingIcon),
-                iconSize: iconSize,
+                iconSize: leadingIconSize ?? iconsSize,
                 onPressed: onLeadingPressed ?? context.pop,
               ),
             ),
@@ -51,7 +54,7 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
             if (onTrailingPressed != null)
               IconButton(
                 icon: Icon(trailingIcon),
-                iconSize: iconSize,
+                iconSize: trailingIconSize ?? iconsSize,
                 color: AppTheme.of(context).textContrast,
                 onPressed: onTrailingPressed,
               ),
