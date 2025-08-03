@@ -15,6 +15,7 @@
     "somethingWrongField": "Something is wrong with this field",
     "account": "Account",
     "newPay": "New pay",
+    "editPay": "Edit pay",
     "title": "Title",
     "type": "Type",
     "expend": "Expend",
@@ -92,5 +93,6 @@
     "customPay": "Custom pay",
     "postponePay": "Postpone pay",
     "day": "Day",
-    "days": "Days"
+    "days": "Days",
+    "errorLoading": "Error loading"
 }
