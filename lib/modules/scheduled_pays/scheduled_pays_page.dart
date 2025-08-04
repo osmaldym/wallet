@@ -33,8 +33,10 @@ class _ScheduledPaysState extends State<ScheduledPays> {
   void initState() {
     super.initState();
     _controller = ScheduledPaysController();
-    _pays = _controller.getScheduledPays();
+    reloadPays();
   }
+
+  void reloadPays() => _pays = _controller.getScheduledPays();
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +91,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => context.push("/scheduled_pays/put"),
+        onPressed: () => context.push("/scheduled_pays/put").then((_) => setState(() { reloadPays(); })),
       ),
       body: SafeArea(
         child: Container(
@@ -129,7 +131,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                                 title: snapshot.data?[i].title,
                                 amount: snapshot.data?[i].amount,
                                 isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
-                                onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]),
+                                onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]).then((_) => setState(() { reloadPays(); })),
                               ),
                             ),
                             itemCount: snapshot.data?.length,

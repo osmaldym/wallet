@@ -30,6 +30,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final PayInfoController _controller = PayInfoController();
   Future<List<RelatedRecord>>? _records;
+  RelatedScheduledPay? _relatedScheduledPayToShow;
 
   @override
   void initState() {
@@ -39,15 +40,17 @@ class _PayInfoPageState extends State<PayInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isIncome = ScheduledPayTypes.values[widget.relatedScheduledPay?.type! ?? 0] == ScheduledPayTypes.income;
+    _relatedScheduledPayToShow ??= widget.relatedScheduledPay;
+
+    bool isIncome = ScheduledPayTypes.values[_relatedScheduledPayToShow?.type! ?? 0] == ScheduledPayTypes.income;
 
     String every = context.l10n!.every;
-    int? timesPlaced = widget.relatedScheduledPay?.frecuency?.timesPlaced;
+    int? timesPlaced = _relatedScheduledPayToShow?.frecuency?.timesPlaced;
     bool timesPLacedGreatherThanOne = timesPlaced.toBool() && timesPlaced! > 1;
 
     if (timesPLacedGreatherThanOne) every += " ${timesPlaced.toString()}";
 
-    switch (widget.relatedScheduledPay?.frecuency?.repeatEvery) {
+    switch (_relatedScheduledPayToShow?.frecuency?.repeatEvery) {
       case RepeatEvery.day:
         every = timesPLacedGreatherThanOne ? "$every ${context.l10n!.days}" : context.l10n!.everyDay;
         break;
@@ -71,7 +74,12 @@ class _PayInfoPageState extends State<PayInfoPage> {
         title: context.l10n!.payData,
         trailingIcon: Icons.edit,
         trailingIconSize: 22,
-        onTrailingPressed: () => context.push("/scheduled_pays/put", extra: widget.relatedScheduledPay),
+        onTrailingPressed: () async {
+          RelatedScheduledPay? newRSP = await context.push("/scheduled_pays/put", extra: _relatedScheduledPayToShow) as RelatedScheduledPay?;
+          if (newRSP != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => setState(() { _relatedScheduledPayToShow = newRSP; }));
+          }
+        },
       ),
       body: SafeArea(
         child: Container(
@@ -93,7 +101,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.relatedScheduledPay?.title ?? "",
+                        _relatedScheduledPayToShow?.title ?? "",
                         style: TextStyle(
                           fontSize: 32,
                           color: AppTheme.of(context).textBlack
@@ -108,7 +116,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                               color: isIncome ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast
                             ),
                           ),
-                          if (widget.relatedScheduledPay?.automatic ?? false)
+                          if (_relatedScheduledPayToShow?.automatic ?? false)
                             Text(
                               "- ${context.l10n!.automaticPay}",
                               style: TextStyle(
@@ -119,7 +127,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                         ],
                       ),
                       Text(
-                        "${context.l10n!.from} ${DateFormat.LLLL().format(widget.relatedScheduledPay?.date ?? DateTime.now())} ${context.l10n!.ofDel} ${widget.relatedScheduledPay?.date?.year} • $every",
+                        "${context.l10n!.from} ${DateFormat.LLLL().format(_relatedScheduledPayToShow?.date ?? DateTime.now())} ${context.l10n!.ofDel} ${_relatedScheduledPayToShow?.date?.year} • $every",
                         style: TextStyle(
                           fontSize: 16,
                           color: AppTheme.of(context).textBlack
@@ -187,7 +195,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                         Row(
                                           spacing: 5,
                                           children: [
-                                            if (widget.relatedScheduledPay?.frecuency?.repeatEvery != RepeatEvery.once && !isToday)
+                                            if (_relatedScheduledPayToShow?.frecuency?.repeatEvery != RepeatEvery.once && !isToday)
                                               ...[
                                                 Icon(
                                                   Icons.alarm,
@@ -204,6 +212,8 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                 icon: const Icon(Icons.more_vert),
                                                 itemBuilder: (context) => [
                                                   PopupMenuItem(
+                                                    // FIX BUG WHEN I SET A DATE GREATHER THAN THE DATE ORIGINALLY CREATES THE RECORD THE RECORD DESYNC
+                                                    // FIX BUG WHEN I SET A DATE LESS THAN THE DATE ORIGINALLY CREATES THE RECORD THE RECORD DESYNC
                                                     onTap: () => showModalBottomSheet(
                                                       context: context,
                                                       builder: (context) => CustomPay(
@@ -213,7 +223,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                         selectedDate: record.date,
                                                         onSave: (data) => setState(() {                                                          
                                                           _records = _controller.postponeLastRecord(
-                                                            scheduledPayId: widget.relatedScheduledPay?.id,
+                                                            scheduledPayId: _relatedScheduledPayToShow?.id,
                                                             recordId: record.id,
                                                             datetime: data.datetime
                                                           );
@@ -241,7 +251,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                         selectedDate: record.date,
                                                         onSave: (data) => setState(() {                                                          
                                                           _records = _controller.updateLastRecordIfExist(
-                                                            scheculedPayId: widget.relatedScheduledPay?.id,
+                                                            scheculedPayId: _relatedScheduledPayToShow?.id,
                                                             recordId: record.id,
                                                             paid: true,
                                                             datetime: data.datetime,
@@ -266,7 +276,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                   PopupMenuItem(
                                                     onTap: () => setState(() {
                                                       _records = _controller.updateLastRecordIfExist(
-                                                        scheculedPayId: widget.relatedScheduledPay?.id,
+                                                        scheculedPayId: _relatedScheduledPayToShow?.id,
                                                         recordId: record.id,
                                                         paid: true,
                                                       );
@@ -287,7 +297,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                   PopupMenuItem(
                                                     onTap: () => setState(() {
                                                       _records = _controller.updateLastRecordIfExist(
-                                                        scheculedPayId: widget.relatedScheduledPay?.id,
+                                                        scheculedPayId: _relatedScheduledPayToShow?.id,
                                                         recordId: record.id,
                                                         paid: false,
                                                       );
