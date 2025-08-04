@@ -28,7 +28,6 @@ class Dao {
   Dao() { _db = DB(); }
 
   Future<int> put(String tableName, Map<String, Object?> data) async {
-    print("$tableName: $data");
     return await (await _db.get()).insert(tableName, data, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 

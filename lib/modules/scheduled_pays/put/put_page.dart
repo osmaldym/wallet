@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/convertions.dart';
@@ -368,12 +369,11 @@ class _PutState extends State<Put> {
             onPressed: () async {
               setState(() { loading = true; });
               pay.frecuencyId = await _controller.createFrecuency(frecuency);
-              await _controller.createPay(pay);
-              bool canExit = pay.id != null;
+              RelatedScheduledPay? newPay = await _controller.putPay(pay);
+              if (pay.id != null && context.mounted) context.pop(newPay);
               Map<String, Object?> payMap = pay.toMap();
               payMap.clear();
               pay = Convertions.responseToScheculedPay(payMap);
-              if (canExit && context.mounted) Navigator.pop(context);
               setState(() {
                 pay.date = DateTime.now();
                 pay.automatic = false;

@@ -6,13 +6,16 @@ import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 
 class PutController {
   late Dao dao = Dao();
 
-  Future<void> createPay(ScheduledPay pay) async {
+  Future<RelatedScheduledPay?> putPay(ScheduledPay pay) async {
     await dao.putScheduledPay(pay.toMap());
+    if (pay.id != null) return await dao.relatedScheduledPay(pay.id!);
+    return null;
   }
 
   Future<int> createFrecuency(FrecuencyData frecuency) async {
