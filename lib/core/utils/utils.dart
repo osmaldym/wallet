@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/extensions/datetime_ext.dart';
+import 'package:wallet/core/utils/app_localizations_x.dart';
 
 class Utils {
   final DateFormat _readableDateFormat = DateFormat("dd/MM/yyyy");
@@ -15,6 +17,18 @@ class Utils {
     if (datetime == null) return null;
     time ??= const TimeOfDay(hour: 0, minute: 0);
     return DateTime(datetime.year, datetime.month, datetime.day, time.hour, time.minute);
+  }
+
+  String toReadableRelativeDate(DateTime datetime, BuildContext context) {
+    datetime = datetime.recreateInTimeZero();
+    DateTime today = DateTime.now().recreateInTimeZero();
+    DateTime yesterday = today.subtract(const Duration(days: 1));
+    DateTime tomorrow = today.add(const Duration(days: 1));
+
+    if (datetime.isAtSameMomentAs(today)) return context.l10n!.today;
+    else if (datetime.isAtSameMomentAs(yesterday)) return context.l10n!.yesterday;
+    else if (datetime.isAtSameMomentAs(tomorrow)) return context.l10n!.tomorrow;
+    else return toReadableDate(datetime);
   }
 
   String toReadableDate(DateTime datetime) => _readableDateFormat.format(datetime);

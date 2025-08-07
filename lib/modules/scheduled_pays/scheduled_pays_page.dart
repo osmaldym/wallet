@@ -6,6 +6,7 @@ import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/scheduled_pays/scheduled_pays_controller.dart';
 import 'package:wallet/modules/scheduled_pays/widgets/scheduled_pay_tile.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
+import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
@@ -113,39 +114,36 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                   ),
                 )
               ),
-              Flexible(
-                child: Card(
-                  elevation: 0,
-                  color: AppTheme.of(context).seedBgColor,
-                  child: FutureBuilder<List<RelatedScheduledPay>>(
-                    future: _pays,
-                    builder: (BuildContext context, AsyncSnapshot<List<RelatedScheduledPay>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (context, i) => Padding(
-                              padding: EdgeInsets.only(top: i > 0 ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
-                              child: ScheduledPayTile(
-                                icon: snapshot.data?[i].subcategory?.icon != null ? IconData(snapshot.data?[i].subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].subcategory?.iconFontFamily!) : null,
-                                title: snapshot.data?[i].title,
-                                amount: snapshot.data?[i].amount,
-                                isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
-                                onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]).then((_) => setState(() { reloadPays(); })),
-                              ),
+              FlexibleCard(
+                forList: true,
+                child: FutureBuilder<List<RelatedScheduledPay>>(
+                  future: _pays,
+                  builder: (BuildContext context, AsyncSnapshot<List<RelatedScheduledPay>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (context, i) => Padding(
+                            padding: EdgeInsets.only(top: i > 0 ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
+                            child: ScheduledPayTile(
+                              icon: snapshot.data?[i].subcategory?.icon != null ? IconData(snapshot.data?[i].subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].subcategory?.iconFontFamily!) : null,
+                              title: snapshot.data?[i].title,
+                              amount: snapshot.data?[i].amount,
+                              isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
+                              onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]).then((_) => setState(() { reloadPays(); })),
                             ),
-                            itemCount: snapshot.data?.length,
-                          );
-                        }
-
-                        if (snapshot.hasError) _utils.showSnackBarMessage(context, "${context.l10n?.errorLoading}: ${snapshot.error}", error: true);
-
-                        return Text(tr.youDontHaveAnyDataToShow, textAlign: TextAlign.center,);
+                          ),
+                          itemCount: snapshot.data?.length,
+                        );
                       }
-                      return const CircularProgressIndicator();
-                    },
-                  ),
-                )
+
+                      if (snapshot.hasError) _utils.showSnackBarMessage(context, "${context.l10n?.errorLoading}: ${snapshot.error}", error: true);
+
+                      return Text(tr.youDontHaveAnyDataToShow, textAlign: TextAlign.center,);
+                    }
+                    return const CircularProgressIndicator();
+                  },
+                ), 
               )
             ],
           ),

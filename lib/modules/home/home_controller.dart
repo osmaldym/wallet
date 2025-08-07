@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:wallet/core/constants/app_db.dart';
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart' as Model;
+import 'package:wallet/modules/shared/drivers/local/models/record.dart' as model;
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
+import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/user.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 
@@ -45,4 +48,33 @@ class HomeController {
 
     return accountsToShow;
   }
+
+  Future<void> insertRecord({int? scheculedPayId, bool? paid}) async {
+    await daoLocal.createRecordsIfNotExist(scheduledPayId: scheculedPayId, paid: paid);
+  }
+
+  Future<void> updateLastRecordIfExist({int? scheculedPayId, int? recordId, bool? paid, DateTime? datetime, double? amount}) async {
+    if (recordId != null) daoLocal.updateRecord(recordId, model.Record(paid: paid, expired: false, datePaid: datetime, amount: amount).toCleanMap());
+    if (scheculedPayId != null) await daoLocal.createRecordsIfNotExist(scheduledPayId: scheculedPayId);
+  }
+
+  Future<void> postponeLastRecord({int? scheduledPayId, int? recordId, DateTime? datetime}) async {
+    if (recordId != null) daoLocal.updateRecord(recordId, model.Record(date: datetime, datePaid: datetime).toCleanMap(zeroToNull: true));
+  }
+
+  Future<List<RelatedRecord?>> getRecords() async {
+    List<ScheduledPay> scheduledPays = await daoLocal.scheduledPays();
+    List<RelatedRecord?> relatedRecords = [];
+
+    for (final pay in scheduledPays) {
+      await daoLocal.createRecordsIfNotExist(scheduledPayId: pay.id);
+      RelatedRecord? record = await daoLocal.relatedRecord(scheduledPayId: pay.id!, orderByDatePaidDesc: true);
+      if (record != null) relatedRecords.add(record);
+    }
+
+    relatedRecords.sort((a, b) => (a?.datePaid ?? a?.date ?? DateTime.now()).compareTo(b?.datePaid ?? b?.date ?? DateTime.now()));
+
+    return relatedRecords;
+  }
+
 }

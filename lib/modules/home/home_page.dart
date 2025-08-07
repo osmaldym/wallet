@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/utils/app_localizations_x.dart';
+import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/home/home_controller.dart';
+import 'package:wallet/modules/scheduled_pays/info/widgets/modals/custom_pay.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
 import 'package:wallet/modules/shared/widgets/fragments/expandable_fab.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
+import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
+import 'package:wallet/modules/shared/widgets/fragments/next_pay_tile.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,20 +26,25 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late HomeController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final Utils _utils = Utils();
 
   late Future<List<Account>> _accs;
+  Future<List<RelatedRecord?>>? _records;
 
   @override
   void initState() {
     super.initState();
     _controller = HomeController();
     _updateAccounts();
+    _reloadRecords();
     _controller.createSession();
   }
 
   void _updateAccounts() => setState(() {
     _accs = _controller.getAccounts();
   });
+
+  void _reloadRecords() => _records = _controller.getRecords();
 
   @override
   Widget build(BuildContext context){
@@ -60,21 +72,21 @@ class _HomeState extends State<Home> {
           ExpandableFabItem(
             icon: Icons.money,
             helper: tr.newPay,
-            onTapped: () => context.go("/scheduled_pays/put"),
+            onTapped: () => context.push("/scheduled_pays").then((_) => setState(() { _reloadRecords(); })),
           )
         ],
       ),
       drawer: Menu(),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
+            spacing: 10,
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 height: 70,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25
-                ),
                 alignment: Alignment.center,
                 child: FutureBuilder<List<Account>>(
                   future: _accs,
@@ -94,7 +106,103 @@ class _HomeState extends State<Home> {
                     return Text(tr.youDontHaveAnyDataToShow);
                   },
                 )
-              )
+              ),
+              GestureDetector(
+                onTap: () => context.push("/scheduled_pays/put").then((_) => setState(() { _reloadRecords(); })),
+                child: Text(
+                  context.l10n!.nextPays,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 34
+                  ),
+                ),
+              ),
+              FutureBuilder<List<RelatedRecord?>>(
+                future: _records,
+                builder: (BuildContext context, AsyncSnapshot<List<RelatedRecord?>> snapshot) {
+                  if (snapshot.hasData) {
+                    return FlexibleCard(
+                      color: AppTheme.of(context).primary,
+                      child: SizedBox(
+                        height: 300,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (context, i) {
+                            RelatedRecord? record = snapshot.data?[i];
+                            return NextPayTile(
+                              backgroundColor: Colors.transparent,
+                              icon: record?.scheduledPay?.subcategory?.icon != null ? IconData(record?.scheduledPay?.subcategory?.icon! ?? -1, fontFamily: record?.scheduledPay?.subcategory?.iconFontFamily!) : null,
+                              title: record?.scheduledPay?.title,
+                              amount: record?.scheduledPay?.amount,
+                              isIncome: record?.scheduledPay?.type != null && (record?.scheduledPay?.type! ?? 0) > 0,
+                              date: record?.datePaid ?? record?.date,
+                              onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]?.scheduledPay).then((_) => setState(() { _reloadRecords(); })),
+                              onOptionPostponePressed: () => showModalBottomSheet(
+                                context: context,
+                                builder: (context) => CustomPay(
+                                  title: context.l10n!.postponePay,
+                                  onlyShowDate: true,
+                                  lastAmount: record?.scheduledPay?.amount,
+                                  selectedDate: record?.date,
+                                  onSave: (data) async {
+                                    await _controller.postponeLastRecord(
+                                      scheduledPayId: record?.scheduledPay?.id,
+                                      recordId: record?.id,
+                                      datetime: data.datetime
+                                    );
+                                    setState(() { _reloadRecords(); });
+                                  }
+                                ),
+                              ),
+                              onOptionCustomPayPressed: () => showModalBottomSheet(
+                                context: context,
+                                builder: (context) => CustomPay(
+                                  lastAmount: record?.scheduledPay?.amount,
+                                  selectedDate: record?.date,
+                                  onSave: (data) async  {
+                                    await _controller.updateLastRecordIfExist(
+                                      scheculedPayId: record?.scheduledPay?.id,
+                                      recordId: record?.id,
+                                      paid: true,
+                                      datetime: data.datetime,
+                                      amount: data.amount
+                                    );
+
+                                    setState(() { _reloadRecords(); });
+                                  }
+                                )
+                              ),
+                              onOptionPayPressed: () async {
+                                await _controller.updateLastRecordIfExist(
+                                  scheculedPayId: record?.scheduledPay?.id,
+                                  recordId: record?.id,
+                                  paid: true,
+                                );
+                                
+                                setState(() { _reloadRecords(); });
+                              },
+                              onOptionRefusePressed: () async  {
+                                await _controller.updateLastRecordIfExist(
+                                  scheculedPayId: record?.scheduledPay?.id,
+                                  recordId: record?.id,
+                                  paid: false,
+                                );
+                                setState(() { _reloadRecords(); });
+                              },
+                            );
+                          },
+                          itemCount: snapshot.data?.length,
+                        ),
+                      )
+                    );
+                  }
+
+                  if (snapshot.hasError)
+                    _utils.showSnackBarMessage(context, snapshot.error.toString());
+
+                  return const CircularProgressIndicator();
+                }
+              ),
             ],
           ),
         )

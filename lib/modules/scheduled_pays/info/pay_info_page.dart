@@ -12,6 +12,7 @@ import 'package:wallet/modules/shared/drivers/local/models/relationships/r_recor
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/fragments/bordered_container.dart';
+import 'package:wallet/modules/shared/widgets/fragments/pay_options_btn.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 
 class PayInfoPage extends StatefulWidget {
@@ -208,115 +209,56 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                   ),
                                                 ),
                                               ],
-                                              PopupMenuButton(
-                                                icon: const Icon(Icons.more_vert),
-                                                itemBuilder: (context) => [
-                                                  PopupMenuItem(
-                                                    // FIX BUG WHEN I SET A DATE GREATHER THAN THE DATE ORIGINALLY CREATES THE RECORD THE RECORD DESYNC
-                                                    // FIX BUG WHEN I SET A DATE LESS THAN THE DATE ORIGINALLY CREATES THE RECORD THE RECORD DESYNC
-                                                    onTap: () => showModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) => CustomPay(
-                                                        title: context.l10n!.postponePay,
-                                                        onlyShowDate: true,
-                                                        lastAmount: record.scheduledPay?.amount,
-                                                        selectedDate: record.date,
-                                                        onSave: (data) => setState(() {                                                          
-                                                          _records = _controller.postponeLastRecord(
-                                                            scheduledPayId: _relatedScheduledPayToShow?.id,
-                                                            recordId: record.id,
-                                                            datetime: data.datetime
-                                                          );
-                                                        })
-                                                      ),
-                                                    ),
-                                                    child: Row(
-                                                      spacing: 10,
-                                                      children: [
-                                                        Icon(Icons.calendar_month, color: AppTheme.of(context).textContrast),
-                                                        Text(
-                                                          context.l10n!.postpone,
-                                                          style: TextStyle(
-                                                            color: AppTheme.of(context).textContrast
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ),
-                                                  PopupMenuItem(
-                                                    onTap: () => showModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) => CustomPay(
-                                                        lastAmount: record.scheduledPay?.amount,
-                                                        selectedDate: record.date,
-                                                        onSave: (data) => setState(() {                                                          
-                                                          _records = _controller.updateLastRecordIfExist(
-                                                            scheculedPayId: _relatedScheduledPayToShow?.id,
-                                                            recordId: record.id,
-                                                            paid: true,
-                                                            datetime: data.datetime,
-                                                            amount: data.amount
-                                                          );
-                                                        })
-                                                      )
-                                                    ),
-                                                    child: Row(
-                                                      spacing: 10,
-                                                      children: [
-                                                        Icon(Icons.edit, color: AppTheme.of(context).greenContrast,),
-                                                        Text(
-                                                          context.l10n!.customPay,
-                                                          style: TextStyle(
-                                                            color: AppTheme.of(context).greenContrast
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ),
-                                                  PopupMenuItem(
-                                                    onTap: () => setState(() {
-                                                      _records = _controller.updateLastRecordIfExist(
-                                                        scheculedPayId: _relatedScheduledPayToShow?.id,
-                                                        recordId: record.id,
-                                                        paid: true,
-                                                      );
-                                                    }),
-                                                    child: Row(
-                                                      spacing: 10,
-                                                      children: [
-                                                        Icon(Icons.done, color: AppTheme.of(context).greenContrast,),
-                                                        Text(
-                                                          context.l10n!.pay,
-                                                          style: TextStyle(
-                                                            color: AppTheme.of(context).greenContrast
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ),
-                                                  PopupMenuItem(
-                                                    onTap: () => setState(() {
-                                                      _records = _controller.updateLastRecordIfExist(
-                                                        scheculedPayId: _relatedScheduledPayToShow?.id,
-                                                        recordId: record.id,
-                                                        paid: false,
-                                                      );
-                                                    }),
-                                                    child: Row(
-                                                      spacing: 10,
-                                                      children: [
-                                                        Icon(Icons.delete_sharp, color: AppTheme.of(context).redContrast,),
-                                                        Text(
-                                                          context.l10n!.refuse,
-                                                          style: TextStyle(
-                                                            color: AppTheme.of(context).redContrast
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ),
-                                                ] ,
-                                              )
+                                            // FIX BUG WHEN I SET A DATE GREATHER THAN THE DATE ORIGINALLY CREATES THE RECORD THE RECORD DESYNC
+                                            // FIX BUG WHEN I SET A DATE LESS THAN THE DATE ORIGINALLY CREATES THE RECORD THE RECORD DESYNC
+                                            PayOptionsBtn(
+                                              onPostponePressed: () => showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) => CustomPay(
+                                                  title: context.l10n!.postponePay,
+                                                  onlyShowDate: true,
+                                                  lastAmount: record.scheduledPay?.amount,
+                                                  selectedDate: record.date,
+                                                  onSave: (data) => setState(() {                                                          
+                                                    _records = _controller.postponeLastRecord(
+                                                      scheduledPayId: _relatedScheduledPayToShow?.id,
+                                                      recordId: record.id,
+                                                      datetime: data.datetime
+                                                    );
+                                                  })
+                                                ),
+                                              ),
+                                              onCustomPayPressed: () => showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) => CustomPay(
+                                                  lastAmount: record.scheduledPay?.amount,
+                                                  selectedDate: record.date,
+                                                  onSave: (data) => setState(() {                                                          
+                                                    _records = _controller.updateLastRecordIfExist(
+                                                      scheculedPayId: _relatedScheduledPayToShow?.id,
+                                                      recordId: record.id,
+                                                      paid: true,
+                                                      datetime: data.datetime,
+                                                      amount: data.amount
+                                                    );
+                                                  })
+                                                )
+                                              ),
+                                              onPayPressed: () => setState(() {
+                                                _records = _controller.updateLastRecordIfExist(
+                                                  scheculedPayId: _relatedScheduledPayToShow?.id,
+                                                  recordId: record.id,
+                                                  paid: true,
+                                                );
+                                              }),
+                                              onRefusePressed: () => setState(() {
+                                                _records = _controller.updateLastRecordIfExist(
+                                                  scheculedPayId: _relatedScheduledPayToShow?.id,
+                                                  recordId: record.id,
+                                                  paid: false,
+                                                );
+                                              }),
+                                            )
                                           ],
                                         ),
                                       if (record.paid.toBool())

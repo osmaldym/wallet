@@ -94,5 +94,8 @@
     "postponePay": "Postpone pay",
     "day": "Day",
     "days": "Days",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
     "errorLoading": "Error loading"
 }
