@@ -58,11 +58,11 @@ class Convertions {
     );
   }
 
-  static List<ScheduledPay> responseToScheculedPayList(List<Map<String, Object?>> response) {
-    return [ for (final resp in response) responseToScheculedPay(resp) ];
+  static List<ScheduledPay> responseToscheduledPayList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToscheduledPay(resp) ];
   }
 
-  static ScheduledPay responseToScheculedPay(Map<String, Object?> response) {
+  static ScheduledPay responseToscheduledPay(Map<String, Object?> response) {
     return ScheduledPay(
       id: response["id"] as int?,
       userId: response["user_id"] as int?,
