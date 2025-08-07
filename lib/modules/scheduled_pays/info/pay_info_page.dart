@@ -35,7 +35,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
 
   @override
   void initState() {
-    _records = _controller.insertRecord(scheculedPayId: widget.relatedScheduledPay?.id);
+    _records = _controller.insertRecord(scheduledPayId: widget.relatedScheduledPay?.id);
     super.initState();
   }
 
@@ -235,7 +235,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                   selectedDate: record.date,
                                                   onSave: (data) => setState(() {                                                          
                                                     _records = _controller.updateLastRecordIfExist(
-                                                      scheculedPayId: _relatedScheduledPayToShow?.id,
+                                                      scheduledPayId: _relatedScheduledPayToShow?.id,
                                                       recordId: record.id,
                                                       paid: true,
                                                       datetime: data.datetime,
@@ -246,14 +246,14 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                               ),
                                               onPayPressed: () => setState(() {
                                                 _records = _controller.updateLastRecordIfExist(
-                                                  scheculedPayId: _relatedScheduledPayToShow?.id,
+                                                  scheduledPayId: _relatedScheduledPayToShow?.id,
                                                   recordId: record.id,
                                                   paid: true,
                                                 );
                                               }),
                                               onRefusePressed: () => setState(() {
                                                 _records = _controller.updateLastRecordIfExist(
-                                                  scheculedPayId: _relatedScheduledPayToShow?.id,
+                                                  scheduledPayId: _relatedScheduledPayToShow?.id,
                                                   recordId: record.id,
                                                   paid: false,
                                                 );

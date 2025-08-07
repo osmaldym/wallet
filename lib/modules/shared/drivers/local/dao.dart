@@ -140,12 +140,12 @@ class Dao {
     }
 
     final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay, where: where.isNotEmpty ? where : null, whereArgs: params.isNotEmpty ? params : null);
-    return Convertions.responseToScheculedPayList(data);
+    return Convertions.responseToscheduledPayList(data);
   }
 
   Future<ScheduledPay> scheduledPay(int id) async {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.scheduledPay, where: "id = ?", whereArgs: [id], limit: 1);
-    return Convertions.responseToScheculedPayList(data).first;
+    return Convertions.responseToscheduledPayList(data).first;
   }
 
   Future<RelatedScheduledPay> _toRelatedScheduledPay(ScheduledPay scheduledPayData) async => RelatedScheduledPay(
@@ -331,13 +331,13 @@ class Dao {
   }
 
   // Record operations
-  Future<List<model.Record?>> records({ int? scheculedPayId, bool? orderByDatePaidDesc }) async {
+  Future<List<model.Record?>> records({ int? scheduledPayId, bool? orderByDatePaidDesc }) async {
     String? where;
     List<Object>? whereArgs;
 
-    if (scheculedPayId != null) {
+    if (scheduledPayId != null) {
       where = "scheduled_pay_id = ?";
-      whereArgs = [scheculedPayId];
+      whereArgs = [scheduledPayId];
     }
 
     List<Map<String, Object?>> records = await (await _db.get()).query(DBTables.record, where: where, whereArgs: whereArgs, orderBy: orderByDatePaidDesc.toBool() ? "date_paid DESC" : null);
@@ -385,7 +385,7 @@ class Dao {
   }
 
   Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDatePaidDesc }) async {
-    List<model.Record?> recordsData = await records(scheculedPayId: scheduledPayId, orderByDatePaidDesc: orderByDatePaidDesc);
+    List<model.Record?> recordsData = await records(scheduledPayId: scheduledPayId, orderByDatePaidDesc: orderByDatePaidDesc);
     return [
       for (final recordData in recordsData)
         RelatedRecord(

@@ -73,7 +73,7 @@ class _PutState extends State<Put> {
   void initState() {
     _getAll();
     _resetFrecency();
-    if (widget.relatedScheduledPay != null) setAllDataFromRScheculedPay();
+    if (widget.relatedScheduledPay != null) setAllDataFromRscheduledPay();
     super.initState();
   }
 
@@ -123,7 +123,7 @@ class _PutState extends State<Put> {
     }));
   }
 
-  void setAllDataFromRScheculedPay() {
+  void setAllDataFromRscheduledPay() {
     pay.id = widget.relatedScheduledPay?.id;
 
     pay.title = widget.relatedScheduledPay?.title ?? "";
@@ -373,7 +373,7 @@ class _PutState extends State<Put> {
               if (pay.id != null && context.mounted) context.pop(newPay);
               Map<String, Object?> payMap = pay.toMap();
               payMap.clear();
-              pay = Convertions.responseToScheculedPay(payMap);
+              pay = Convertions.responseToscheduledPay(payMap);
               setState(() {
                 pay.date = DateTime.now();
                 pay.automatic = false;

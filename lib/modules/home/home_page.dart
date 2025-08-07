@@ -161,7 +161,7 @@ class _HomeState extends State<Home> {
                                   selectedDate: record?.date,
                                   onSave: (data) async  {
                                     await _controller.updateLastRecordIfExist(
-                                      scheculedPayId: record?.scheduledPay?.id,
+                                      scheduledPayId: record?.scheduledPay?.id,
                                       recordId: record?.id,
                                       paid: true,
                                       datetime: data.datetime,
@@ -174,7 +174,7 @@ class _HomeState extends State<Home> {
                               ),
                               onOptionPayPressed: () async {
                                 await _controller.updateLastRecordIfExist(
-                                  scheculedPayId: record?.scheduledPay?.id,
+                                  scheduledPayId: record?.scheduledPay?.id,
                                   recordId: record?.id,
                                   paid: true,
                                 );
@@ -183,7 +183,7 @@ class _HomeState extends State<Home> {
                               },
                               onOptionRefusePressed: () async  {
                                 await _controller.updateLastRecordIfExist(
-                                  scheculedPayId: record?.scheduledPay?.id,
+                                  scheduledPayId: record?.scheduledPay?.id,
                                   recordId: record?.id,
                                   paid: false,
                                 );
