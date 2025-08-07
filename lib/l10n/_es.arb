@@ -94,5 +94,8 @@
     "postponePay": "Posponer pago",
     "day": "Día",
     "days": "Días",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
     "errorLoading": "Error al cargar"
 }
