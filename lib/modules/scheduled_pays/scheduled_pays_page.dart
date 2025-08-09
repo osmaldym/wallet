@@ -7,6 +7,7 @@ import 'package:wallet/modules/scheduled_pays/scheduled_pays_controller.dart';
 import 'package:wallet/modules/scheduled_pays/widgets/scheduled_pay_tile.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
+import 'package:wallet/modules/shared/widgets/fragments/full_size_message.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
@@ -121,7 +122,31 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                   builder: (BuildContext context, AsyncSnapshot<List<RelatedScheduledPay>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
-                        return ListView.builder(
+                        return snapshot.data!.isEmpty ? FullSizeMessage(
+                          iconData: Icons.money_off,
+                          title: context.l10n!.theresNoPaysToShowYet,
+                          subtitle: GestureDetector(
+                            onTap: () => context.push("/scheduled_pays/put").then((_) => setState(() { reloadPays(); })),
+                            child: Row(
+                              spacing: 5,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  context.l10n!.createANewPay,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: AppTheme.of(context).textContrast
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.open_in_new,
+                                  color: AppTheme.of(context).textContrast,
+                                )
+                              ],
+                            )
+                          ),
+                        ) : ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (context, i) => Padding(
                             padding: EdgeInsets.only(top: i > 0 ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
