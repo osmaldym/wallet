@@ -61,14 +61,24 @@ class ScheduledPay extends Defs{
     'notification_id': notificationId,
     'type': type,
     'title': title,
-    'automatic': automatic!.boolToInt(),
+    'automatic': automatic?.boolToInt(),
     'amount': amount,
-    'date': date!.toIso8601String(),
+    'date': date?.toIso8601String(),
     'note': note, 
     'beneficiary': beneficiary,
     'currency_id': currencyId,
     'completed_pay': completedPay?.boolToInt(),
   };
+
+  Map<String, Object?> toCleanMap({ bool? zeroToNull = false }) {
+    Map<String, Object?> map = toMap();
+      if (zeroToNull ?? false)
+        for (final entry in map.entries)
+          if (entry.value == 0) map[entry.key] = null;
+  
+    map.removeWhere((key, value) => value == null);
+    return map;
+  }
 
   @override
   String toString() {
