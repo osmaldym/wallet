@@ -78,7 +78,10 @@ class _HomeState extends State<Home> {
         ],
       ),
       drawer: Menu(
-        onTapNextPays: () => context.push("/scheduled_pays").then((_) => setState(() { _reloadRecords(); })),
+        onTapNextPays: () {
+          _scaffoldKey.currentState!.closeDrawer();
+          context.push("/scheduled_pays").then((_) => setState(() { _reloadRecords(); }));
+        } 
       ),
       body: SafeArea(
         child: SingleChildScrollView(
