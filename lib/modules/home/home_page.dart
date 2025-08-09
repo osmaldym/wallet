@@ -77,7 +77,9 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      drawer: Menu(),
+      drawer: Menu(
+        onTapNextPays: () => context.push("/scheduled_pays").then((_) => setState(() { _reloadRecords(); })),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 25),

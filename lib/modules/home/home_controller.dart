@@ -69,7 +69,8 @@ class HomeController {
     for (final pay in scheduledPays) {
       await daoLocal.createRecordsIfNotExist(scheduledPayId: pay.id);
       RelatedRecord? record = await daoLocal.relatedRecord(scheduledPayId: pay.id!, orderByDatePaidDesc: true);
-      if (record != null) relatedRecords.add(record);
+      if (record != null && (pay.completedPay ?? false) && record.paid!) continue;
+      relatedRecords.add(record);
     }
 
     relatedRecords.sort((a, b) => (a?.datePaid ?? a?.date ?? DateTime.now()).compareTo(b?.datePaid ?? b?.date ?? DateTime.now()));

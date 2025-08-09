@@ -83,6 +83,7 @@ class Convertions {
       date: DateTime.tryParse(response["date"].toString()),
       note: response["note"] as String?,
       beneficiary: response["beneficiary"] as String?,
+      completedPay: response["completed_pay"].intToBool(),
     );
   }
 
