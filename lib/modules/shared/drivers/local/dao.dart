@@ -125,9 +125,12 @@ class Dao {
     await (orReplace ? put(DBTables.scheduledPay, pay) : insert(DBTables.scheduledPay, pay));
   }
 
-  // Scheduled pay operations
   Future<void> putScheduledPay(Map<String, Object?> pay) async {
     await insertScheduledPay(pay, orReplace: true);
+  }
+
+  Future<void> updateScheduledPay(Map<String, Object?> pay, int id) async {
+    await updateById(DBTables.scheduledPay, pay, id);
   }
 
   Future<List<ScheduledPay>> scheduledPays({ int? type }) async {
@@ -158,6 +161,7 @@ class Dao {
       beneficiary: scheduledPayData.beneficiary,
       note: scheduledPayData.note,
       date: scheduledPayData.date,
+      completedPay: scheduledPayData.completedPay,
       account: await account(scheduledPayData.accountId),
       currency: await currency(id: scheduledPayData.currencyId),
       frecuency: await relatedRecordRepetition(scheduledPayData.frecuencyId),
@@ -532,8 +536,10 @@ class Dao {
         }
       }
 
-      if ((pay.frecuency?.forDate?.difference(recordDateToSet).inMilliseconds ?? 0) < 0
+      if (pay.completedPay!
+        || (pay.frecuency?.forDate?.difference(recordDateToSet).inMilliseconds ?? 0) < 0
         || pay.frecuency?.repeatedTimes != null && (pay.frecuency?.repeatedTimes ?? 0) <= await getRecordsCount(scheduledPayId: pay.id)) {
+        updateScheduledPay(ScheduledPay(completedPay: true).toCleanMap(), pay.id!);
         continue;
       }
 
