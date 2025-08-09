@@ -9,6 +9,7 @@ import 'package:wallet/modules/shared/drivers/local/models/relationships/r_recor
 import 'package:wallet/modules/shared/widgets/fragments/expandable_fab.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
+import 'package:wallet/modules/shared/widgets/fragments/full_size_message.dart';
 import 'package:wallet/modules/shared/widgets/fragments/next_pay_tile.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 
@@ -125,7 +126,33 @@ class _HomeState extends State<Home> {
                       color: AppTheme.of(context).primary,
                       child: SizedBox(
                         height: 300,
-                        child: ListView.builder(
+                        child: snapshot.data!.isEmpty ? FullSizeMessage(
+                          iconData: Icons.money_off,
+                          title: context.l10n!.theresNoRecordsToShowYet,
+                          iconColor: AppTheme.of(context).primary,
+                          fillColor: AppTheme.of(context).seedBgColor,
+                          subtitle: GestureDetector(
+                            onTap: () => context.push("/scheduled_pays/put").then((_) => setState(() { _reloadRecords(); })),
+                            child: Row(
+                              spacing: 5,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  context.l10n!.createANewPay,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.open_in_new,
+                                  color: Colors.black,
+                                )
+                              ],
+                            )
+                          ),
+                        ) : ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (context, i) {
                             RelatedRecord? record = snapshot.data?[i];

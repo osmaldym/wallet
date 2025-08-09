@@ -97,5 +97,8 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "tomorrow": "Tomorrow",
+    "theresNoRecordsToShowYet": "There's no records to show yet",
+    "theresNoPaysToShowYet": "There's no pays to show yet",
+    "createANewPay": "Create a new pay",
     "errorLoading": "Error loading"
 }

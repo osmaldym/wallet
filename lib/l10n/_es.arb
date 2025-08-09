@@ -97,5 +97,8 @@
     "today": "Hoy",
     "yesterday": "Ayer",
     "tomorrow": "Mañana",
+    "theresNoRecordsToShowYet": "Aún no hay registros para mostrar",
+    "theresNoPaysToShowYet": "Aún no hay pagos para mostrar",
+    "createANewPay": "Crear un nuevo pago",
     "errorLoading": "Error al cargar"
 }
