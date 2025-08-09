@@ -22,6 +22,7 @@ class ScheduledPay extends Defs{
   DateTime? date;
   String? note;
   String? beneficiary;
+  bool? completedPay;
 
   ScheduledPay({
     super.id,
@@ -43,6 +44,7 @@ class ScheduledPay extends Defs{
     this.date,
     this.note,
     this.beneficiary,
+    this.completedPay
   });
 
   Map<String, Object?> toMap() => {
@@ -65,6 +67,7 @@ class ScheduledPay extends Defs{
     'note': note, 
     'beneficiary': beneficiary,
     'currency_id': currencyId,
+    'completed_pay': completedPay?.boolToInt(),
   };
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/core/utils/convertions.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
@@ -25,6 +26,7 @@ class RelatedScheduledPay extends ScheduledPay {
     super.date,
     super.type,
     super.note,
+    super.completedPay,
     this.account,
     this.subcategory,
     this.currency,
@@ -51,6 +53,7 @@ class RelatedScheduledPay extends ScheduledPay {
       'frecuency': frecuency,
       'image': image,
       'notification': notification,
+      'completed_pay': completedPay!.boolToInt(),
     };
   }
 
