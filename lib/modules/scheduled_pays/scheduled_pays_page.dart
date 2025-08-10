@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
@@ -93,7 +94,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => context.push("/scheduled_pays/put").then((_) => setState(() { reloadPays(); })),
+        onPressed: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { reloadPays(); })),
       ),
       body: SafeArea(
         child: Container(
@@ -126,7 +127,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                           iconData: Icons.money_off,
                           title: context.l10n!.theresNoPaysToShowYet,
                           subtitle: GestureDetector(
-                            onTap: () => context.push("/scheduled_pays/put").then((_) => setState(() { reloadPays(); })),
+                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { reloadPays(); })),
                             child: Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +156,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                               title: snapshot.data?[i].title,
                               amount: snapshot.data?[i].amount,
                               isIncome: snapshot.data?[i].type != null && (snapshot.data?[i].type! ?? 0) > 0,
-                              onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]).then((_) => setState(() { reloadPays(); })),
+                              onTap: () => context.push(AppRoute.scheduledPaysPayInfo, extra: snapshot.data?[i]).then((_) => setState(() { reloadPays(); })),
                             ),
                           ),
                           itemCount: snapshot.data?.length,
