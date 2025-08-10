@@ -19,14 +19,18 @@ class AppRoutes {
         routes: [
           _newRoute('login', page: const Login()),
           _newRoute('signin', page: const Signin()),
-          _newRoute("scheduled_pays", page: const ScheduledPays()),
           _newRoute(
-            "scheduled_pays/put",
-            builder: (context, state) => scheduled_pays.Put(relatedScheduledPay: state.extra as RelatedScheduledPay?,)
-          ),
-          _newRoute(
-            "scheduled_pays/pay_info",
-            builder: (context, state) => scheduled_pays.PayInfoPage(relatedScheduledPay: state.extra as RelatedScheduledPay,)
+            "scheduled_pays", page: const ScheduledPays(),
+            childs: [
+              _newRoute(
+                "put",
+                builder: (context, state) => scheduled_pays.Put(relatedScheduledPay: state.extra as RelatedScheduledPay?,)
+              ),
+              _newRoute(
+                "pay_info",
+                builder: (context, state) => scheduled_pays.PayInfoPage(relatedScheduledPay: state.extra as RelatedScheduledPay,)
+              ),
+            ]
           ),
         ]
       )
