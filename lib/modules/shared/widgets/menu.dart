@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/app_images.dart';
+import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/shared/widgets/fragments/menu_option.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -61,7 +62,7 @@ class Menu extends Drawer {
           MenuOption(
             text: tr.nextPays,
             icon: Icons.money,
-            onTap: onTapNextPays ?? () => context.go("/scheduled_pays"),
+            onTap: onTapNextPays ?? () => context.go(AppRoute.scheduledPays),
           ),
           MenuOption(
             text: tr.records,

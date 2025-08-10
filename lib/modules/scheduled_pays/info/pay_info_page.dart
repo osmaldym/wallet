@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/extensions/datetime_ext.dart';
 import 'package:wallet/core/extensions/object_ext.dart';
@@ -76,7 +77,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
         trailingIcon: Icons.edit,
         trailingIconSize: 22,
         onTrailingPressed: () async {
-          RelatedScheduledPay? newRSP = await context.push("/scheduled_pays/put", extra: _relatedScheduledPayToShow) as RelatedScheduledPay?;
+          RelatedScheduledPay? newRSP = await context.push(AppRoute.scheduledPaysPut, extra: _relatedScheduledPayToShow) as RelatedScheduledPay?;
           if (newRSP != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) => setState(() { _relatedScheduledPayToShow = newRSP; }));
           }

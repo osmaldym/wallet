@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
@@ -73,14 +74,14 @@ class _HomeState extends State<Home> {
           ExpandableFabItem(
             icon: Icons.money,
             helper: tr.newPay,
-            onTapped: () => context.push("/scheduled_pays").then((_) => setState(() { _reloadRecords(); })),
+            onTapped: () => context.push(AppRoute.scheduledPays).then((_) => setState(() { _reloadRecords(); })),
           )
         ],
       ),
       drawer: Menu(
         onTapNextPays: () {
           _scaffoldKey.currentState!.closeDrawer();
-          context.push("/scheduled_pays").then((_) => setState(() { _reloadRecords(); }));
+          context.push(AppRoute.scheduledPays).then((_) => setState(() { _reloadRecords(); }));
         } 
       ),
       body: SafeArea(
@@ -114,7 +115,7 @@ class _HomeState extends State<Home> {
                 )
               ),
               GestureDetector(
-                onTap: () => context.push("/scheduled_pays/put").then((_) => setState(() { _reloadRecords(); })),
+                onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _reloadRecords(); })),
                 child: Text(
                   context.l10n!.nextPays,
                   textAlign: TextAlign.start,
@@ -137,7 +138,7 @@ class _HomeState extends State<Home> {
                           iconColor: AppTheme.of(context).primary,
                           fillColor: AppTheme.of(context).seedBgColor,
                           subtitle: GestureDetector(
-                            onTap: () => context.push("/scheduled_pays/put").then((_) => setState(() { _reloadRecords(); })),
+                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _reloadRecords(); })),
                             child: Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -168,7 +169,7 @@ class _HomeState extends State<Home> {
                               amount: record?.scheduledPay?.amount,
                               isIncome: record?.scheduledPay?.type != null && (record?.scheduledPay?.type! ?? 0) > 0,
                               date: record?.datePaid ?? record?.date,
-                              onTap: () => context.push("/scheduled_pays/pay_info", extra: snapshot.data?[i]?.scheduledPay).then((_) => setState(() { _reloadRecords(); })),
+                              onTap: () => context.push(AppRoute.scheduledPaysPayInfo, extra: snapshot.data?[i]?.scheduledPay).then((_) => setState(() { _reloadRecords(); })),
                               onOptionPostponePressed: () => showModalBottomSheet(
                                 context: context,
                                 builder: (context) => CustomPay(
