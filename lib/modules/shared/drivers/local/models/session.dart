@@ -25,8 +25,8 @@ class Session extends Defs {
     'id': id, 
     'server_id': serverId, 
     'user_id': userId, 
-    'started_at': startedAt?.toIso8601String(), 
-    'finished_at': finishedAt?.toIso8601String(), 
+    'started_at': startedAt?.microsecondsSinceEpoch, 
+    'finished_at': finishedAt?.microsecondsSinceEpoch, 
     'token': token, 
     'public_ip': publicIp, 
     'finished_by_user': finishedByUser.boolToInt() 

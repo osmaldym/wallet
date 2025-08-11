@@ -63,7 +63,7 @@ class ScheduledPay extends Defs{
     'title': title,
     'automatic': automatic?.boolToInt(),
     'amount': amount,
-    'date': date?.toIso8601String(),
+    'date': date?.microsecondsSinceEpoch,
     'note': note, 
     'beneficiary': beneficiary,
     'currency_id': currencyId,
