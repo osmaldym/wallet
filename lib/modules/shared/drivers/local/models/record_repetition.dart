@@ -28,7 +28,7 @@ class RecordRepetition extends Defs {
     'server_id': serverId,
     'times_placed': timesPlaced,
     'for': rrFor?.index,
-    'for_date': forDate?.toIso8601String(),
+    'for_date': forDate?.microsecondsSinceEpoch,
     'repeat_every': repeatEvery?.index,
     'repeated_times': repeatedTimes,
   };
