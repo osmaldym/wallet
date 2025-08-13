@@ -17,7 +17,7 @@ class PayInfoController {
   }
 
   Future<List<RelatedRecord>> postponeLastRecord({int? scheduledPayId, int? recordId, DateTime? datetime}) async {
-    if (recordId != null) dao.updateRecord(recordId, model.Record(date: datetime, datePaid: datetime).toCleanMap(zeroToNull: true));
+    if (recordId != null) dao.updateRecord(recordId, model.Record(date: datetime, datePaid: datetime).toCleanMap());
     return await dao.relatedRecordList(scheduledPayId: scheduledPayId, orderByDatePaidDesc: true);
   }
 }

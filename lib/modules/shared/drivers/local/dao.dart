@@ -335,16 +335,31 @@ class Dao {
   }
 
   // Record operations
-  Future<List<model.Record?>> records({ int? scheduledPayId, bool? orderByDatePaidDesc }) async {
-    String? where;
-    List<Object>? whereArgs;
+  Future<List<model.Record?>> records({ int? scheduledPayId, bool? orderByDatePaidDesc, DateTime? dateFrom, DateTime? dateTo, bool? expired }) async {
+    List<String> where = [];
+    List<Object>? whereArgs = [];
 
     if (scheduledPayId != null) {
-      where = "scheduled_pay_id = ?";
-      whereArgs = [scheduledPayId];
+      where.add("scheduled_pay_id = ?");
+      whereArgs.add(scheduledPayId);
     }
 
-    List<Map<String, Object?>> records = await (await _db.get()).query(DBTables.record, where: where, whereArgs: whereArgs, orderBy: orderByDatePaidDesc.toBool() ? "date_paid DESC" : null);
+    if (expired != null) {
+      where.add("expired = ?");
+      whereArgs.add(expired);
+    }
+
+    if (dateFrom != null) {
+      where.add("(date_paid >= ? OR date >= ?)");
+      whereArgs.addAll([dateFrom.microsecondsSinceEpoch, dateFrom.microsecondsSinceEpoch]);
+    }
+
+    if (dateTo != null) {
+      where.add("(date_paid <= ? OR date <= ?)");
+      whereArgs.addAll([dateTo.microsecondsSinceEpoch, dateTo.microsecondsSinceEpoch]);
+    }
+
+    List<Map<String, Object?>> records = await (await _db.get()).query(DBTables.record, where: where.isNotEmpty ? where.join(" AND ") : null, whereArgs: whereArgs, orderBy: orderByDatePaidDesc.toBool() ? "date_paid DESC" : null);
     return Convertions.responseToRecordList(records);
   }
 
@@ -388,8 +403,14 @@ class Dao {
     );
   }
 
-  Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDatePaidDesc }) async {
-    List<model.Record?> recordsData = await records(scheduledPayId: scheduledPayId, orderByDatePaidDesc: orderByDatePaidDesc);
+  Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDatePaidDesc, DateTime? dateFrom, DateTime? dateTo, bool? expired }) async {
+    List<model.Record?> recordsData = await records(
+      scheduledPayId: scheduledPayId, 
+      orderByDatePaidDesc: orderByDatePaidDesc,
+      expired: expired,
+      dateFrom: dateFrom,
+      dateTo: dateTo
+    );
     return [
       for (final recordData in recordsData)
         RelatedRecord(

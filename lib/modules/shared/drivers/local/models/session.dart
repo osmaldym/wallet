@@ -29,7 +29,7 @@ class Session extends Defs {
     'finished_at': finishedAt?.microsecondsSinceEpoch, 
     'token': token, 
     'public_ip': publicIp, 
-    'finished_by_user': finishedByUser.boolToInt() 
+    'finished_by_user': finishedByUser.boolToIntOrNull() 
   };
 
   @override

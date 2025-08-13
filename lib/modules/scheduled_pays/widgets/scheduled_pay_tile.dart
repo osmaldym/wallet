@@ -11,6 +11,9 @@ class ScheduledPayTile extends StatelessWidget {
   IconData? icon;
   void Function()? onTap;
   late NumberFormat format;
+  double? subQuantity;
+  Widget? chipAvatar;
+  
 
   ScheduledPayTile({ 
     super.key,
@@ -19,6 +22,8 @@ class ScheduledPayTile extends StatelessWidget {
     this.amount,
     this.icon,
     this.onTap,
+    this.subQuantity,
+   this.chipAvatar,
   });
 
   @override
@@ -43,20 +48,35 @@ class ScheduledPayTile extends StatelessWidget {
         color: isIncome! ? theme.textGreen : theme.textRedDark,
       ),
       subtitle: Text((isIncome! ? "+" : "-") + format.format(amount ?? 0)),
-      trailing: SizedBox(
-        height: 32,
-        child: component.Chip(
-          selectedColor: theme.seedBgColor,
-          txtColor: isIncome! ? theme.greenContrast : theme.redContrast,
-          text: isIncome! ? tr.income : tr.expend,
-          selected: true,
-          padding: const EdgeInsets.only(right: 5),
-          avatar: Icon(
-            Icons.chevron_right_rounded,
-            color: isIncome! ? theme.greenContrast : theme.redContrast,
+      trailing: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          SizedBox(
+            height: 32,
+            child: component.Chip(
+              selectedColor: theme.seedBgColor,
+              txtColor: isIncome! ? theme.greenContrast : theme.redContrast,
+              text: isIncome! ? tr.income : tr.expend,
+              selected: true,
+              padding: const EdgeInsets.only(right: 5),
+              avatar: chipAvatar ?? Icon(
+                Icons.chevron_right_rounded,
+                color: isIncome! ? theme.greenContrast : theme.redContrast,
+              ),
+              onSelected: (e){},
+            ),
           ),
-          onSelected: (e){},
-        ),
+          if (subQuantity != null)
+            Text(
+              (isIncome! ? "+" : "-") + format.format(subQuantity ?? 0),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isIncome! ? theme.textGreen : theme.textRedDark,
+              ),
+            )
+        ],
       ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(15))

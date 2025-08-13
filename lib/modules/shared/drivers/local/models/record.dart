@@ -28,17 +28,12 @@ class Record extends Defs {
     'date': date?.microsecondsSinceEpoch,
     'date_paid': datePaid?.microsecondsSinceEpoch,
     'amount': amount,
-    'paid': paid.boolToInt(),
-    'expired': expired.boolToInt(),
+    'paid': paid.boolToIntOrNull(),
+    'expired': expired.boolToIntOrNull(),
   };
 
-  Map<String, Object?> toCleanMap({ bool? zeroToNull = false }) {
+  Map<String, Object?> toCleanMap() {
     Map<String, Object?> map = toMap();
-
-    if (zeroToNull ?? false)
-      for (final entry in map.entries)
-        if (entry.value == 0) map[entry.key] = null;
-
     map.removeWhere((key, value) => value == null);
     return map;
   }
