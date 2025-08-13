@@ -23,8 +23,8 @@ class RecordRepetitionMonthly extends Defs {
     'id': id,
     'server_id': serverId,
     'record_repetition_id': recordRepetitionId,
-    'same_day_of_month': sameDayOfMonth.boolToInt(),
-    'every_last_day_of_month': everyLastDayOfMonth.boolToInt(),
+    'same_day_of_month': sameDayOfMonth.boolToIntOrNull(),
+    'every_last_day_of_month': everyLastDayOfMonth.boolToIntOrNull(),
     'every_number_day': everyNumberDay,
     'week_number': weekNumber,
   };

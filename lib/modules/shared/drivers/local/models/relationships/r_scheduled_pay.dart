@@ -53,7 +53,7 @@ class RelatedScheduledPay extends ScheduledPay {
       'frecuency': frecuency,
       'image': image,
       'notification': notification,
-      'completed_pay': completedPay!.boolToInt(),
+      'completed_pay': completedPay!.boolToIntOrNull(),
     };
   }
 
