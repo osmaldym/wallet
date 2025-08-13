@@ -5,15 +5,18 @@ import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_calculator.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_date.dart';
+import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
 import 'package:wallet/modules/shared/widgets/fragments/input_time.dart';
 
 class CustomPayData {
   DateTime? datetime;
   double? amount;
+  bool? paid;
 
   CustomPayData({
     this.datetime,
     this.amount,
+    this.paid,
   });
 }
 
@@ -26,6 +29,16 @@ class CustomPay extends StatelessWidget {
   void Function(CustomPayData data)? onSave;
   DateTime? selectedDate;
   double? lastAmount;
+  bool? isPaid;
+
+  final ValueNotifier<bool> _refusedSelected = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _paidSelected = ValueNotifier<bool>(false);
+
+  void setSelectedChipByOne({bool? boolean}) {
+    _paidSelected.value = (boolean ?? false);
+    _refusedSelected.value = !(boolean ?? false);
+    dataToReturn.paid = _paidSelected.value;
+  }
 
   CustomPay({
     super.key,
@@ -34,11 +47,13 @@ class CustomPay extends StatelessWidget {
     this.lastAmount,
     this.onlyShowDate,
     this.title,
+    this.isPaid,
   });
 
   @override
   StatelessElement createElement() {
     dataToReturn.amount = lastAmount;
+    setSelectedChipByOne(boolean: isPaid);
     return super.createElement();
   }
 
@@ -67,6 +82,36 @@ class CustomPay extends StatelessWidget {
                   fontSize: 28
                 ),
               ),
+              if (isPaid != null)
+                Row(
+                  spacing: 10,
+                  children: [
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _refusedSelected,
+                      builder: (context, selected, child) => Expanded(
+                        child: component.Chip(
+                          selected: selected,
+                          text: context.l10n!.refused,
+                          width: double.maxFinite,
+                          txtColor: selected ? AppTheme.of(context).redDark : AppTheme.of(context).redContrast,
+                          onSelected: (bool isSelected) => setSelectedChipByOne(boolean: !isSelected),
+                        ),
+                      ),
+                    ),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _paidSelected,
+                      builder: (context, selected, child) => Expanded(
+                        child: component.Chip(
+                          selected: selected,
+                          text: context.l10n!.paid,
+                          width: double.maxFinite,
+                          txtColor: selected ? AppTheme.of(context).greenDark : AppTheme.of(context).greenContrast,
+                          onSelected: (bool isSelected) => setSelectedChipByOne(boolean: isSelected),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               Row(
                 spacing: 10,
                 children: [
