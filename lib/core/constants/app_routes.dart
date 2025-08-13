@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/modules/home/home_page.dart';
+import 'package:wallet/modules/records/records_page.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_page.dart' as scheduled_pays;
 import 'package:wallet/modules/scheduled_pays/info/pay_info_page.dart' as scheduled_pays;
 import 'package:wallet/modules/scheduled_pays/scheduled_pays_page.dart';
@@ -32,6 +33,7 @@ class AppRoutes {
               ),
             ]
           ),
+          _newRoute('records', page: const RecordsPage()),
         ]
       )
     ]
