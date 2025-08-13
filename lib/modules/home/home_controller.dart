@@ -59,7 +59,7 @@ class HomeController {
   }
 
   Future<void> postponeLastRecord({int? scheduledPayId, int? recordId, DateTime? datetime}) async {
-    if (recordId != null) daoLocal.updateRecord(recordId, model.Record(date: datetime, datePaid: datetime).toCleanMap(zeroToNull: true));
+    if (recordId != null) daoLocal.updateRecord(recordId, model.Record(date: datetime, datePaid: datetime).toCleanMap());
   }
 
   Future<List<RelatedRecord?>> getRecords() async {
