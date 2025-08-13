@@ -11,11 +11,13 @@ class Menu extends Drawer {
   double width;
 
   void Function()? onTapNextPays;
+  void Function()? onTapRecords;
 
   Menu({
     super.key,
     this.width = 270,
     this.onTapNextPays,
+    this.onTapRecords,
   });
 
   @override
@@ -67,7 +69,7 @@ class Menu extends Drawer {
           MenuOption(
             text: tr.records,
             icon: Icons.storage_rounded,
-            onTap: () => context.go("/"),
+            onTap: onTapRecords ?? () => context.go(AppRoute.records),
           ),
           MenuOption(
             text: tr.statistics,

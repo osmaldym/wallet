@@ -82,7 +82,11 @@ class _HomeState extends State<Home> {
         onTapNextPays: () {
           _scaffoldKey.currentState!.closeDrawer();
           context.push(AppRoute.scheduledPays).then((_) => setState(() { _reloadRecords(); }));
-        } 
+        },
+        onTapRecords: () {
+          _scaffoldKey.currentState!.closeDrawer();
+          context.push(AppRoute.records).then((_) => setState(() { _reloadRecords(); }));
+        }
       ),
       body: SafeArea(
         child: SingleChildScrollView(
