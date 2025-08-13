@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 
 class Chip extends ChoiceChip {
@@ -53,6 +52,7 @@ class Chip extends ChoiceChip {
         width: 0,
         color: Colors.transparent
       ),
+      labelPadding: avatar != null ? const EdgeInsets.only(right: 5) : null,
       avatar: avatar,
       backgroundColor: backgroundColor ?? Colors.grey.withAlpha(30),
       disabledColor: disabledColor ?? Colors.grey.withAlpha(30),
