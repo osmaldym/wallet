@@ -100,5 +100,6 @@
     "theresNoRecordsToShowYet": "Aún no hay registros para mostrar",
     "theresNoPaysToShowYet": "Aún no hay pagos para mostrar",
     "createANewPay": "Crear un nuevo pago",
+    "editRecord": "Editar registro",
     "errorLoading": "Error al cargar"
 }
