@@ -17,6 +17,7 @@ import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/menu.dart';
 import 'package:wallet/modules/home/presenters/widgets/account.dart';
+import 'package:wallet/modules/shared/drivers/local/models/account.dart' as model;
 
 class Home extends StatefulWidget {
   const Home({ super.key });
@@ -30,19 +31,19 @@ class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final Utils _utils = Utils();
 
-  late Future<List<Account>> _accs;
+  late Future<List<model.Account>> _accs;
   Future<List<RelatedRecord?>>? _records;
 
   @override
   void initState() {
     super.initState();
     _controller = HomeController();
-    _updateAccounts();
+    _reloadAccounts();
     _reloadRecords();
     _controller.createSession();
   }
 
-  void _updateAccounts() => setState(() {
+  void _reloadAccounts() => setState(() {
     _accs = _controller.getAccounts();
   });
 
@@ -62,9 +63,9 @@ class _HomeState extends State<Home> {
           isScrollControlled: true,
           context: context,
           builder: (BuildContext context) => AccountModal(
-            onSave: (String name) async {
-              await _controller.addAccount(name);
-              _updateAccounts();
+            onSave: (model.Account account) async {
+              await _controller.putAccount(account);
+              _reloadAccounts();
             }
           )
         ),
@@ -99,9 +100,9 @@ class _HomeState extends State<Home> {
               Container(
                 height: 70,
                 alignment: Alignment.center,
-                child: FutureBuilder<List<Account>>(
+                child: FutureBuilder<List<model.Account>>(
                   future: _accs,
-                  builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<List<model.Account>> snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
                         clipBehavior: Clip.none,
@@ -109,7 +110,23 @@ class _HomeState extends State<Home> {
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, i) => Padding(
                           padding: EdgeInsets.only(left: i > 0 ? 5 : 0),
-                          child: snapshot.data?[i],
+                          child: Account(
+                            name: snapshot.data?[i].title,
+                            quantity: snapshot.data?[i].amount ?? 0,
+                            isTotal: snapshot.data?[i].isTotal,
+                            onTap: (snapshot.data?.length ?? 0) == 1 || (snapshot.data?[i].id ?? 0) > 1 ? () => showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (BuildContext context) => AccountModal(
+                                isEditing: true,
+                                account: snapshot.data?[i],
+                                onSave: (model.Account account) async {
+                                  await _controller.putAccount(account);
+                                  _reloadAccounts();
+                                }
+                              ),
+                            ) : null,
+                          ),
                         ),
                         itemCount: snapshot.data?.length,
                       );
