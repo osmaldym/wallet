@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:wallet/core/constants/app_db.dart';
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart' as Model;
 import 'package:wallet/modules/shared/drivers/local/models/record.dart' as model;
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
-import 'package:wallet/modules/shared/drivers/local/models/user.dart';
-import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 
 class HomeController {
   late Dao daoLocal = Dao();
@@ -16,37 +13,13 @@ class HomeController {
     await daoLocal.login();
   }
 
-  Future<void> addAccount(String name) async {
-    List<User> users = await daoLocal.users();
-    User actualUser = users.first;
-
-    Map<String, Object?> data = { 
-      "title": name,
-      "user_id": actualUser.serverId ?? actualUser.id
-    };
-    await daoLocal.insert(DBTables.account, data);
+  Future<void> putAccount(Model.Account account) async {
+    await daoLocal.putAccount(account.toCleanMap());
+    if (account.id == null || (account.id ?? -1) > 1) await daoLocal.updateAccount(1, {'amount': await daoLocal.sumAllAccountTotals() });
   }
 
-  Future<List<Account>> getAccounts() async {
-    List<Model.Account> accounts = await daoLocal.accounts();
-    List<Account> accountsToShow = [
-      Account(
-        isTotal: true,
-        quantity: "+180,000",
-        onTap: (){},
-      ),
-    ];
-
-    for (final account in accounts)
-      accountsToShow.add(
-        Account(
-          name: account.title,
-          quantity: '+100,000',
-          onTap: (){},
-        )
-      );
-
-    return accountsToShow;
+  Future<List<Model.Account>> getAccounts() async {
+    return daoLocal.accounts();
   }
 
   Future<void> insertRecord({int? scheduledPayId, bool? paid}) async {

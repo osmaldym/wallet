@@ -20,6 +20,8 @@ class DB {
       server_id INTEGER,
       user_id INTEGER,
       title TEXT,
+      amount TEXT,
+      is_total INTEGER,
       FOREIGN KEY(user_id) REFERENCES User(id)
     )
     """,
@@ -256,6 +258,9 @@ class DB {
       ('8 hours before', 'eightHoursBefore'),
       ('12 hours before', 'twelveHoursBefore'),
       ('1 day before', 'oneDayBefore')
+    """,
+    """
+    INSERT INTO ${DBTables.account} (title, amount, is_total) VALUES ('Total', '0.0', 1)
     """,
     """
     INSERT INTO ${DBTables.currencies} (iso, symbol, locale, country) VALUES

@@ -58,12 +58,7 @@ class _PutState extends State<Put> {
 
   late List<Currency> currencies;
 
-  final List<DropdownMenuItem> _itemsAccountsSelect = [
-    DropdownMenuItem(
-      value: Account(title: "Total"),
-      child: const Text("Total"),
-    )
-  ];
+  final List<DropdownMenuItem> _itemsAccountsSelect = [];
   dynamic _valueAccountsSelect;
 
   final List<DropdownMenuItem> _itemsNotificationsSelect = [];

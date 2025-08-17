@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/extensions/object_ext.dart';
+import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wallet/modules/shared/widgets/fragments/input_calculator.dart';
 
 class AccountModal extends StatefulWidget {
-  int ?id;
-  void Function(String name) onSave;
+  bool? isEditing;
+  void Function(Account account) onSave;
+  Account? account;
 
   AccountModal({
     super.key,
     required this.onSave,
-    this.id,
-  });
+    this.isEditing,
+    this.account
+  }) {
+    if (account == null){
+      account = Account();
+      account?.isTotal = false;
+    }
+  }
 
   @override
   _AccountModalState createState() => _AccountModalState();
@@ -21,16 +30,23 @@ class AccountModal extends StatefulWidget {
 class _AccountModalState extends State<AccountModal> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
+  String? title;
+  double? amount;
+
+  @override
+  void initState() {
+    title = widget.account?.title;
+    amount = widget.account?.amount;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    String name = "";
     AppLocalizations? tr = AppLocalizations.of(context)!;
-
     return SingleChildScrollView(
       key: _scaffoldKey,
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        height: 300,
         decoration: BoxDecoration(
           color: AppTheme.of(context).seedBgColor,
           borderRadius: const BorderRadius.only(
@@ -41,32 +57,36 @@ class _AccountModalState extends State<AccountModal> {
         child: Padding(
           padding: const EdgeInsetsDirectional.all(25),
           child: Column(
+            spacing: 15,
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                widget.id == null ? tr.newAccount : tr.editingAccount,
+                widget.isEditing.toBool() ? tr.editingAccount : tr.newAccount,
                 style: const TextStyle(fontSize: 32)
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: tr.account,
-                  ),
-                  autofocus: true,
-                  onChanged: (String val) => name = val,
-                )
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: tr.account,
+                ),  
+                autofocus: true,
+                enabled: !(widget.account?.isTotal ?? false),
+                controller: TextEditingController(text: title),
+                onChanged: (String val) => title = val,
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25),
-                child: CButton(
-                  text: tr.save,
-                  onPressed: () {
-                    widget.onSave(name);
-                    Navigator.pop(context);
-                  }
-                )
+              InputCalculator(
+                controllerValue: amount,
+                onChange: (amount) => this.amount = amount,
+              ),
+              CButton(
+                text: tr.save,
+                onPressed: () {
+                  widget.account?.title = title;
+                  widget.account?.amount = amount;
+
+                  widget.onSave(widget.account!);
+                  Navigator.pop(context);
+                }
               )
             ],
           ),

@@ -38,6 +38,8 @@ class Convertions {
       serverId: response['server_id'] as int?,
       userId: response['user_id'] as int?,
       title: response['title'] as String?,
+      amount: double.tryParse(response['amount'] as String),
+      isTotal: response["is_total"].intToBool(),
     );
   }
 
