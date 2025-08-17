@@ -118,6 +118,18 @@ class Dao {
     return Convertions.responseToAccount(account);
   }
 
+  Future<void> putAccount(Map<String, Object?> account) async {
+    await put(DBTables.account, account);
+  }
+
+  Future<void> updateAccount(int? accountId, Map<String, Object> account) async {
+    if (accountId == null) return;
+    await updateById(DBTables.account, account, accountId);
+  }
+
+  Future<double> sumAllAccountTotals() async =>
+    (await (await _db.get()).rawQuery("SELECT SUM(amount) as total FROM ${DBTables.account} WHERE id > 1")).first['total'] as double? ?? 0;
+
   // Scheduled pay operations
   Future<void> insertScheduledPay(Map<String, Object?> pay, {bool orReplace = false}) async {
     User sessionUser = Convertions.responseToUser((await getActualSession())['user'] as Map<String, Object?>);
