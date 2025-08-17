@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wallet/core/extensions/object_ext.dart';
 
 class Account extends Card {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  bool isTotal;
-  String ?name;
-  String quantity;
+  bool? isTotal;
+  String? name;
+  double quantity;
   void Function()? onTap;
+  late NumberFormat format;
 
   Account({
     super.key,
@@ -22,34 +24,36 @@ class Account extends Card {
     AppLocalizations? tr = AppLocalizations.of(context)!;
     AppTheme theme = AppTheme.of(context);
 
+    format = NumberFormat("#,###.##", tr.localeName);
+
     return Card(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      elevation: 5,
-      shadowColor: isTotal ? const Color.fromARGB(255, 29, 29, 29) : Colors.transparent,
-      color: isTotal ? theme.primary : Colors.transparent,
+      elevation: 0,
+      color: isTotal.toBool() ? theme.primary : null,
       child: IntrinsicWidth(
         child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
           onTap: onTap,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           splashColor: Colors.grey,
-          textColor: isTotal ? theme.textBlack : theme.textContrast,
+          textColor: isTotal.toBool() ? theme.textBlack : theme.textContrast,
           title: Text(
-            isTotal || (name == null) ? tr.total : name!,
-            textAlign: isTotal ? TextAlign.center : TextAlign.start,
+            isTotal.toBool() || (name == null) ? tr.total : name!,
+            textAlign: isTotal.toBool() ? TextAlign.center : TextAlign.start,
             style: const TextStyle(
               fontSize: 20
             ),
           ),
           subtitle: Text(
-            quantity,
+            "\$ ${format.format(quantity)}",
             style: TextStyle(
-              color: quantity.startsWith("-") ? 
-                isTotal ? theme.redDark : theme.redLight
-                : isTotal ? theme.greenDark : theme.greenLight,
+              color: quantity < 0
+                ? (isTotal.toBool() ? theme.redDark : theme.redLight) 
+                : (isTotal.toBool() ? theme.greenDark : theme.greenLight),
               fontSize: 12
             ),
           ),
