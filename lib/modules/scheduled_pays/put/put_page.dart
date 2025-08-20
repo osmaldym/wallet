@@ -73,7 +73,10 @@ class _PutState extends State<Put> {
   }
 
   void _resetAllSelects() {
-    _valueAccountsSelect = _itemsAccountsSelect[0].value;
+    if (_itemsAccountsSelect.isNotEmpty) {
+      _valueAccountsSelect = _itemsAccountsSelect[0].value;
+      pay.accountId = (_valueAccountsSelect as Account).id;
+    }
     if (_itemsNotificationsSelect.isNotEmpty) _valueNotificationSelect = _itemsNotificationsSelect[0].value;
   }
 
