@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/extensions/object_ext.dart';
+import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/widgets/fragments/button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wallet/modules/shared/widgets/fragments/input_calculator.dart';
+import 'package:wallet/modules/shared/widgets/fragments/alert_card.dart';
 
 class AccountModal extends StatefulWidget {
   bool? isEditing;
+  bool? showAlertCreatingNewAccount;
   void Function(Account account) onSave;
   Account? account;
 
   AccountModal({
     super.key,
     required this.onSave,
+    this.showAlertCreatingNewAccount,
     this.isEditing,
     this.account
   }) {
@@ -65,6 +69,15 @@ class _AccountModalState extends State<AccountModal> {
                 widget.isEditing.toBool() ? tr.editingAccount : tr.newAccount,
                 style: const TextStyle(fontSize: 32)
               ),
+              if (widget.showAlertCreatingNewAccount ?? false)
+                AlertCard(
+                  subtitle: Text(
+                    context.l10n!.warningCreatingNewAccount,
+                    style: const TextStyle(
+                      color: Colors.black
+                    ),
+                  ),
+                ),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: tr.account,
