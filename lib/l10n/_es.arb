@@ -101,5 +101,7 @@
     "theresNoPaysToShowYet": "Aún no hay pagos para mostrar",
     "createANewPay": "Crear un nuevo pago",
     "editRecord": "Editar registro",
+    "warning": "Cuidado",
+    "warningCreatingNewAccount": "Cuando creas una nueva cuenta, la cuenta \"Total\" dejará de ser editable manualmente",
     "errorLoading": "Error al cargar"
 }

@@ -101,5 +101,7 @@
     "theresNoPaysToShowYet": "There's no pays to show yet",
     "createANewPay": "Create a new pay",
     "editRecord": "Edit record",
+    "warning": "Warning",
+    "warningCreatingNewAccount": "When you create a new account, the \"Total\" account will become non-editable manually",
     "errorLoading": "Error loading"
 }
