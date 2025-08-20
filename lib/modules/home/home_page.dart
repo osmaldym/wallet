@@ -7,6 +7,7 @@ import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/home/home_controller.dart';
 import 'package:wallet/modules/scheduled_pays/info/widgets/modals/custom_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
+import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/fragments/expandable_fab.dart';
 import 'package:wallet/modules/shared/widgets/fragments/account.dart';
 import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
@@ -38,15 +39,16 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _controller = HomeController();
-    _reloadAccounts();
-    _reloadRecords();
+    _reloadAll();
     _controller.createSession();
   }
 
-  void _reloadAccounts() => setState(() {
-    _accs = _controller.getAccounts();
+  void _reloadAll() => setState(() {
+    _reloadAccounts();
+    _reloadRecords();
   });
 
+  void _reloadAccounts() => _accs = _controller.getAccounts();
   void _reloadRecords() => _records = _controller.getRecords();
 
   @override
@@ -65,7 +67,7 @@ class _HomeState extends State<Home> {
           builder: (BuildContext context) => AccountModal(
             onSave: (model.Account account) async {
               await _controller.putAccount(account);
-              _reloadAccounts();
+              setState(() { _reloadAccounts(); });
             }
           )
         ),
@@ -122,7 +124,7 @@ class _HomeState extends State<Home> {
                                 account: snapshot.data?[i],
                                 onSave: (model.Account account) async {
                                   await _controller.putAccount(account);
-                                  _reloadAccounts();
+                                  setState(() { _reloadAccounts(); });
                                 }
                               ),
                             ) : null,
@@ -159,7 +161,7 @@ class _HomeState extends State<Home> {
                           iconColor: AppTheme.of(context).primary,
                           fillColor: AppTheme.of(context).seedBgColor,
                           subtitle: GestureDetector(
-                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _reloadRecords(); })),
+                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => _reloadAll()),
                             child: Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -204,7 +206,7 @@ class _HomeState extends State<Home> {
                                       recordId: record?.id,
                                       datetime: data.datetime
                                     );
-                                    setState(() { _reloadRecords(); });
+                                    _reloadAll();
                                   }
                                 ),
                               ),
@@ -214,34 +216,39 @@ class _HomeState extends State<Home> {
                                   lastAmount: record?.scheduledPay?.amount,
                                   selectedDate: record?.date,
                                   onSave: (data) async  {
-                                    await _controller.updateLastRecordIfExist(
+                                    await _controller.updateLastRecordIfExistAndAccount(
                                       scheduledPayId: record?.scheduledPay?.id,
                                       recordId: record?.id,
                                       paid: true,
                                       datetime: data.datetime,
-                                      amount: data.amount
+                                      amount: data.amount,
+                                      accountId: record?.scheduledPay?.account?.id,
+                                      isExpense: record?.scheduledPay?.type == ScheduledPayTypes.expend.index,
                                     );
 
-                                    setState(() { _reloadRecords(); });
+                                    _reloadAll();
                                   }
                                 )
                               ),
                               onOptionPayPressed: () async {
-                                await _controller.updateLastRecordIfExist(
+                                await _controller.updateLastRecordIfExistAndAccount(
                                   scheduledPayId: record?.scheduledPay?.id,
                                   recordId: record?.id,
+                                  accountId: record?.scheduledPay?.account?.id,
+                                  isExpense: record?.scheduledPay?.type == ScheduledPayTypes.expend.index,
+                                  amount: record?.scheduledPay?.amount,
                                   paid: true,
                                 );
                                 
-                                setState(() { _reloadRecords(); });
+                                _reloadAll();
                               },
                               onOptionRefusePressed: () async  {
-                                await _controller.updateLastRecordIfExist(
+                                await _controller.updateLastRecordIfExistAndAccount(
                                   scheduledPayId: record?.scheduledPay?.id,
                                   recordId: record?.id,
                                   paid: false,
                                 );
-                                setState(() { _reloadRecords(); });
+                                _reloadAll();
                               },
                             );
                           },

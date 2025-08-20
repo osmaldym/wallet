@@ -235,8 +235,10 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                   lastAmount: record.scheduledPay?.amount,
                                                   selectedDate: record.date,
                                                   onSave: (data) => setState(() {                                                          
-                                                    _records = _controller.updateLastRecordIfExist(
+                                                    _records = _controller.updateLastRecordIfExistAndAccount(
                                                       scheduledPayId: _relatedScheduledPayToShow?.id,
+                                                      accountId: record.scheduledPay?.account?.id,
+                                                      isExpense: record.scheduledPay?.type == ScheduledPayTypes.expend.index,
                                                       recordId: record.id,
                                                       paid: true,
                                                       datetime: data.datetime,
@@ -246,14 +248,16 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                 )
                                               ),
                                               onPayPressed: () => setState(() {
-                                                _records = _controller.updateLastRecordIfExist(
+                                                _records = _controller.updateLastRecordIfExistAndAccount(
+                                                  accountId: record.scheduledPay?.account?.id,
+                                                  isExpense: record.scheduledPay?.type == ScheduledPayTypes.expend.index, 
                                                   scheduledPayId: _relatedScheduledPayToShow?.id,
                                                   recordId: record.id,
                                                   paid: true,
                                                 );
                                               }),
                                               onRefusePressed: () => setState(() {
-                                                _records = _controller.updateLastRecordIfExist(
+                                                _records = _controller.updateLastRecordIfExistAndAccount(
                                                   scheduledPayId: _relatedScheduledPayToShow?.id,
                                                   recordId: record.id,
                                                   paid: false,
