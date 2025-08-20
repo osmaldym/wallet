@@ -112,7 +112,12 @@ class Dao {
     return Convertions.responseToAccountList(accounts);
   }
 
-  Future<Account?> account(int? id) async {
+  Future<Account?> account(int? id, { bool? byTotal }) async {
+    if (byTotal ?? false) {
+      Map<String, Object?> account = (await (await _db.get()).query(DBTables.account, where: "is_total = ?", whereArgs: [byTotal])).first;
+      return Convertions.responseToAccount(account);
+    }
+
     if (id == null) return null;
     Map<String, Object?> account = await getById(DBTables.account, id);
     return Convertions.responseToAccount(account);
@@ -122,13 +127,27 @@ class Dao {
     await put(DBTables.account, account);
   }
 
-  Future<void> updateAccount(int? accountId, Map<String, Object> account) async {
+  Future<void> updateAccount(int? accountId, Map<String, Object?> account) async {
     if (accountId == null) return;
     await updateById(DBTables.account, account, accountId);
   }
 
   Future<double> sumAllAccountTotals() async =>
     (await (await _db.get()).rawQuery("SELECT SUM(amount) as total FROM ${DBTables.account} WHERE id > 1")).first['total'] as double? ?? 0;
+
+  Future<double> updateAccountBalance(int? accountId, double? amountToMerge, { bool? substract }) async {
+    Account? accountToUpdate = await account(accountId);
+
+    double? totalOfAccount = (accountToUpdate?.amount ?? 0) + ((amountToMerge ?? 0) * ((substract ?? false) ? -1 : 1));
+    await updateAccount(accountToUpdate?.id, Account(amount: totalOfAccount).toCleanMap());
+
+    if (!(accountToUpdate?.isTotal ?? true)) {
+      Account? totalAccount = await account(null, byTotal: true);
+      if (totalAccount != null) await updateAccount(totalAccount.id, Account(amount: await sumAllAccountTotals() + ((amountToMerge ?? 0) * ((substract ?? false) ? -1 : 1))).toCleanMap());
+    }
+
+    return totalOfAccount;
+  }
 
   // Scheduled pay operations
   Future<void> insertScheduledPay(Map<String, Object?> pay, {bool orReplace = false}) async {
@@ -411,6 +430,8 @@ class Dao {
       date: recordData.date,
       datePaid: recordData.datePaid,
       expired: recordData.expired,
+      amount: recordData.amount,
+      balance: recordData.balance,
       scheduledPay: await relatedScheduledPay(recordData.scheduledPayId ?? -1)
     );
   }
@@ -432,6 +453,7 @@ class Dao {
           date: recordData?.date,
           datePaid: recordData?.datePaid,
           amount: recordData?.amount,
+          balance: recordData?.balance,
           expired: recordData?.expired,
           scheduledPay: await relatedScheduledPay(recordData?.scheduledPayId ?? -1)
         )
