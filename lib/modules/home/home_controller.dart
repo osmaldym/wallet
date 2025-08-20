@@ -26,8 +26,28 @@ class HomeController {
     await daoLocal.createRecordsIfNotExist(scheduledPayId: scheduledPayId, paid: paid);
   }
 
-  Future<void> updateLastRecordIfExist({int? scheduledPayId, int? recordId, bool? paid, DateTime? datetime, double? amount}) async {
-    if (recordId != null) daoLocal.updateRecord(recordId, model.Record(paid: paid, expired: false, datePaid: datetime, amount: amount).toCleanMap());
+  Future<void> updateLastRecordIfExistAndAccount({
+    int? scheduledPayId,
+    int? recordId,
+    bool? paid,
+    DateTime? datetime,
+    double? amount,
+    int? accountId,
+    bool? isExpense,
+  }) async {
+    if (recordId != null) {
+      daoLocal.updateRecord(
+        recordId, 
+        model.Record(
+          paid: paid, 
+          expired: false, 
+          datePaid: datetime,
+          amount: amount, 
+          balance: accountId != null && (paid ?? false) ? await daoLocal.updateAccountBalance(accountId, amount, substract: isExpense) : null,
+        ).toCleanMap()
+      );
+    }
+
     if (scheduledPayId != null) await daoLocal.createRecordsIfNotExist(scheduledPayId: scheduledPayId);
   }
 
