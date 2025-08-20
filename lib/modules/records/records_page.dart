@@ -169,6 +169,7 @@ class _RecordsPageState extends State<RecordsPage> {
                                 snapshot.data?[i].paid ?? false ? Icons.attach_money : Icons.money_off,
                                 color: snapshot.data?[i].paid ?? false ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast,
                               ),
+                              subQuantity: snapshot.data?[i].balance,
                               isIncome: snapshot.data?[i].scheduledPay?.type != null && (snapshot.data?[i].scheduledPay?.type! ?? 0) > 0,
                               onTap: () => showModalBottomSheet(
                                 context: context,

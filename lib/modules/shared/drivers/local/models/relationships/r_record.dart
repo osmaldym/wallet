@@ -13,6 +13,7 @@ class RelatedRecord extends Record {
     super.expired,
     super.paid,
     super.amount,
+    super.balance,
     this.scheduledPay,
   });
 
@@ -24,6 +25,7 @@ class RelatedRecord extends Record {
       'date': date,
       'date_paid': datePaid,
       'amount': amount,
+      'balance': balance,
       'expired': expired,
       'paid': paid,
       'scheduled_pay': scheduledPay,

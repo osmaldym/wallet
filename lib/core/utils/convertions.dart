@@ -38,7 +38,7 @@ class Convertions {
       serverId: response['server_id'] as int?,
       userId: response['user_id'] as int?,
       title: response['title'] as String?,
-      amount: double.tryParse(response['amount'] as String),
+      amount: double.tryParse((response['amount'] ?? "") as String),
       isTotal: response["is_total"].intToBool(),
     );
   }
@@ -205,6 +205,7 @@ class Convertions {
       date: response["date"] != null ? DateTime.fromMicrosecondsSinceEpoch(response["date"] as int) : null,
       datePaid: response["date_paid"] != null ? DateTime.fromMicrosecondsSinceEpoch(response["date_paid"] as int) : null,
       amount: response["amount"] as double?,
+      balance: response["balance"] as double?,
       paid: response['paid'].intToBool(),
       expired: response['expired'].intToBool(),
     );

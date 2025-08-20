@@ -7,6 +7,7 @@ class Record extends Defs {
   DateTime? date;
   DateTime? datePaid;
   double? amount;
+  double? balance;
   bool? paid;
   bool? expired;
 
@@ -19,6 +20,7 @@ class Record extends Defs {
     this.expired,
     this.amount,
     this.datePaid,
+    this.balance,
   });
 
   Map<String, Object?> toMap() => {
@@ -28,6 +30,7 @@ class Record extends Defs {
     'date': date?.microsecondsSinceEpoch,
     'date_paid': datePaid?.microsecondsSinceEpoch,
     'amount': amount,
+    'balance': balance,
     'paid': paid.boolToIntOrNull(),
     'expired': expired.boolToIntOrNull(),
   };
