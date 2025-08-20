@@ -20,7 +20,7 @@ class DB {
       server_id INTEGER,
       user_id INTEGER,
       title TEXT,
-      amount TEXT,
+      amount REAL,
       is_total INTEGER,
       FOREIGN KEY(user_id) REFERENCES User(id)
     )
