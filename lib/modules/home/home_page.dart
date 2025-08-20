@@ -64,12 +64,22 @@ class _HomeState extends State<Home> {
         onTrailingPressed: () => showModalBottomSheet(
           isScrollControlled: true,
           context: context,
-          builder: (BuildContext context) => AccountModal(
-            onSave: (model.Account account) async {
-              await _controller.putAccount(account);
-              setState(() { _reloadAccounts(); });
+          builder: (BuildContext context) => FutureBuilder<List<model.Account>>(
+            future: _accs,
+            builder: (BuildContext context, AsyncSnapshot<List<model.Account>> snapshotModelAccount) {
+              if (snapshotModelAccount.hasData) {
+                return AccountModal(
+                  showAlertCreatingNewAccount: snapshotModelAccount.data?.length == 1 && (snapshotModelAccount.data?[0].isTotal ?? false),
+                  onSave: (model.Account account) async {
+                    await _controller.putAccount(account);
+                    setState(() { _reloadAccounts(); });
+                  }
+                );
+              }
+          
+              return const CircularProgressIndicator();
             }
-          )
+          ),
         ),
       ),
       floatingActionButton: ExpandableFab(
