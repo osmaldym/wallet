@@ -22,7 +22,7 @@ class Account extends Defs {
     'server_id': serverId,
     'user_id': userId,
     'title': title,
-    'amount': amount,
+    'amount': amount?.toString(),
     'is_total': isTotal.boolToIntOrNull(),
   };
 
