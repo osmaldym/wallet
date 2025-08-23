@@ -40,6 +40,8 @@ class _RecordsPageState extends State<RecordsPage> {
   DateTime? dateFrom;
   DateTime? dateTo;
 
+  List<Widget>? _allWidgetsToShow;
+
   void selectOnly({ bool? allSelected, bool? incomeSelected, bool? expendSelected }) {
     this.allSelected = allSelected ?? false;
     this.incomeSelected = incomeSelected ?? false;
@@ -133,6 +135,76 @@ class _RecordsPageState extends State<RecordsPage> {
                   builder: (BuildContext context, AsyncSnapshot<List<RelatedRecord>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
+                        DateTime? lastDate;
+
+                        if (snapshot.data!.isNotEmpty) {
+                          if (_allWidgetsToShow != null) _allWidgetsToShow!.clear();
+                          else _allWidgetsToShow = [];
+
+                          for (int i = 0; i < snapshot.data!.length; i++) {
+                            bool printedWeekNumber = false;
+                            int? weekPositionOfRecord = snapshot.data?[i].datePaid?.getWeekPositionInMonth();
+
+                            if (lastDate?.getWeekPositionInMonth() != weekPositionOfRecord) {
+                              _allWidgetsToShow!.add(
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${context.l10n!.week} $weekPositionOfRecord"
+                                      ),
+                                    ],
+                                  )
+                                )
+                              );
+                              printedWeekNumber = true;
+                            }
+
+                            _allWidgetsToShow!.add(
+                              Padding(
+                                padding: EdgeInsets.only(top: i > 0 && !printedWeekNumber ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
+                                child: ScheduledPayTile(
+                                  icon: snapshot.data?[i].scheduledPay?.subcategory?.icon != null ? IconData(snapshot.data?[i].scheduledPay?.subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].scheduledPay?.subcategory?.iconFontFamily!) : null,
+                                  title: snapshot.data?[i].scheduledPay?.title,
+                                  amount: snapshot.data?[i].amount,
+                                  chipAvatar: Icon(
+                                    snapshot.data?[i].paid ?? false ? Icons.attach_money : Icons.money_off,
+                                    color: snapshot.data?[i].paid ?? false ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast,
+                                  ),
+                                  subQuantity: snapshot.data?[i].balance,
+                                  isIncome: snapshot.data?[i].scheduledPay?.type != null && (snapshot.data?[i].scheduledPay?.type! ?? 0) > 0,
+                                  onTap: () => showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => CustomPay(
+                                      isPaid: snapshot.data?[i].paid,
+                                      title: context.l10n!.editRecord,
+                                      lastAmount: snapshot.data?[i].amount,
+                                      selectedDate: snapshot.data?[i].date,
+                                      onSave: (data) {
+                                        _controller.updateRecord(
+                                          scheduledPayId: snapshot.data?[i].scheduledPay?.id,
+                                          recordId: snapshot.data?[i].id,
+                                          datetime: data.datetime,
+                                          amount: data.amount,
+                                          paid: data.paid
+                                        );
+                                        setState(() {
+                                          _relatedRecords = _controller.getRecords();
+                                        });
+                                      }
+                                    )
+                                  ),
+                                ),
+                              )
+                            );
+
+                            lastDate = snapshot.data?[i].datePaid;
+                          }
+                        }
+
                         return snapshot.data!.isEmpty ? FullSizeMessage(
                           iconData: Icons.money_off,
                           title: context.l10n!.theresNoRecordsToShowYet,
@@ -159,42 +231,8 @@ class _RecordsPageState extends State<RecordsPage> {
                           ),
                         ) : ListView.builder(
                           shrinkWrap: true,
-                          itemBuilder: (context, i) => Padding(
-                            padding: EdgeInsets.only(top: i > 0 ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
-                            child: ScheduledPayTile(
-                              icon: snapshot.data?[i].scheduledPay?.subcategory?.icon != null ? IconData(snapshot.data?[i].scheduledPay?.subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].scheduledPay?.subcategory?.iconFontFamily!) : null,
-                              title: snapshot.data?[i].scheduledPay?.title,
-                              amount: snapshot.data?[i].amount,
-                              chipAvatar: Icon(
-                                snapshot.data?[i].paid ?? false ? Icons.attach_money : Icons.money_off,
-                                color: snapshot.data?[i].paid ?? false ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast,
-                              ),
-                              subQuantity: snapshot.data?[i].balance,
-                              isIncome: snapshot.data?[i].scheduledPay?.type != null && (snapshot.data?[i].scheduledPay?.type! ?? 0) > 0,
-                              onTap: () => showModalBottomSheet(
-                                context: context,
-                                builder: (context) => CustomPay(
-                                  isPaid: snapshot.data?[i].paid,
-                                  title: context.l10n!.editRecord,
-                                  lastAmount: snapshot.data?[i].amount,
-                                  selectedDate: snapshot.data?[i].date,
-                                  onSave: (data) {
-                                    _controller.updateRecord(
-                                      scheduledPayId: snapshot.data?[i].scheduledPay?.id,
-                                      recordId: snapshot.data?[i].id,
-                                      datetime: data.datetime,
-                                      amount: data.amount,
-                                      paid: data.paid
-                                    );
-                                    setState(() {
-                                      _relatedRecords = _controller.getRecords();
-                                    });
-                                  }
-                                )
-                              ),
-                            ),
-                          ),
-                          itemCount: snapshot.data?.length,
+                          itemBuilder: (context, i) => _allWidgetsToShow?[i],
+                          itemCount: _allWidgetsToShow?.length,
                         );
                       }
 
