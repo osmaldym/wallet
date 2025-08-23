@@ -202,7 +202,7 @@ class _HomeState extends State<Home> {
                               amount: record?.scheduledPay?.amount,
                               isIncome: record?.scheduledPay?.type != null && (record?.scheduledPay?.type! ?? 0) > 0,
                               date: record?.datePaid ?? record?.date,
-                              onTap: () => context.push(AppRoute.scheduledPaysPayInfo, extra: snapshot.data?[i]?.scheduledPay).then((_) => setState(() { _reloadRecords(); })),
+                              onTap: () => context.push(AppRoute.scheduledPaysPayInfo, extra: snapshot.data?[i]?.scheduledPay).then((_) => setState(() { _reloadAll(); })),
                               onOptionPostponePressed: () => showModalBottomSheet(
                                 context: context,
                                 builder: (context) => CustomPay(
