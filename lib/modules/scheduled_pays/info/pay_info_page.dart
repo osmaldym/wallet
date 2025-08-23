@@ -253,6 +253,7 @@ class _PayInfoPageState extends State<PayInfoPage> {
                                                   isExpense: record.scheduledPay?.type == ScheduledPayTypes.expend.index, 
                                                   scheduledPayId: _relatedScheduledPayToShow?.id,
                                                   recordId: record.id,
+                                                  amount: record.amount,
                                                   paid: true,
                                                 );
                                               }),
