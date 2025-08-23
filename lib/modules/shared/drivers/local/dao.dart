@@ -394,6 +394,41 @@ class Dao {
     return Convertions.responseToRecordList(records);
   }
 
+  Future<List<Map<String, Object?>>> recordsWithMonthPosition({ int? scheduledPayId, bool? orderByDatePaidDesc, DateTime? dateFrom, DateTime? dateTo, bool? expired }) async {
+    List<Object>? whereArgs = [];
+    List<String> wheres = []; 
+
+    if (scheduledPayId != null) {
+      wheres.add("scheduled_pay_id = ?");
+      whereArgs.add(scheduledPayId);
+    }
+
+    if (expired != null) {
+      wheres.add("expired = ?");
+      whereArgs.add(expired);
+    }
+
+    if (dateFrom != null) {
+      wheres.add("(date_paid >= ? OR date >= ?)");
+      whereArgs.addAll([dateFrom.microsecondsSinceEpoch, dateFrom.microsecondsSinceEpoch]);
+    }
+
+    if (dateTo != null) {
+      wheres.add("(date_paid <= ? OR date <= ?)");
+      whereArgs.addAll([dateTo.microsecondsSinceEpoch, dateTo.microsecondsSinceEpoch]);
+    }
+
+    String query = """
+      SELECT
+        *,
+        (CAST(strftime('%d', datetime(date_paid / 1000000, 'unixepoch')) AS INTEGER) + 6) / 7 AS week_position_in_month
+        FROM ${DBTables.record}
+        WHERE ${wheres.join(" AND ")}
+    """;
+
+    return await (await _db.get()).rawQuery(query, whereArgs);
+  }
+
   Future<model.Record?> record({int? id, int? scheduledPayId, bool? orderByDatePaidDesc}) async {
     List<String> wheres = [];
     List<Object?> whereArgs = [];
@@ -420,20 +455,22 @@ class Dao {
 
   Future<int> insertRecord(Map<String, Object?> record) => insert(DBTables.record, record);
 
+  Future<RelatedRecord> _toRelatedRecord(model.Record? recordData) async => RelatedRecord(
+    id: recordData?.id,
+    serverId: recordData?.serverId,
+    paid: recordData?.paid,
+    date: recordData?.date,
+    datePaid: recordData?.datePaid,
+    expired: recordData?.expired,
+    amount: recordData?.amount,
+    balance: recordData?.balance,
+    scheduledPay: await relatedScheduledPay(recordData?.scheduledPayId ?? -1)
+  );
+
   Future<RelatedRecord?> relatedRecord({int? id, int? scheduledPayId, bool? orderByDatePaidDesc}) async {
     model.Record? recordData = await record(id: id, scheduledPayId: scheduledPayId, orderByDatePaidDesc: orderByDatePaidDesc);
     if (recordData == null) return null;
-    return RelatedRecord(
-      id: recordData.id,
-      serverId: recordData.serverId,
-      paid: recordData.paid,
-      date: recordData.date,
-      datePaid: recordData.datePaid,
-      expired: recordData.expired,
-      amount: recordData.amount,
-      balance: recordData.balance,
-      scheduledPay: await relatedScheduledPay(recordData.scheduledPayId ?? -1)
-    );
+    return await _toRelatedRecord(recordData);
   }
 
   Future<List<RelatedRecord>> relatedRecordList({ int? scheduledPayId, bool? orderByDatePaidDesc, DateTime? dateFrom, DateTime? dateTo, bool? expired }) async {
@@ -444,20 +481,7 @@ class Dao {
       dateFrom: dateFrom,
       dateTo: dateTo
     );
-    return [
-      for (final recordData in recordsData)
-        RelatedRecord(
-          id: recordData?.id,
-          serverId: recordData?.serverId,
-          paid: recordData?.paid,
-          date: recordData?.date,
-          datePaid: recordData?.datePaid,
-          amount: recordData?.amount,
-          balance: recordData?.balance,
-          expired: recordData?.expired,
-          scheduledPay: await relatedScheduledPay(recordData?.scheduledPayId ?? -1)
-        )
-    ];
+    return [for (final recordData in recordsData) await _toRelatedRecord(recordData)];
   }
 
   Future<void> updateRecord(int id, Map<String, Object?> data) async => await updateById(DBTables.record, data, id);
