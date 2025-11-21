@@ -104,5 +104,10 @@
     "editRecord": "Editar registro",
     "warning": "Cuidado",
     "warningCreatingNewAccount": "Cuando creas una nueva cuenta, la cuenta \"Total\" dejará de ser editable manualmente",
+    "inTheWeek": "En la semana",
+    "greaterExpend": "Mayor gasto",
+    "lessExpend": "Menor gasto",
+    "comparedToPreviousWeek": "Comparado con la semana anterior",
+    "comparation": "Comparación",
     "errorLoading": "Error al cargar"
 }

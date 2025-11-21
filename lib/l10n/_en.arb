@@ -104,5 +104,10 @@
     "editRecord": "Edit record",
     "warning": "Warning",
     "warningCreatingNewAccount": "When you create a new account, the \"Total\" account will become non-editable manually",
+    "inTheWeek": "In the week",
+    "greaterExpend": "Greater expend",
+    "lessExpend": "Less expend",
+    "comparedToPreviousWeek": "Compared to previous week",
+    "comparation": "Comparation",
     "errorLoading": "Error loading"
 }
