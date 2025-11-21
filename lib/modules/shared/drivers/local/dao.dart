@@ -15,6 +15,7 @@ import 'package:wallet/modules/shared/drivers/local/models/relationships/r_recor
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_subcategory.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/reports/r_week_report.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/session.dart';
 import 'package:wallet/modules/shared/drivers/local/models/subcategories.dart';
@@ -632,5 +633,172 @@ class Dao {
       );
       insertRecord(newRecord.toMap());
     }
+  }
+
+  // Week report
+
+  Future<RelatedWeekReport> relatedWeekReport(DateTime datetime, int weekNumber) async {
+    
+    int m = datetime.month;
+    int y = datetime.year;
+
+    Map<String, Object?>? lastWeek = await compareWithLastWeek(weekNumber, datetime.month, datetime.year, ScheduledPayTypes.expend);
+
+    return RelatedWeekReport(
+      totalExpend: await semanalTotal(weekNumber, m, y, type: ScheduledPayTypes.expend),
+      totalIncome: await semanalTotal(weekNumber, m, y, type: ScheduledPayTypes.income),
+      highExpend: await recordExpend(weekNumber, m, y, max: true),
+      lessExpend: await recordExpend(weekNumber, m, y, max: false),
+      totalLastWeek: await totalOfWeek((weekNumber-1), m, y, ScheduledPayTypes.expend),
+      totalVsLastWeek: lastWeek?['comparation'] as double?,
+    );
+  }
+
+  // General calculations
+  Future<double> semanalTotal(int? weekNumber, int? monthNumber, int? yearNumber, { ScheduledPayTypes? type = ScheduledPayTypes.expend }) async {
+    if (weekNumber == null || monthNumber == null || yearNumber == null) return 0;
+
+    Map<String, Object?> data = (await (await _db.get()).rawQuery(
+      """
+        WITH variable AS (
+          SELECT ? AS search_type, ? as week_number, ? as month_number, ? as year_number, 1000000 as to_divide
+        )
+        SELECT
+          SUM(r.amount) as total_amount
+        FROM ${DBTables.record} r
+        INNER JOIN ${DBTables.scheduledPay} sp ON sp.id = r.scheduled_pay_id
+        LEFT JOIN variable v
+        WHERE (
+            (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'weekday 0') AS INTEGER)) -
+            (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'start of month', 'weekday 0') AS INTEGER)) 
+          )+1 = v.week_number
+          AND CAST(strftime('%m', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.month_number
+          AND CAST(strftime('%Y', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.year_number
+          AND r.balance IS NOT NULL
+          AND sp.type = v.search_type
+          AND r.expired = 0
+      """,
+      [type?.index ?? 0, weekNumber, monthNumber, yearNumber]
+    )).first;
+
+    return data['total_amount'] as double? ?? 0;
+  }
+
+  Future<RelatedRecord?> recordExpend(int? weekNumber, int? monthNumber, int? yearNumber, { bool? max = false } ) async {
+    if (weekNumber == null || monthNumber == null || yearNumber == null) return null;
+
+    String q =  """
+        WITH variable AS (
+          SELECT ? AS search_type, ? as week_number, ? as month_number, ? as year_number, 1000000 as to_divide
+        )
+        SELECT
+          r.id
+        FROM ${DBTables.record} r
+        INNER JOIN ${DBTables.scheduledPay} sp ON r.scheduled_pay_id = sp.id
+        LEFT JOIN variable v
+        WHERE (
+            (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'weekday 0') AS INTEGER)) -
+            (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'start of month', 'weekday 0') AS INTEGER)) 
+          )+1 = v.week_number
+          AND CAST(strftime('%m', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.month_number
+          AND CAST(strftime('%Y', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.year_number
+          AND r.balance IS NOT NULL
+          AND sp.type = v.search_type
+          AND r.expired = 0
+        ORDER BY r.amount ${ (max ?? false) ? "DESC" : "ASC" }
+        LIMIT 1
+      """;
+
+    Map<String, Object?>? data = (await (await _db.get()).rawQuery(
+      q,
+      [ScheduledPayTypes.expend.index, weekNumber, monthNumber, yearNumber]
+    )).firstOrNull;
+
+    if (data == null) return null;
+
+    int? idRecord = data['id'] as int?;
+    return relatedRecord(id: idRecord);
+  }
+
+  Future<double?> totalOfWeek(int? weekNumber, int? monthNumber, int? yearNumber, ScheduledPayTypes? expendType) async {
+    String q = """
+      WITH variable AS (
+        SELECT ? AS search_type, ? as week_number, ? as month_number, ? as year_number, 1000000 as to_divide
+      )
+      SELECT
+        SUM(r.amount * CASE WHEN sp.type = ? THEN -1 ELSE 1 END) as total_amount
+      FROM ${DBTables.record} r
+      INNER JOIN ${DBTables.scheduledPay} sp ON sp.id = r.scheduled_pay_id
+      LEFT JOIN variable v
+      WHERE (
+        (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'weekday 0') AS INTEGER)) -
+        (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'start of month', 'weekday 0') AS INTEGER)) 
+      )+1 = v.week_number
+      AND CAST(strftime('%m', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.month_number
+      AND CAST(strftime('%Y', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.year_number
+      AND r.balance IS NOT NULL
+    """;
+
+    Map<String, Object?> data = (await (await _db.get()).rawQuery(
+      q,
+      [expendType?.index ?? 0, weekNumber, monthNumber, yearNumber]
+    )).first;
+
+    return (data['total_amount'] as double?)?.abs();
+  }
+
+  Future<Map<String, Object?>?> compareWithLastWeek(int? weekNumber, int? monthNumber, int? yearNumber, ScheduledPayTypes? expendType) async {
+    if (weekNumber == null || monthNumber == null || yearNumber == null) return null;
+    String q = """
+      WITH variable AS (
+        SELECT ? AS search_type, ? as week_number, ? as month_number, ? as year_number, 1000000 as to_divide
+      ), dates AS (
+        SELECT
+          CAST(strftime('%W', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) as current_week,
+          (CAST(strftime('%W', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER)-1) as last_week
+        FROM ${DBTables.record} r
+        LEFT JOIN variable v
+        WHERE 
+          (
+            (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'weekday 0') AS INTEGER)) -
+            (CAST (strftime('%W', date_paid / v.to_divide, 'unixepoch', 'start of month', 'weekday 0') AS INTEGER)) 
+          )+1 = v.week_number
+          AND CAST(strftime('%m', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.month_number
+          AND CAST(strftime('%Y', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = v.year_number
+          AND r.balance IS NOT NULL
+        LIMIT 1
+      ), gen_info AS (
+        SELECT
+          SUM(r.amount * CASE WHEN sp.type = v.search_type THEN -1 ELSE 1 END) as total_amount
+        FROM ${DBTables.record} r
+        LEFT JOIN variable v
+        LEFT JOIN dates d
+        INNER JOIN ${DBTables.scheduledPay} sp ON sp.id = r.scheduled_pay_id
+        WHERE
+          CAST(strftime('%W', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = d.current_week
+          AND r.balance IS NOT NULL
+      ), last_week AS (
+        SELECT
+          SUM(r.amount * CASE WHEN sp.type = v.search_type THEN -1 ELSE 1 END) as total_amount
+        FROM ${DBTables.record} r
+        LEFT JOIN variable v
+        LEFT JOIN dates d
+        INNER JOIN ${DBTables.scheduledPay} sp ON sp.id = r.scheduled_pay_id
+        WHERE
+          CAST(strftime('%W', r.date_paid / v.to_divide, 'unixepoch') AS INTEGER) = d.last_week
+          AND r.balance IS NOT NULL
+      )
+        SELECT
+          (COALESCE(lw.total_amount, 0) - COALESCE(gi.total_amount, 0)) as comparation
+        FROM gen_info gi
+        LEFT JOIN last_week lw
+    """;
+
+    Map<String, Object?> data = (await (await _db.get()).rawQuery(
+      q,
+      [expendType?.index ?? 0, weekNumber, monthNumber, yearNumber]
+    )).first;
+
+    return data;
   }
 }
