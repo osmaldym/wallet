@@ -1,5 +1,6 @@
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/reports/r_week_report.dart';
 import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record.dart' as model;
 
@@ -28,5 +29,10 @@ class RecordsController {
     }
 
     return records;
+  }
+
+  Future<RelatedWeekReport>? getWeekReport({ int? weekNumber, DateTime? date }) {
+    if (date == null || weekNumber == null) return null;
+    return dao.relatedWeekReport(date, weekNumber);
   }
 }
