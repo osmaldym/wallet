@@ -6,9 +6,12 @@ import 'package:wallet/core/extensions/datetime_ext.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/records/records_controller.dart';
+import 'package:wallet/modules/records/widgets/week_report_modal.dart';
 import 'package:wallet/modules/scheduled_pays/info/widgets/modals/custom_pay.dart';
 import 'package:wallet/modules/scheduled_pays/widgets/scheduled_pay_tile.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/reports/r_week_report.dart';
+import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/widgets/fragments/expandable_fab.dart';
 import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
 import 'package:wallet/modules/shared/widgets/fragments/full_size_message.dart';
@@ -143,7 +146,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
                           for (int i = 0; i < snapshot.data!.length; i++) {
                             bool printedWeekNumber = false;
-                            int? weekPositionOfRecord = snapshot.data?[i].datePaid?.getWeekPositionInMonth();
+                            DateTime? dateOfRecord = snapshot.data?[i].datePaid;
+                            int? weekPositionOfRecord = dateOfRecord?.getWeekPositionInMonth();
 
                             if (lastDate?.getWeekPositionInMonth() != weekPositionOfRecord) {
                               _allWidgetsToShow!.add(
@@ -156,6 +160,30 @@ class _RecordsPageState extends State<RecordsPage> {
                                       Text(
                                         "${context.l10n!.week} $weekPositionOfRecord"
                                       ),
+                                      IconButton(
+                                        onPressed: () => showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => FutureBuilder<RelatedWeekReport?>(
+                                            future: _controller.getWeekReport(weekNumber: weekPositionOfRecord, date: dateOfRecord),
+                                            builder: (BuildContext context, AsyncSnapshot<RelatedWeekReport?> snapshotRelatedWeekReport) {
+                                              if (snapshotRelatedWeekReport.hasData) {
+                                                return WeekReportModal(
+                                                  weekNumber: weekPositionOfRecord,
+                                                  relatedWeekReport: snapshotRelatedWeekReport.data, 
+                                                );
+                                              }
+
+                                              if (snapshotRelatedWeekReport.hasError) _utils.showSnackBarMessage(context, "${context.l10n?.errorLoading}: ${snapshot.error}", error: true);
+
+                                              return const CircularProgressIndicator();
+                                            }
+                                          ),
+                                        ),
+                                        icon: Icon(
+                                          Icons.info_outline,
+                                          color: AppTheme.of(context).primary,
+                                        ),
+                                      )
                                     ],
                                   )
                                 )
@@ -175,7 +203,7 @@ class _RecordsPageState extends State<RecordsPage> {
                                     color: snapshot.data?[i].paid ?? false ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast,
                                   ),
                                   subQuantity: snapshot.data?[i].balance,
-                                  isIncome: snapshot.data?[i].scheduledPay?.type != null && (snapshot.data?[i].scheduledPay?.type! ?? 0) > 0,
+                                  isIncome: snapshot.data?[i].scheduledPay?.type == ScheduledPayTypes.income.index,
                                   onTap: () => showModalBottomSheet(
                                     context: context,
                                     builder: (context) => CustomPay(
