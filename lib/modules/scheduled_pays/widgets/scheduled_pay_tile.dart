@@ -33,57 +33,59 @@ class ScheduledPayTile extends StatelessWidget {
 
     format = NumberFormat("#,###.##", tr.localeName);
 
-    return ListTile(
-      tileColor: theme.primary,
-      leading: CircleAvatar(
-        backgroundColor: theme.seedBgColor,
-        radius: 25,
-        child: Icon(icon ?? Icons.payments_outlined),
-      ),
-      titleTextStyle: const TextStyle(
-        color: Colors.black,
-      ),
-      title: Text(title ?? (isIncome! ? tr.myIncome : tr.myExpend)),
-      subtitleTextStyle: TextStyle(
-        color: isIncome! ? theme.textGreen : theme.textRedDark,
-      ),
-      subtitle: Text((isIncome! ? "+" : "-") + format.format(amount ?? 0)),
-      trailing: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          SizedBox(
-            height: 32,
-            child: component.Chip(
-              selectedColor: theme.seedBgColor,
-              txtColor: isIncome! ? theme.greenContrast : theme.redContrast,
-              text: isIncome! ? tr.income : tr.expend,
-              selected: true,
-              padding: const EdgeInsets.only(right: 5),
-              avatar: chipAvatar ?? Icon(
-                Icons.chevron_right_rounded,
-                color: isIncome! ? theme.greenContrast : theme.redContrast,
+    return Material(
+      child: ListTile(
+        tileColor: theme.primary,
+        leading: CircleAvatar(
+          backgroundColor: theme.seedBgColor,
+          radius: 25,
+          child: Icon(icon ?? Icons.payments_outlined),
+        ),
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+        ),
+        title: Text(title ?? (isIncome! ? tr.myIncome : tr.myExpend)),
+        subtitleTextStyle: TextStyle(
+          color: isIncome! ? theme.textGreen : theme.textRedDark,
+        ),
+        subtitle: Text((isIncome! ? "+" : "-") + format.format(amount ?? 0)),
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SizedBox(
+              height: 32,
+              child: component.Chip(
+                selectedColor: theme.seedBgColor,
+                txtColor: isIncome! ? theme.greenContrast : theme.redContrast,
+                text: isIncome! ? tr.income : tr.expend,
+                selected: true,
+                padding: const EdgeInsets.only(right: 5),
+                avatar: chipAvatar ?? Icon(
+                  Icons.chevron_right_rounded,
+                  color: isIncome! ? theme.greenContrast : theme.redContrast,
+                ),
+                onSelected: (e){},
               ),
-              onSelected: (e){},
             ),
-          ),
-          if (subQuantity != null)
-            Text(
-              (isIncome! ? "+" : "-") + format.format(subQuantity ?? 0),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: isIncome! ? theme.textGreen : theme.textRedDark,
-              ),
-            )
-        ],
+            if (subQuantity != null)
+              Text(
+                format.format(subQuantity ?? 0),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: isIncome! ? theme.textGreen : theme.textRedDark,
+                ),
+              )
+          ],
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))
+        ),
+        onTap: () {
+          if (onTap != null) onTap!();
+        },
       ),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15))
-      ),
-      onTap: () {
-        if (onTap != null) onTap!();
-      },
     );
   }
 }
