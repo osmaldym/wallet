@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 extension DatetimeExt on DateTime {
-  int getWeekPositionInMonth() => ((day / 7) is int ? (day / 7) : (day / 7) + 1).toInt();
+  int getWeekPositionInMonth() {
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
+    int firstDayOffset = firstDayOfMonth.weekday - 1;
+    int dayInMonthAdjusted = day + firstDayOffset;
+    return(dayInMonthAdjusted / 7).ceil();
+  }
 
   /// Returns a new DateTime istance with the datetime data added and the data of the last DateTime not added
   DateTime addx({ int? years, int? months, int? days, int? hours, int? minutes, int? seconds, int? milliseconds, int? microseconds }) {
@@ -36,5 +41,18 @@ extension DatetimeExt on DateTime {
   }
 
   /// Returns a new DateTime istance with the datetime data replaced and the data of the last DateTime not replaced
-  DateTime recreateInTimeZero() => recreate(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  DateTime recreateInTimeZero({
+    int? year,
+    int? month,
+    int? day
+  }) => recreate(
+      year: year ?? this.year,
+      month: month ?? this.month,
+      day: day ?? this.day,
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0
+  );
 }
