@@ -801,4 +801,69 @@ class Dao {
 
     return data;
   }
+
+  Future<List<Map<String, Object?>>> getRecordsForPage({ int? type, DateTime? dateFrom, DateTime? dateTo }) async {
+    String sql = """
+      SELECT
+        r.*,
+        (
+          (CAST (strftime('%W', date_paid / 1000000, 'unixepoch', 'weekday 0') AS INTEGER)) -
+          (CAST (strftime('%W', date_paid / 1000000, 'unixepoch', 'start of month', 'weekday 0') AS INTEGER)) 
+        )+1 as week_number
+      FROM ${DBTables.record} r
+      INNER JOIN ${DBTables.scheduledPay} sp ON r.scheduled_pay_id = sp.id
+      WHERE
+        r.expired = 0
+        """;
+
+    List<Object> params = [];
+
+    if (type != null) {
+      sql += " AND sp.type = ?";
+      params.add(type);
+    }
+
+    if (dateFrom != null) {
+      sql += " AND r.date_paid >= ?";
+      params.add(dateFrom.microsecondsSinceEpoch);
+    }
+
+    if (dateTo != null) {
+      sql += " AND r.date_paid <= ?";
+      params.add(dateTo.microsecondsSinceEpoch);
+    }
+
+    sql += " ORDER BY r.date_paid DESC";
+
+    List<Map<String, Object?>> recordMaps = (await (await _db.get()).rawQuery(sql, params));
+    List<Map<String, Object?>> mapsToReturn = [];
+
+    if (recordMaps.isEmpty) return mapsToReturn;
+
+    List<RelatedRecord> _records = [];
+
+    int nextWeekNumber = recordMaps[0]['week_number'] as int;
+
+    Map<String, Object> newMap = {};
+    for (int i = 0; i < recordMaps.length; i++) {
+      // Getting the current week number
+      int currentWeekNumber = recordMaps[i]['week_number'] as int;
+
+      // Getting the next week number
+      if (i < recordMaps.length-1) nextWeekNumber = recordMaps[i+1]['week_number'] as int;
+
+      _records.add(await _toRelatedRecord(Convertions.responseToRecord(recordMaps[i])));
+
+      // Adding data to map to return
+      if (currentWeekNumber != nextWeekNumber || i == recordMaps.length-1) {
+        newMap['week_number'] = currentWeekNumber;
+        newMap['related_records'] = _records;
+        mapsToReturn.add(newMap);
+        _records = [];
+        newMap = {};
+      }
+    }
+
+    return mapsToReturn;
+  }
 }
