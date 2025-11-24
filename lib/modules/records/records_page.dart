@@ -32,7 +32,7 @@ class _RecordsPageState extends State<RecordsPage> {
   final RecordsController _controller = RecordsController();
   final Utils _utils = Utils();
   List<component.Chip>? _chips;
-  Future<List<RelatedRecord>>? _relatedRecords;
+  Future<List<Map<String, Object?>>>? _relatedRecords;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
@@ -79,7 +79,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(incomeSelected: true);
-            _relatedRecords = _controller.getRecords(type: 1, dateFrom: dateFrom);
+            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.income.index, dateFrom: dateFrom);
           });
         },
       ),
@@ -90,7 +90,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(expendSelected: true);
-            _relatedRecords = _controller.getRecords(type: 0, dateFrom: dateFrom);
+            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.expend.index, dateFrom: dateFrom);
           });
         },
       )
@@ -133,103 +133,99 @@ class _RecordsPageState extends State<RecordsPage> {
               ),
               FlexibleCard(
                 forList: true,
-                child: FutureBuilder<List<RelatedRecord>>(
+                child: FutureBuilder<List<Map<String, Object?>>>(
                   future: _relatedRecords,
-                  builder: (BuildContext context, AsyncSnapshot<List<RelatedRecord>> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<List<Map<String, Object?>>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
-                        DateTime? lastDate;
-
                         if (snapshot.data!.isNotEmpty) {
                           if (_allWidgetsToShow != null) _allWidgetsToShow!.clear();
                           else _allWidgetsToShow = [];
 
-                          for (int i = 0; i < snapshot.data!.length; i++) {
-                            bool printedWeekNumber = false;
-                            DateTime? dateOfRecord = snapshot.data?[i].datePaid;
-                            int? weekPositionOfRecord = dateOfRecord?.getWeekPositionInMonth();
+                          for (final data in snapshot.data!) {
+                            int weekNumber = data['week_number'] as int;
+                            List<RelatedRecord> relatedRecords = data['related_records'] as List<RelatedRecord>;
 
-                            if (lastDate?.getWeekPositionInMonth() != weekPositionOfRecord) {
-                              _allWidgetsToShow!.add(
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${context.l10n!.week} $weekPositionOfRecord"
-                                      ),
-                                      IconButton(
-                                        onPressed: () => showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) => FutureBuilder<RelatedWeekReport?>(
-                                            future: _controller.getWeekReport(weekNumber: weekPositionOfRecord, date: dateOfRecord),
-                                            builder: (BuildContext context, AsyncSnapshot<RelatedWeekReport?> snapshotRelatedWeekReport) {
-                                              if (snapshotRelatedWeekReport.hasData) {
-                                                return WeekReportModal(
-                                                  weekNumber: weekPositionOfRecord,
-                                                  relatedWeekReport: snapshotRelatedWeekReport.data, 
-                                                );
-                                              }
-
-                                              if (snapshotRelatedWeekReport.hasError) _utils.showSnackBarMessage(context, "${context.l10n?.errorLoading}: ${snapshot.error}", error: true);
-
-                                              return const CircularProgressIndicator();
-                                            }
-                                          ),
-                                        ),
-                                        icon: Icon(
-                                          Icons.info_outline,
-                                          color: AppTheme.of(context).primary,
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                )
-                              );
-                              printedWeekNumber = true;
-                            }
+                            DateTime? firstDateTime = relatedRecords[0].datePaid;
 
                             _allWidgetsToShow!.add(
                               Padding(
-                                padding: EdgeInsets.only(top: i > 0 && !printedWeekNumber ? 15 : 0, bottom: (i == (snapshot.data?.length ?? 0) - 1) ? 15 : 0),
-                                child: ScheduledPayTile(
-                                  icon: snapshot.data?[i].scheduledPay?.subcategory?.icon != null ? IconData(snapshot.data?[i].scheduledPay?.subcategory?.icon! ?? -1, fontFamily: snapshot.data?[i].scheduledPay?.subcategory?.iconFontFamily!) : null,
-                                  title: snapshot.data?[i].scheduledPay?.title,
-                                  amount: snapshot.data?[i].amount,
-                                  chipAvatar: Icon(
-                                    snapshot.data?[i].paid ?? false ? Icons.attach_money : Icons.money_off,
-                                    color: snapshot.data?[i].paid ?? false ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast,
-                                  ),
-                                  subQuantity: snapshot.data?[i].balance,
-                                  isIncome: snapshot.data?[i].scheduledPay?.type == ScheduledPayTypes.income.index,
-                                  onTap: () => showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => CustomPay(
-                                      isPaid: snapshot.data?[i].paid,
-                                      title: context.l10n!.editRecord,
-                                      lastAmount: snapshot.data?[i].amount,
-                                      selectedDate: snapshot.data?[i].date,
-                                      onSave: (data) {
-                                        _controller.updateRecord(
-                                          scheduledPayId: snapshot.data?[i].scheduledPay?.id,
-                                          recordId: snapshot.data?[i].id,
-                                          datetime: data.datetime,
-                                          amount: data.amount,
-                                          paid: data.paid
-                                        );
-                                        setState(() {
-                                          _relatedRecords = _controller.getRecords();
-                                        });
-                                      }
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "${context.l10n!.week} $weekNumber"
+                                    ),
+                                    IconButton(
+                                      onPressed: () => showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => FutureBuilder<RelatedWeekReport?>(
+                                          future: _controller.getWeekReport(weekNumber: weekNumber, date: firstDateTime),
+                                          builder: (BuildContext context, AsyncSnapshot<RelatedWeekReport?> snapshotRelatedWeekReport) {
+                                            if (snapshotRelatedWeekReport.hasData) {
+                                              return WeekReportModal(
+                                                weekNumber: weekNumber,
+                                                relatedWeekReport: snapshotRelatedWeekReport.data, 
+                                              );
+                                            }
+
+                                            if (snapshotRelatedWeekReport.hasError) _utils.showSnackBarMessage(context, "${context.l10n?.errorLoading}: ${snapshot.error}", error: true);
+
+                                            return const CircularProgressIndicator();
+                                          }
+                                        ),
+                                      ),
+                                      icon: Icon(
+                                        Icons.info_outline,
+                                        color: AppTheme.of(context).primary,
+                                      ),
                                     )
-                                  ),
-                                ),
+                                  ],
+                                )
                               )
                             );
 
-                            lastDate = snapshot.data?[i].datePaid;
+                            for (final record in relatedRecords) {
+                              _allWidgetsToShow!.add(
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  child: ScheduledPayTile(
+                                    icon: record.scheduledPay?.subcategory?.icon != null ? IconData(record.scheduledPay?.subcategory?.icon! ?? -1, fontFamily: record.scheduledPay?.subcategory?.iconFontFamily!) : null,
+                                    title: record.scheduledPay?.title,
+                                    amount: record.amount,
+                                    chipAvatar: Icon(
+                                      record.paid ?? false ? Icons.attach_money : Icons.money_off,
+                                      color: record.paid ?? false ? AppTheme.of(context).greenContrast : AppTheme.of(context).redContrast,
+                                    ),
+                                    subQuantity: record.balance,
+                                    isIncome: record.scheduledPay?.type == ScheduledPayTypes.income.index,
+                                    onTap: () => showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) => CustomPay(
+                                        isPaid: record.paid,
+                                        title: context.l10n!.editRecord,
+                                        lastAmount: record.amount,
+                                        selectedDate: record.date,
+                                        onSave: (data) {
+                                          _controller.updateRecord(
+                                            scheduledPayId: record.scheduledPay?.id,
+                                            recordId: record.id,
+                                            datetime: data.datetime,
+                                            amount: data.amount,
+                                            paid: data.paid
+                                          );
+                                          setState(() {
+                                            _relatedRecords = _controller.getRecords();
+                                          });
+                                        }
+                                      )
+                                    ),
+                                  ),
+                                )
+                              );
+                            }
                           }
                         }
 
@@ -237,7 +233,7 @@ class _RecordsPageState extends State<RecordsPage> {
                           iconData: Icons.money_off,
                           title: context.l10n!.theresNoRecordsToShowYet,
                           subtitle: GestureDetector(
-                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(); })),
+                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(dateFrom: dateFrom); })),
                             child: Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.center,
