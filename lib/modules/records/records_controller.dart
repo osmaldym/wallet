@@ -1,7 +1,5 @@
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
-import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/reports/r_week_report.dart';
-import 'package:wallet/modules/shared/drivers/local/models/scheduled_pay.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record.dart' as model;
 
 class RecordsController {
@@ -12,23 +10,8 @@ class RecordsController {
     if (scheduledPayId != null) await dao.createRecordsIfNotExist(scheduledPayId: scheduledPayId);
   }
 
-  Future<List<RelatedRecord>>? getRecords({ int? type, DateTime? dateFrom, DateTime? dateTo }) async {
-    List<ScheduledPay> scheduledPayList = await dao.scheduledPays(type: type);
-    List<RelatedRecord> records = [];
-
-    if (scheduledPayList.isNotEmpty){
-      for (final pay in scheduledPayList) {
-        records.addAll(await dao.relatedRecordList(
-          scheduledPayId: pay.id,
-          orderByDatePaidDesc: true,
-          expired: false,
-          dateFrom: dateFrom,
-          dateTo: dateTo,
-        ));
-      }
-    }
-
-    return records;
+  Future<List<Map<String, Object?>>>? getRecords({ int? type, DateTime? dateFrom, DateTime? dateTo }) async {
+    return await dao.getRecordsForPage(type: type, dateFrom: dateFrom, dateTo: dateTo);
   }
 
   Future<RelatedWeekReport>? getWeekReport({ int? weekNumber, DateTime? date }) {
