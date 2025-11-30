@@ -640,7 +640,17 @@ class Dao {
   Future<RelatedWeekReport> relatedWeekReport(DateTime datetime, int weekNumber) async {
     
     int m = datetime.month;
+    int mLastWeek = m;
     int y = datetime.year;
+    int yLastWeek = y;
+    int weekNumberLastWeek = weekNumber-1;
+
+    if (weekNumberLastWeek == 0) {
+      DateTime datetimeLastMonth = datetime.subtract(const Duration(days: 7));
+      weekNumberLastWeek = datetimeLastMonth.getWeekPositionInMonth();
+      mLastWeek = datetimeLastMonth.month;
+      yLastWeek = datetimeLastMonth.year;
+    }
 
     Map<String, Object?>? lastWeek = await compareWithLastWeek(weekNumber, datetime.month, datetime.year, ScheduledPayTypes.expend);
 
@@ -649,7 +659,7 @@ class Dao {
       totalIncome: await semanalTotal(weekNumber, m, y, type: ScheduledPayTypes.income),
       highExpend: await recordExpend(weekNumber, m, y, max: true),
       lessExpend: await recordExpend(weekNumber, m, y, max: false),
-      totalLastWeek: await totalOfWeek((weekNumber-1), m, y, ScheduledPayTypes.expend),
+      totalLastWeek: await totalOfWeek((weekNumberLastWeek), mLastWeek, yLastWeek, ScheduledPayTypes.expend),
       totalVsLastWeek: lastWeek?['comparation'] as double?,
     );
   }
@@ -726,7 +736,7 @@ class Dao {
         SELECT ? AS search_type, ? as week_number, ? as month_number, ? as year_number, 1000000 as to_divide
       )
       SELECT
-        SUM(r.amount * CASE WHEN sp.type = ? THEN -1 ELSE 1 END) as total_amount
+        SUM(r.amount * CASE WHEN sp.type = v.search_type THEN -1 ELSE 1 END) as total_amount
       FROM ${DBTables.record} r
       INNER JOIN ${DBTables.scheduledPay} sp ON sp.id = r.scheduled_pay_id
       LEFT JOIN variable v
