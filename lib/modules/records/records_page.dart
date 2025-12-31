@@ -17,6 +17,7 @@ import 'package:wallet/modules/shared/widgets/fragments/flexible_card.dart';
 import 'package:wallet/modules/shared/widgets/fragments/full_size_message.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
+import 'package:wallet/modules/shared/widgets/modals/filters.dart';
 
 class RecordsPage extends StatefulWidget {
   const RecordsPage({
@@ -42,6 +43,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
   DateTime? dateFrom;
   DateTime? dateTo;
+
+  FiltersModalData? filterData;
 
   List<Widget>? _allWidgetsToShow;
 
@@ -100,6 +103,20 @@ class _RecordsPageState extends State<RecordsPage> {
       key: _scaffoldKey,
       appBar: CHeader(
         title: context.l10n!.records,
+        trailingIcon: Icons.filter_alt_outlined,
+        onTrailingPressed: () => showModalBottomSheet(
+          context: context,
+          builder: (context) => FiltersModal(
+            onSave: (FiltersModalData filterData) {
+              setState(() {
+                this.filterData = filterData;
+                _relatedRecords = _controller.getRecords(dateFrom: this.filterData!.dateFrom, dateTo: this.filterData!.dateTo);
+              });
+              Navigator.pop(context);
+            },
+            filters: filterData,
+          )
+        ),
       ),
       floatingActionButton: ExpandableFab(
         items: [
