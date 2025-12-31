@@ -78,6 +78,7 @@
     "payData": "Data of pay",
     "youDontHaveAnyDataToShow": "You don't have any data to show",
     "from": "From",
+    "to": "To",
     "ofDel": "of",
     "everyDay": "Every day",
     "everyMonth": "Every month",
@@ -109,5 +110,10 @@
     "lessExpend": "Less expend",
     "comparedToPreviousWeek": "Compared to previous week",
     "comparation": "Comparation",
+    "period": "Period",
+    "allYear": "All year",
+    "allMonth": "All month",
+    "allWeek": "All week",
+    "custom": "Custom",
     "errorLoading": "Error loading"
 }

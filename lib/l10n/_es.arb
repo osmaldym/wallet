@@ -78,6 +78,7 @@
     "payData": "Datos de pago",
     "youDontHaveAnyDataToShow": "No tienes datos para mostrar",
     "from": "Desde",
+    "to": "Hasta",
     "ofDel": "del",
     "everyDay": "Todos los días",
     "everyMonth": "Todos los meses",
@@ -109,5 +110,10 @@
     "lessExpend": "Menor gasto",
     "comparedToPreviousWeek": "Comparado con la semana anterior",
     "comparation": "Comparación",
+    "periodo": "Período",
+    "allYear": "Todo el año",
+    "allMonth": "Todo el mes",
+    "allWeek": "Toda la semana",
+    "custom": "Personalizado",
     "errorLoading": "Error al cargar"
 }
