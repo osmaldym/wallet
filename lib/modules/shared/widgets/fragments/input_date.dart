@@ -13,6 +13,7 @@ class InputDate extends StatefulWidget {
   DateTime selectedDate;
   DateTime? firstDate;
   DateTime? lastDate;
+  String? title;
   
   InputDate({
     super.key,
@@ -26,6 +27,7 @@ class InputDate extends StatefulWidget {
     this.onChanged,
     this.firstDate,
     this.lastDate,
+    this.title,
   });
 
   @override
@@ -42,7 +44,7 @@ class _InputDateState extends State<InputDate> {
 
     return TextFormField(
       decoration: widget.decoration ?? InputDecoration(
-        labelText: tr.date
+        labelText: widget.title ?? tr.date
       ),
       enabled: widget.enabled ?? true,
       controller: TextEditingController(
