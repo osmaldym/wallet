@@ -26,6 +26,14 @@ extension DatetimeExt on DateTime {
 
   DateTime setTimeOfDay(TimeOfDay timeOfDay) => recreate(hour: timeOfDay.hour, minute: timeOfDay.minute);
 
+  DateTime getFirstDayOfWeek() => weekday == DateTime.sunday ? subtract(Duration(days: weekday)) : this;
+  
+  DateTime getLastDayOfWeek() {
+    int daysToAdd = DateTime.sunday - weekday;
+    if (daysToAdd < 0) daysToAdd += 7;
+    return add(Duration(days: daysToAdd));
+  }
+
   /// Returns a new DateTime istance with the datetime data replaced and the data of the last DateTime not replaced
   DateTime recreate({ int? year, int? month, int? day, int? hour, int? minute, int? second, int? millisecond, int? microsecond }) {
     return DateTime(
@@ -54,5 +62,21 @@ extension DatetimeExt on DateTime {
       second: 0,
       millisecond: 0,
       microsecond: 0
+  );
+
+  /// Returns a new DateTime istance with the datetime data replaced and the data of the last DateTime not replaced
+  DateTime recreateInTimeLastSecond({
+    int? year,
+    int? month,
+    int? day
+  }) => recreate(
+      year: year ?? this.year,
+      month: month ?? this.month,
+      day: day ?? this.day,
+      hour: 23,
+      minute: 59,
+      second: 59,
+      millisecond: 59,
+      microsecond: 59
   );
 }
