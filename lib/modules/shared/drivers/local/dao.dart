@@ -853,14 +853,24 @@ class Dao {
     List<RelatedRecord> _records = [];
 
     int nextWeekNumber = recordMaps[0]['week_number'] as int;
+    /**
+     * When the month are in december and was the last week, the query returns a negative number
+     * by that cause we convert this number to a last posible week (5), it's easier if we do
+     * the convertion in this way instead by the query.
+    */
+    if (nextWeekNumber <= 0) nextWeekNumber = 5;
 
     Map<String, Object> newMap = {};
     for (int i = 0; i < recordMaps.length; i++) {
       // Getting the current week number
       int currentWeekNumber = recordMaps[i]['week_number'] as int;
+      if (currentWeekNumber <= 0) currentWeekNumber = 5;
 
       // Getting the next week number
-      if (i < recordMaps.length-1) nextWeekNumber = recordMaps[i+1]['week_number'] as int;
+      if (i < recordMaps.length-1) {
+        nextWeekNumber = recordMaps[i+1]['week_number'] as int;
+        if (nextWeekNumber <= 0) nextWeekNumber = 5;
+      }
 
       _records.add(await _toRelatedRecord(Convertions.responseToRecord(recordMaps[i])));
 
