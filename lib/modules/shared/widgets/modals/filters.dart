@@ -7,18 +7,24 @@ import 'package:wallet/modules/shared/widgets/fragments/input_date.dart';
 
 class FiltersModalData {
   bool allYear = false;
-  bool allMonth = false;
-  bool allWeek = true;
+  bool allMonth = true;
+  bool allWeek = false;
   bool custom = false;
   DateTime? dateFrom;
   DateTime? dateTo;
+  DateTime? customDateFrom;
+  DateTime? customDateTo;
+
+  FiltersModalData() {
+    DateTime now = DateTime.now();
+    dateFrom = now.recreateInTimeZero(day: 1);
+    dateTo = now.recreateInTimeLastSecond(year: now.year, month: now.month+1, day: 0);
+  }
 }
 
 class FiltersModal extends StatefulWidget {
   void Function(FiltersModalData filterData)? onSave;
   FiltersModalData? filters;
-  DateTime? dateToShow;
-  DateTime? dateFromToShow;
 
   FiltersModal({
     super.key,
@@ -29,14 +35,6 @@ class FiltersModal extends StatefulWidget {
   @override
   StatefulElement createElement() {
     filters ??= FiltersModalData();
-    if (filters!.custom) {
-      dateFromToShow = filters!.dateFrom;
-      dateToShow = filters!.dateFrom;
-    } else {
-      filters!.dateFrom = DateTime.now().subtract(const Duration(days: 7));
-      filters!.dateTo = DateTime.now();
-    }
-
     return super.createElement();
   }
 
@@ -48,8 +46,8 @@ class _FiltersModalState extends State<FiltersModal> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   void unselectAll(bool isChecked) {
-    widget.filters!.allWeek = !isChecked;
-    widget.filters!.allMonth = false;
+    widget.filters!.allMonth = !isChecked;
+    widget.filters!.allWeek = false;
     widget.filters!.allYear = false;
     widget.filters!.custom = false;
   }
@@ -153,16 +151,16 @@ class _FiltersModalState extends State<FiltersModal> {
                     child: InputDate(
                       title: tr.from,
                       enabled: widget.filters!.custom,
-                      selectedDate: widget.filters!.dateFrom!,
-                      onChanged: (val) => widget.dateFromToShow = val,
+                      selectedDate: widget.filters!.customDateFrom ?? widget.filters!.dateFrom!,
+                      onChanged: (val) => widget.filters!.customDateFrom = val,
                     )
                   ),
                   Expanded(
                     child: InputDate(
                       enabled: widget.filters!.custom,
                       title: tr.to,
-                      selectedDate: widget.filters!.dateTo!,
-                      onChanged: (val) => widget.dateToShow = val,
+                      selectedDate: widget.filters!.customDateTo ?? widget.filters!.dateTo!,
+                      onChanged: (val) => widget.filters!.customDateTo = val,
                     )
                   ),
                 ]
@@ -173,24 +171,24 @@ class _FiltersModalState extends State<FiltersModal> {
                   onPressed: () {
                     DateTime now = DateTime.now();
 
-                    if (widget.filters!.allWeek) {
+                    if (widget.filters?.allWeek ?? false) {
                       widget.filters!.dateFrom = now.getFirstDayOfWeek();
                       widget.filters!.dateTo = now.getLastDayOfWeek();
                     }
 
-                    if (widget.filters!.allMonth) {
+                    if (widget.filters?.allMonth ?? false) {
                       widget.filters!.dateFrom = now.recreateInTimeZero(day: 1);
                       widget.filters!.dateTo = now.recreateInTimeLastSecond(year: now.year, month: now.month+1, day: 0);
                     }
 
-                    if (widget.filters!.allYear) {
+                    if (widget.filters?.allYear ?? false) {
                       widget.filters!.dateFrom = now.recreateInTimeZero(month: now.month, day: 1);
                       widget.filters!.dateTo = now.recreateInTimeLastSecond(year: now.year+1, month: 1, day: 1).subtract(const Duration(days: 1));
                     }
 
-                    if (widget.filters!.custom) {
-                      widget.filters!.dateFrom = widget.dateFromToShow;
-                      widget.filters!.dateTo = widget.dateToShow;
+                    if (widget.filters?.custom ?? false) {
+                      widget.filters!.dateFrom =  widget.filters!.customDateFrom;
+                      widget.filters!.dateTo = widget.filters!.customDateTo;
                     }
 
                     if (widget.onSave != null) widget.onSave!(widget.filters!); 
