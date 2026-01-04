@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
-import 'package:wallet/core/extensions/datetime_ext.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/records/records_controller.dart';
@@ -22,7 +21,6 @@ import 'package:wallet/modules/shared/widgets/modals/filters.dart';
 class RecordsPage extends StatefulWidget {
   const RecordsPage({
     super.key,
-    
   });
 
   @override
@@ -41,10 +39,7 @@ class _RecordsPageState extends State<RecordsPage> {
   bool incomeSelected = false;
   bool expendSelected = false;
 
-  DateTime? dateFrom;
-  DateTime? dateTo;
-
-  FiltersModalData? filterData;
+  FiltersModalData? filterData = FiltersModalData();
 
   List<Widget>? _allWidgetsToShow;
 
@@ -56,8 +51,7 @@ class _RecordsPageState extends State<RecordsPage> {
 
   @override
   void initState() {
-    dateFrom = DateTime.now().recreateInTimeZero().recreate(day: 1);
-    _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
+    _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo);
     super.initState();
   }
 
@@ -71,7 +65,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(allSelected: true);
-            _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
+            _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo);
           });
         },
       ),
@@ -82,7 +76,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(incomeSelected: true);
-            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.income.index, dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
+            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.income.index, dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo);
           });
         },
       ),
@@ -93,7 +87,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(expendSelected: true);
-            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.expend.index, dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
+            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.expend.index, dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo);
           });
         },
       )
@@ -234,7 +228,7 @@ class _RecordsPageState extends State<RecordsPage> {
                                             paid: data.paid
                                           );
                                           setState(() {
-                                            _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
+                                            _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo);
                                           });
                                         }
                                       )
@@ -250,7 +244,7 @@ class _RecordsPageState extends State<RecordsPage> {
                           iconData: Icons.money_off,
                           title: context.l10n!.theresNoRecordsToShowYet,
                           subtitle: GestureDetector(
-                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo); })),
+                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo); })),
                             child: Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.center,
