@@ -57,7 +57,7 @@ class _RecordsPageState extends State<RecordsPage> {
   @override
   void initState() {
     dateFrom = DateTime.now().recreateInTimeZero().recreate(day: 1);
-    _relatedRecords = _controller.getRecords(dateFrom: dateFrom);
+    _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
     super.initState();
   }
 
@@ -71,7 +71,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(allSelected: true);
-            _relatedRecords = _controller.getRecords(dateFrom: dateFrom);
+            _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
           });
         },
       ),
@@ -82,7 +82,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(incomeSelected: true);
-            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.income.index, dateFrom: dateFrom);
+            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.income.index, dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
           });
         },
       ),
@@ -93,7 +93,7 @@ class _RecordsPageState extends State<RecordsPage> {
         onSelected: (isSelected) {
           setState(() {
             selectOnly(expendSelected: true);
-            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.expend.index, dateFrom: dateFrom);
+            _relatedRecords = _controller.getRecords(type: ScheduledPayTypes.expend.index, dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
           });
         },
       )
@@ -110,7 +110,7 @@ class _RecordsPageState extends State<RecordsPage> {
             onSave: (FiltersModalData filterData) {
               setState(() {
                 this.filterData = filterData;
-                _relatedRecords = _controller.getRecords(dateFrom: this.filterData!.dateFrom, dateTo: this.filterData!.dateTo);
+                _relatedRecords = _controller.getRecords(dateFrom: this.filterData?.dateFrom, dateTo: this.filterData?.dateTo);
               });
               Navigator.pop(context);
             },
@@ -234,7 +234,7 @@ class _RecordsPageState extends State<RecordsPage> {
                                             paid: data.paid
                                           );
                                           setState(() {
-                                            _relatedRecords = _controller.getRecords();
+                                            _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo);
                                           });
                                         }
                                       )
@@ -250,7 +250,7 @@ class _RecordsPageState extends State<RecordsPage> {
                           iconData: Icons.money_off,
                           title: context.l10n!.theresNoRecordsToShowYet,
                           subtitle: GestureDetector(
-                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(dateFrom: dateFrom); })),
+                            onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom ?? dateFrom, dateTo: filterData?.dateTo); })),
                             child: Row(
                               spacing: 5,
                               mainAxisAlignment: MainAxisAlignment.center,
