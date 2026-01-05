@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
@@ -43,6 +44,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
   List<Widget>? _allWidgetsToShow;
 
+  DateFormat? dateFormat;
+
   void selectOnly({ bool? allSelected, bool? incomeSelected, bool? expendSelected }) {
     this.allSelected = allSelected ?? false;
     this.incomeSelected = incomeSelected ?? false;
@@ -57,6 +60,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
   @override
   Widget build(BuildContext context) {
+    dateFormat ??= DateFormat(context.l10n!.date_toOf, context.l10n!.localeName);
+
     _chips = [
       component.Chip(
         text: context.l10n!.all,
@@ -155,6 +160,7 @@ class _RecordsPageState extends State<RecordsPage> {
 
                           for (final data in snapshot.data!) {
                             int weekNumber = data['week_number'] as int;
+                            String weekStartDate = dateFormat!.format(DateTime.parse(data['week_start_date'] as String));
                             List<RelatedRecord> relatedRecords = data['related_records'] as List<RelatedRecord>;
 
                             DateTime? firstDateTime = relatedRecords[0].datePaid;
@@ -167,7 +173,7 @@ class _RecordsPageState extends State<RecordsPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "${context.l10n!.week} $weekNumber"
+                                      "${context.l10n!.week} $weekNumber • $weekStartDate"
                                     ),
                                     IconButton(
                                       onPressed: () => showModalBottomSheet(
