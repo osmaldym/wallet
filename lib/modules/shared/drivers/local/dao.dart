@@ -819,7 +819,8 @@ class Dao {
         (
           (CAST (strftime('%W', date_paid / 1000000, 'unixepoch', 'weekday 0') AS INTEGER)) -
           (CAST (strftime('%W', date_paid / 1000000, 'unixepoch', 'start of month', 'weekday 0') AS INTEGER)) 
-        )+1 as week_number
+        )+1 as week_number,
+        strftime('%Y-%m-%d', date_paid / 1000000, 'unixepoch', 'weekday 0') as week_start_date
       FROM ${DBTables.record} r
       INNER JOIN ${DBTables.scheduledPay} sp ON r.scheduled_pay_id = sp.id
       WHERE
@@ -853,6 +854,7 @@ class Dao {
     List<RelatedRecord> _records = [];
 
     int nextWeekNumber = recordMaps[0]['week_number'] as int;
+    String nextWeekStartDate = recordMaps[0]['week_start_date'] as String;
     /**
      * When the month are in december and was the last week, the query returns a negative number
      * by that cause we convert this number to a last posible week (5), it's easier if we do
@@ -864,11 +866,13 @@ class Dao {
     for (int i = 0; i < recordMaps.length; i++) {
       // Getting the current week number
       int currentWeekNumber = recordMaps[i]['week_number'] as int;
+      String currentWeekStartDate = recordMaps[i]['week_start_date'] as String;
       if (currentWeekNumber <= 0) currentWeekNumber = 5;
 
       // Getting the next week number
       if (i < recordMaps.length-1) {
         nextWeekNumber = recordMaps[i+1]['week_number'] as int;
+        nextWeekStartDate = recordMaps[i+1]['week_start_date'] as String;
         if (nextWeekNumber <= 0) nextWeekNumber = 5;
       }
 
@@ -877,6 +881,7 @@ class Dao {
       // Adding data to map to return
       if (currentWeekNumber != nextWeekNumber || i == recordMaps.length-1) {
         newMap['week_number'] = currentWeekNumber;
+        newMap['week_start_date'] = currentWeekStartDate;
         newMap['related_records'] = _records;
         mapsToReturn.add(newMap);
         _records = [];
