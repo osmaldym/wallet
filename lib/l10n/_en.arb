@@ -115,5 +115,6 @@
     "allMonth": "All month",
     "allWeek": "All week",
     "custom": "Custom",
+    "date_toOf": "'To' MMM d 'of' yyyy",
     "errorLoading": "Error loading"
 }

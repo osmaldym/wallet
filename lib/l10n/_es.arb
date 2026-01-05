@@ -115,5 +115,6 @@
     "allMonth": "Todo el mes",
     "allWeek": "Toda la semana",
     "custom": "Personalizado",
+    "date_toOf": "'Hasta' MMM d 'del' yyyy",
     "errorLoading": "Error al cargar"
 }
