@@ -116,5 +116,9 @@
     "allWeek": "Toda la semana",
     "custom": "Personalizado",
     "date_toOf": "'Hasta' MMM d 'del' yyyy",
+    "settings": "Configuraciones",
+    "brightnessMode": "Modo de brillo",
+    "dark": "Dark",
+    "fromSystem": "Del sistema",
     "errorLoading": "Error al cargar"
 }
