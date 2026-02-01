@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _getNewLocale() async {
-    Locale locale = Locale(await LocalData.get("locale"));
+    Locale locale = Locale(await LocalData.get("locale") ?? "en");
     setState(() => _locale = locale);
   } 
 
