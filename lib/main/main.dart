@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet/core/constants/app_routes.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/providers/DarkModeNotifier.dart';
 import 'package:wallet/core/providers/LocaleNotifier.dart';
 import 'package:wallet/core/utils/LocalData.dart';
 
@@ -14,7 +15,8 @@ void main() => runApp(
      If is created a new provider, set in this array depends if 
      is ChangeNotifierProvider, only Provider, etc
     */
-    ChangeNotifierProvider(create: (context) => LocaleNotifier())
+    ChangeNotifierProvider(create: (context) => LocaleNotifier()),
+    ChangeNotifierProvider(create: (context) => DarkModeNotifier())
   ],
   child: const MyApp())
 );
@@ -28,7 +30,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late LocaleNotifier _localeNotifierProv; 
+  late DarkModeNotifier _darkModeNotifierProv; 
   Locale _locale = const Locale("en");
+  bool _darkMode = false;
+  bool _darkModeBySystem = true;
 
   @override
   void initState() {
@@ -36,12 +41,26 @@ class _MyAppState extends State<MyApp> {
     _getNewLocale();
     _localeNotifierProv = context.read<LocaleNotifier>();
     _localeNotifierProv.addListener(_getNewLocale);
+
+    _getDarkModeBySystemOrUser();
+    _darkModeNotifierProv = context.read<DarkModeNotifier>();
+    _darkModeNotifierProv.addListener(_getDarkModeBySystemOrUser);
   }
 
   void _getNewLocale() async {
     Locale locale = Locale(await LocalData.get("locale") ?? "en");
     setState(() => _locale = locale);
-  } 
+  }
+
+  void _getDarkModeBySystemOrUser() async {
+    bool isDarkMode = await LocalData.get("darkMode", type: Type.bool) ?? false;
+    bool isDarkModeBySystem = await LocalData.get("darkModeBySystem", type: Type.bool) ?? false;
+    setState(() {
+      _darkModeBySystem = isDarkModeBySystem;
+      _darkMode = isDarkMode;
+      AppTheme.setThemeMode(_darkModeBySystem ? ThemeMode.system : (_darkMode ? ThemeMode.dark : ThemeMode.light));
+    });
+  }
 
   // This widget is the root of your application.
   @override
