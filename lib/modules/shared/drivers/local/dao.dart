@@ -891,4 +891,26 @@ class Dao {
 
     return mapsToReturn;
   }
+
+  Future<Map<String, Object?>> getAllData() async {
+    Map<String, Object> dataToReturn = {};
+    Database db = await _db.get();
+
+    for (String e in [
+      DBTables.account,
+      DBTables.category,
+      DBTables.currencies,
+      DBTables.notifications,
+      DBTables.record,
+      DBTables.recordRepetition,
+      DBTables.recordRepetitionMonthly,
+      DBTables.recordRepetitionWeekly,
+      DBTables.scheduledPay,
+      DBTables.session,
+      DBTables.subcategory,
+      DBTables.user,
+    ]) dataToReturn[e] = await db.query(e);
+
+    return dataToReturn;
+  }
 }
