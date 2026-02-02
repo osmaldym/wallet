@@ -7,6 +7,8 @@ class AppTheme {
 
   static ThemeMode themeMode = ThemeMode.system;
 
+  static void setThemeMode(ThemeMode mode) => themeMode = mode;
+
   bool get isThemeDark { 
     if (themeMode == ThemeMode.system) return MediaQuery.of(context).platformBrightness == Brightness.dark;
     return themeMode == ThemeMode.dark;

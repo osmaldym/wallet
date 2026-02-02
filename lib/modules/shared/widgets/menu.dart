@@ -12,6 +12,7 @@ class Menu extends Drawer {
 
   void Function()? onTapNextPays;
   void Function()? onTapRecords;
+  void Function()? onTapSettings;
 
   Menu({
     super.key,
@@ -89,7 +90,7 @@ class Menu extends Drawer {
           MenuOption(
             text: tr.settings,
             icon: Icons.settings,
-            onTap: () => context.go("/"),
+            onTap: onTapSettings ?? () => context.go(AppRoute.settings),
           )
         ],
       ),
