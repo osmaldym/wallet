@@ -116,5 +116,9 @@
     "allWeek": "All week",
     "custom": "Custom",
     "date_toOf": "'To' MMM d 'of' yyyy",
+    "settings": "Settings",
+    "brightnessMode": "Brightness mode",
+    "dark": "Dark",
+    "fromSystem": "From system",
     "errorLoading": "Error loading"
 }

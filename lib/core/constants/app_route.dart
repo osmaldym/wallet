@@ -6,4 +6,5 @@ class AppRoute {
   static String scheduledPaysPut = '$scheduledPays/put';
   static String scheduledPaysPayInfo = '$scheduledPays/pay_info';
   static String records = '/records';
+  static String settings = '/settings';
 }

@@ -5,6 +5,7 @@ import 'package:wallet/modules/records/records_page.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_page.dart' as scheduled_pays;
 import 'package:wallet/modules/scheduled_pays/info/pay_info_page.dart' as scheduled_pays;
 import 'package:wallet/modules/scheduled_pays/scheduled_pays_page.dart';
+import 'package:wallet/modules/settings/settings_page.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 
 import '../../modules/auth/login/login_page.dart';
@@ -34,6 +35,7 @@ class AppRoutes {
             ]
           ),
           _newRoute('records', page: const RecordsPage()),
+          _newRoute('settings', page: const SettingsPage()),
         ]
       )
     ]
