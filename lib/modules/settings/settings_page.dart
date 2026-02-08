@@ -20,12 +20,15 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _darkMode = false;
 
   void _getModeByLocalData() async {
-    bool darkMode = await LocalData.get("darkMode", type: Type.bool) ?? false;
-    bool darkModefromSystem = await LocalData.get("darkModeBySystem", type: Type.bool) ?? true;
+    bool? darkMode = await LocalData.get("darkMode", type: Type.bool);
+    bool? darkModefromSystem = await LocalData.get("darkModeBySystem", type: Type.bool);
+
+    darkMode ??= false;
+    darkModefromSystem ??= false;
 
     setState(() {
-      _darkMode = darkMode;
-      _darkModefromSystem = darkModefromSystem;
+      _darkMode = darkMode!;
+      _darkModefromSystem = darkModefromSystem!;
     });
   }
 
