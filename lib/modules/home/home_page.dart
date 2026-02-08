@@ -99,6 +99,10 @@ class _HomeState extends State<Home> {
         onTapRecords: () {
           _scaffoldKey.currentState!.closeDrawer();
           context.push(AppRoute.records).then((_) => setState(() { _reloadRecords(); }));
+        },
+        onTapSettings: () {
+          _scaffoldKey.currentState!.closeDrawer();
+          context.push(AppRoute.settings).then((_) => setState(() { _reloadRecords(); }));
         }
       ),
       body: SafeArea(

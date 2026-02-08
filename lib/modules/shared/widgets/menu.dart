@@ -19,6 +19,7 @@ class Menu extends Drawer {
     this.width = 270,
     this.onTapNextPays,
     this.onTapRecords,
+    this.onTapSettings,
   });
 
   @override
