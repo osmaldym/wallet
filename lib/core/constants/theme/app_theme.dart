@@ -5,7 +5,7 @@ class AppTheme {
   const AppTheme(this.context);
   static AppTheme of(BuildContext context) => AppTheme(context);
 
-  static ThemeMode themeMode = ThemeMode.system;
+  static ThemeMode? themeMode;
 
   static void setThemeMode(ThemeMode mode) => themeMode = mode;
 

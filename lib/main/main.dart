@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp> {
   Locale _locale = const Locale("en");
   bool _darkMode = false;
   bool _darkModeBySystem = true;
+  ThemeMode? _themeMode;
 
   @override
   void initState() {
@@ -54,11 +55,19 @@ class _MyAppState extends State<MyApp> {
 
   void _getDarkModeBySystemOrUser() async {
     bool isDarkMode = await LocalData.get("darkMode", type: Type.bool) ?? false;
-    bool isDarkModeBySystem = await LocalData.get("darkModeBySystem", type: Type.bool) ?? false;
+    bool? isDarkModeBySystem = await LocalData.get("darkModeBySystem", type: Type.bool);
+
+    // Setting by default dark mode by system if is not setted
+    if (isDarkModeBySystem == null && AppTheme.themeMode == null) {
+      isDarkModeBySystem = true;
+      LocalData.set("darkModeBySystem", isDarkModeBySystem, type: Type.bool);
+    }
+
     setState(() {
-      _darkModeBySystem = isDarkModeBySystem;
       _darkMode = isDarkMode;
+      _darkModeBySystem = isDarkModeBySystem!;
       AppTheme.setThemeMode(_darkModeBySystem ? ThemeMode.system : (_darkMode ? ThemeMode.dark : ThemeMode.light));
+      _themeMode = AppTheme.themeMode;
     });
   }
 
@@ -129,7 +138,7 @@ class _MyAppState extends State<MyApp> {
         brightness: Brightness.dark,
         colorSchemeSeed: AppTheme.of(context).primary,
       ),
-      themeMode: AppTheme.themeMode,
+      themeMode: _themeMode,
     );
   }
 }
