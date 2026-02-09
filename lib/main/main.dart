@@ -32,8 +32,6 @@ class _MyAppState extends State<MyApp> {
   late LocaleNotifier _localeNotifierProv; 
   late DarkModeNotifier _darkModeNotifierProv; 
   Locale _locale = const Locale("en");
-  bool _darkMode = false;
-  bool _darkModeBySystem = true;
   ThemeMode? _themeMode;
 
   @override
@@ -64,9 +62,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     setState(() {
-      _darkMode = isDarkMode;
-      _darkModeBySystem = isDarkModeBySystem!;
-      AppTheme.setThemeMode(_darkModeBySystem ? ThemeMode.system : (_darkMode ? ThemeMode.dark : ThemeMode.light));
+      AppTheme.setThemeMode((isDarkModeBySystem ?? false) ? ThemeMode.system : (isDarkMode ? ThemeMode.dark : ThemeMode.light));
       _themeMode = AppTheme.themeMode;
     });
   }
