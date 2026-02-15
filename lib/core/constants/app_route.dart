@@ -1,5 +1,6 @@
 class AppRoute {
   static String root = '/';
+  static String fingerprint = '/fingerprint';
   static String login = '/login';
   static String signin = '/signin';
   static String scheduledPays = '/scheduled_pays';
