@@ -120,5 +120,10 @@
     "brightnessMode": "Brightness mode",
     "dark": "Dark",
     "fromSystem": "From system",
+    "security": "Security",
+    "fingerprint": "Fingerprint",
+    "fingerprint_page_message": "Please authenticate with your fingerprint",
+    "fingerprint_verification_message": "To proceed to Wallet please authenticate with your fingerprint",
+    "fingerprint_activation_message": "Please authenticate to activate this function",
     "errorLoading": "Error loading"
 }

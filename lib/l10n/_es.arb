@@ -120,5 +120,10 @@
     "brightnessMode": "Modo de brillo",
     "dark": "Dark",
     "fromSystem": "Del sistema",
+    "security": "Seguridad",
+    "fingerprint": "Huella",
+    "fingerprint_page_message": "Por favor autentifiquese con su huella",
+    "fingerprint_verification_message": "Para proceder al Wallet por favor autentifiquese con su huella",
+    "fingerprint_activation_message": "Por favor autentifiquese para activar esta opción",
     "errorLoading": "Error al cargar"
 }
