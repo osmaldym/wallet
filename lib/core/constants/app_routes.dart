@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wallet/modules/auth/biometric/biometric_page.dart';
 import 'package:wallet/modules/home/home_page.dart';
 import 'package:wallet/modules/records/records_page.dart';
 import 'package:wallet/modules/scheduled_pays/put/put_page.dart' as scheduled_pays;
@@ -12,13 +13,18 @@ import '../../modules/auth/login/login_page.dart';
 import '../../modules/auth/signin/signin_page.dart';
 
 class AppRoutes {
+  static String _initialRoute = '/';
+
+  static void setInitialRoute(String route) => _initialRoute = route;
+
   /// Pages routes
   static final GoRouter pages = GoRouter(
-    initialLocation: '/',
+    initialLocation: _initialRoute,
     routes: <RouteBase>[
       _newRoot(
         const Home(),
         routes: [
+          _newRoute('fingerprint', page: Biometric()),
           _newRoute('login', page: const Login()),
           _newRoute('signin', page: const Signin()),
           _newRoute(
