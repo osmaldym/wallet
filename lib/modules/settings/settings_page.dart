@@ -4,6 +4,7 @@ import 'package:wallet/core/providers/DarkModeNotifier.dart';
 import 'package:wallet/core/utils/BiometricHelper.dart';
 import 'package:wallet/core/utils/LocalData.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
+import 'package:wallet/modules/shared/widgets/fragments/change_lang_btn.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -51,7 +52,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: CHeader(
-        title: context.l10n!.settings
+        title: context.l10n!.settings,
+        trailing: ChangeLangBtn(),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
