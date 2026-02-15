@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet/core/providers/DarkModeNotifier.dart';
+import 'package:wallet/core/utils/BiometricHelper.dart';
 import 'package:wallet/core/utils/LocalData.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
@@ -18,6 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _darkModefromSystem = false;
   bool _darkMode = false;
+  bool _biometric = false;
 
   void _getModeByLocalData() async {
     bool? darkMode = await LocalData.get("darkMode", type: Type.bool);
@@ -32,9 +34,15 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  void _getBiometricByLocalData() async {
+    bool biometric = await LocalData.get("biometric", type: Type.bool) ?? false;
+    setState(() => _biometric = biometric);
+  }
+
   @override
   void initState() {
     _getModeByLocalData();
+    _getBiometricByLocalData();
     super.initState();
   }
 
@@ -81,7 +89,36 @@ class _SettingsPageState extends State<SettingsPage> {
                   if (context.mounted) context.read<DarkModeNotifier>().notify();
                   setState(() { _darkModefromSystem = value; });
                 }
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Text(
+                  context.l10n!.security,
+                  style: const TextStyle(
+                    fontSize: 28,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              SwitchListTile(
+                title: Text(context.l10n!.fingerprint),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 25),
+                secondary: const Icon(Icons.fingerprint_rounded),
+                value: _biometric,
+                onChanged: (bool value) async {
+                  if (!_biometric) {
+                    final BiometricHelper biometric = BiometricHelper();
+                    if (context.mounted) {
+                      if (await biometric.canAuth()) {
+                        bool isAuth = await biometric.authenticate(context.l10n!.fingerprint_activation_message);
+                        if (!isAuth) return;
+                      }
+                    }
+                  }
+                  await LocalData.set("biometric", value, type: Type.bool);
+                  setState(() { _biometric = value; });
+                }
+              ),
             ],
           )
         )
