@@ -3,36 +3,47 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/app_routes.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/providers/DarkModeNotifier.dart';
 import 'package:wallet/core/providers/LocaleNotifier.dart';
 import 'package:wallet/core/utils/LocalData.dart';
 
-void main() => runApp(
-  MultiProvider(providers: [ 
-    /*
-     If is created a new provider, set in this array depends if 
-     is ChangeNotifierProvider, only Provider, etc
-    */
-    ChangeNotifierProvider(create: (context) => LocaleNotifier()),
-    ChangeNotifierProvider(create: (context) => DarkModeNotifier())
-  ],
-  child: const MyApp())
-);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  bool biometric = await LocalData.get("biometric", type: Type.bool) ?? false;
+
+  return runApp(
+    MultiProvider(providers: [ 
+      /*
+      If is created a new provider, set in this array depends if 
+      is ChangeNotifierProvider, only Provider, etc
+      */
+      ChangeNotifierProvider(create: (context) => LocaleNotifier()),
+      ChangeNotifierProvider(create: (context) => DarkModeNotifier())
+    ],
+    child: MyApp(biometric: biometric,))
+  );
+}
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  bool? biometric = false;
+
+  MyApp({super.key, this.biometric});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState(biometric: biometric);
 }
 
 class _MyAppState extends State<MyApp> {
   late LocaleNotifier _localeNotifierProv; 
   late DarkModeNotifier _darkModeNotifierProv; 
   Locale _locale = const Locale("en");
+  bool? biometric = false;
   ThemeMode? _themeMode;
+
+  _MyAppState({ this.biometric });
 
   @override
   void initState() {
@@ -44,6 +55,8 @@ class _MyAppState extends State<MyApp> {
     _getDarkModeBySystemOrUser();
     _darkModeNotifierProv = context.read<DarkModeNotifier>();
     _darkModeNotifierProv.addListener(_getDarkModeBySystemOrUser);
+
+    AppRoutes.setInitialRoute((biometric ?? false) ? AppRoute.fingerprint : AppRoute.root);
   }
 
   void _getNewLocale() async {
