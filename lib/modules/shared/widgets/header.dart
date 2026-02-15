@@ -8,6 +8,7 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
   String title;
   IconData leadingIcon;
   IconData trailingIcon;
+  Widget? trailing;
   double iconsSize;
   double? trailingIconSize;
   double? leadingIconSize;
@@ -22,6 +23,7 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
     this.height = 80.0,
     this.iconsSize = 34.0,
     this.trailingIconSize,
+    this.trailing,
     this.leadingIconSize,
     this.leadingIcon = Icons.chevron_left,
     this.trailingIcon = Icons.add,
@@ -51,6 +53,7 @@ class CHeader extends StatelessWidget implements PreferredSizeWidget {
                 style: const TextStyle(fontSize: 32)
               ),
             ),
+            if (trailing != null) trailing!,
             if (onTrailingPressed != null)
               IconButton(
                 icon: Icon(trailingIcon),
