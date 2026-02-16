@@ -18,6 +18,10 @@ class AppTheme {
     return Theme.of(context).colorScheme.surface;
   }
 
+  Color get seedBgColorInverse {
+    return Theme.of(context).colorScheme.inverseSurface;
+  }
+
   Color get textContrast {
     return isThemeDark ? const Color(0xFFFFFFFF) : textBlack;
   }
