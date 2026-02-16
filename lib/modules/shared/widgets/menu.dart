@@ -13,6 +13,7 @@ class Menu extends Drawer {
   void Function()? onTapNextPays;
   void Function()? onTapRecords;
   void Function()? onTapSettings;
+  void Function()? onTapGoals;
 
   Menu({
     super.key,
@@ -20,6 +21,7 @@ class Menu extends Drawer {
     this.onTapNextPays,
     this.onTapRecords,
     this.onTapSettings,
+    this.onTapGoals,
   });
 
   @override
@@ -81,7 +83,7 @@ class Menu extends Drawer {
           MenuOption(
             text: tr.goals,
             icon: Icons.sports_score,
-            onTap: () => context.go("/"),
+            onTap: onTapGoals ?? () => context.go(AppRoute.goals),
           ),
           MenuOption(
             text: tr.budgets,
