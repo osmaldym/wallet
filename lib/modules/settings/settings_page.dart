@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/providers/DarkModeNotifier.dart';
 import 'package:wallet/core/utils/BiometricHelper.dart';
 import 'package:wallet/core/utils/LocalData.dart';
@@ -121,6 +123,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   setState(() { _biometric = value; });
                 }
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Text(
+                  context.l10n!.app_data,
+                  style: const TextStyle(
+                    fontSize: 28,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              ListTile(
+                title: Text(context.l10n!.about),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 25),
+                leading: const Icon(Icons.info_outline_rounded),
+                onTap: () => context.push(AppRoute.settingsAbout),
+              )
             ],
           )
         )
