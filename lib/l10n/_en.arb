@@ -125,5 +125,11 @@
     "fingerprint_page_message": "Please authenticate with your fingerprint",
     "fingerprint_verification_message": "To proceed to Wallet please authenticate with your fingerprint",
     "fingerprint_activation_message": "Please authenticate to activate this function",
+    "app_data": "App data",
+    "about": "About",
+    "about_app": "About app",
+    "about_us": "About us",
+    "help_us": "Help us :)",
+    "version": "Version",
     "errorLoading": "Error loading"
 }

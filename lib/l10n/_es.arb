@@ -124,5 +124,11 @@
     "fingerprint_page_message": "Por favor autentifiquese con su huella",
     "fingerprint_verification_message": "Para proceder al Wallet por favor autentifiquese con su huella",
     "fingerprint_activation_message": "Por favor autentifiquese para activar esta opción",
+    "app_data": "Datos de la aplicación",
+    "about": "Acerca de",
+    "about_app": "Sobre la app",
+    "about_us": "Acerca de nosotros",
+    "help_us": "Apoyanos :)",
+    "version": "Versión",
     "errorLoading": "Error al cargar"
 }
