@@ -19,10 +19,12 @@ class InputSearchElement<T> {
 class InputSearch<T> extends StatefulWidget {
   List<InputSearchElement>? items;
   void Function(T element)? onSelectedItem;
+  bool Function(String input, String element)? customSearch;
 
   InputSearch({
     super.key,
     this.items,
+    this.customSearch,
     this.onSelectedItem,
   });
 
@@ -49,7 +51,11 @@ class _InputSearchState<T> extends State<InputSearch<T>> {
             if (controller.text.isEmpty) return true;
             if (el.whereSearch == null) el.whereSearch = [el.text];
             for (final search in el.whereSearch!) {
-              if (search.toLowerCase().startsWith(controller.text.toLowerCase())) return true;
+              if (widget.customSearch != null) {
+                if (widget.customSearch!(search, controller.text)) return true;
+              } else {
+                if (search.toLowerCase().startsWith(controller.text.toLowerCase())) return true;
+              }
             }
             return false;
           }).map((el) => ListTile(
