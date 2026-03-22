@@ -130,5 +130,7 @@
     "about_us": "Acerca de nosotros",
     "help_us": "Apoyanos :)",
     "version": "Versión",
+    "icon": "Icono",
+    "unknown": "Desconocido",
     "errorLoading": "Error al cargar"
 }

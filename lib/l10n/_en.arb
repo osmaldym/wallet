@@ -131,5 +131,7 @@
     "about_us": "About us",
     "help_us": "Help us :)",
     "version": "Version",
+    "icon": "Icon",
+    "unknown": "Unknown",
     "errorLoading": "Error loading"
 }
