@@ -15,4 +15,5 @@ class DBTables {
   static const String notifications = "Notifications";
   static const String currencies = "Currencies";
   static const String record = "Record";
+  static const String icons = "Icons";
 }

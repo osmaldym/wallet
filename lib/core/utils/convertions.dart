@@ -2,6 +2,7 @@ import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
 import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
@@ -208,6 +209,19 @@ class Convertions {
       balance: response["balance"] as double?,
       paid: response['paid'].intToBool(),
       expired: response['expired'].intToBool(),
+    );
+  }
+
+  static List<model.Icon> responseToIconList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToIcon(resp) ];
+  }
+
+  static model.Icon responseToIcon(Map<String, Object?> response) {
+    return model.Icon(
+      id: response["id"] as int?,
+      name: response['name'] as String?,
+      hexCode: response['hex_code'] as int?,
+      iconFontFamily: response['icon_font_family'] as String?,
     );
   }
 

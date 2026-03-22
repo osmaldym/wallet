@@ -7,6 +7,7 @@ import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
 import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
@@ -890,5 +891,15 @@ class Dao {
     }
 
     return mapsToReturn;
+  }
+
+  // Icon operations
+  Future<List<model.Icon>> icons() async {
+    final List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.icons);
+    return Convertions.responseToIconList(data);
+  }
+
+  Future<model.Icon> icon(int id) async {
+    return Convertions.responseToIcon(await getById(DBTables.icons, id));
   }
 }
