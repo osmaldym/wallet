@@ -10,7 +10,6 @@ class InputCalculator extends StatefulWidget {
   final void Function(double value)? onChange;
   double? controllerValue;
   AppLocalizations? tr;
-  NumberFormat? nFormat;
 
   double? valueToShow = 0;
 
@@ -28,28 +27,43 @@ class InputCalculator extends StatefulWidget {
 }
 
 class _InputCalculatorState extends State<InputCalculator> {
+  TextEditingController? inputController;
+  NumberFormat? nFormat;
+
+  @override
+  void initState() {
+    nFormat = NumberFormat("#,###.##", widget.tr != null ? widget.tr!.localeName : "en_US" );
+    inputController = TextEditingController(
+      text: "\$ ${nFormat!.format(widget.controllerValue ?? widget.valueToShow)}"
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    inputController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     widget.tr = AppLocalizations.of(context)!;
-    widget.nFormat = NumberFormat("#,###.##", widget.tr != null ? widget.tr!.localeName : "en_US" );
     return TextFormField(
       decoration: widget.decoration ?? InputDecoration(
         labelText: widget.tr!.amount
       ),
-      controller: TextEditingController(
-        text: "\$ ${widget.nFormat!.format(widget.controllerValue ?? widget.valueToShow)}",
-      ),
+      controller: inputController,
       readOnly: widget.readOnly ?? true,
       onTap: () {
         showModalBottomSheet(
           context: context,
           builder: (BuildContext context) => CalculatorModal(
             onChange: (double value) {
-              setState(() {
-                widget.controllerValue = value;
-                widget.valueToShow = value;
-              });
               if (widget.onChange != null) widget.onChange!(value);
+              setState(() {
+                widget.valueToShow = widget.controllerValue = value;
+                inputController?.text = "\$ ${nFormat!.format(widget.controllerValue ?? widget.valueToShow)}";
+              });
             },
             onOkTap: () => Navigator.pop(context),
           ),
