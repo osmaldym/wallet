@@ -8,10 +8,8 @@ class InputCalculator extends StatefulWidget {
   final InputDecoration? decoration;
   final void Function()? onTap;
   final void Function(double value)? onChange;
-  double? controllerValue;
+  TextEditingController? controller;
   AppLocalizations? tr;
-
-  double? valueToShow = 0;
 
   InputCalculator({
     super.key,
@@ -19,7 +17,7 @@ class InputCalculator extends StatefulWidget {
     this.decoration,
     this.onTap,
     this.onChange,
-    this.controllerValue,
+    this.controller,
   });
 
   @override
@@ -27,21 +25,28 @@ class InputCalculator extends StatefulWidget {
 }
 
 class _InputCalculatorState extends State<InputCalculator> {
-  TextEditingController? inputController;
   NumberFormat? nFormat;
+  double? currentValue;
+
+  void setControllerValue() {
+    String txt = widget.controller?.text ?? '';
+    if (txt.isEmpty || txt == '0') currentValue = 0;
+    widget.controller?.text = "\$ ${nFormat?.format(currentValue) ?? currentValue ?? 0}";
+  }
 
   @override
   void initState() {
     nFormat = NumberFormat("#,###.##", widget.tr != null ? widget.tr!.localeName : "en_US" );
-    inputController = TextEditingController(
-      text: "\$ ${nFormat!.format(widget.controllerValue ?? widget.valueToShow)}"
-    );
+    widget.controller ??= TextEditingController();
+    widget.controller?.addListener(setControllerValue);
+    widget.controller?.text = '';
+
     super.initState();
   }
 
   @override
   void dispose() {
-    inputController?.dispose();
+    widget.controller?.dispose();
     super.dispose();
   }
 
@@ -52,18 +57,17 @@ class _InputCalculatorState extends State<InputCalculator> {
       decoration: widget.decoration ?? InputDecoration(
         labelText: widget.tr!.amount
       ),
-      controller: inputController,
+      controller: widget.controller,
       readOnly: widget.readOnly ?? true,
       onTap: () {
         showModalBottomSheet(
           context: context,
           builder: (BuildContext context) => CalculatorModal(
+            value: currentValue,
             onChange: (double value) {
+              currentValue = value;
+              widget.controller?.text = currentValue.toString();
               if (widget.onChange != null) widget.onChange!(value);
-              setState(() {
-                widget.valueToShow = widget.controllerValue = value;
-                inputController?.text = "\$ ${nFormat!.format(widget.controllerValue ?? widget.valueToShow)}";
-              });
             },
             onOkTap: () => Navigator.pop(context),
           ),

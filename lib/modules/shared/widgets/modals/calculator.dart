@@ -4,13 +4,14 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 class CalculatorModal extends StatefulWidget {
   String toShow = "0";
   String plain = "";
-  double operationNum = 0;
+  double? value = 0;
   void Function(double value)? onChange;
   void Function()? onOkTap;
 
   CalculatorModal({
     super.key,
     this.onChange,
+    this.value,
     this.onOkTap,
   });
 
@@ -19,6 +20,12 @@ class CalculatorModal extends StatefulWidget {
 }
 
 class _CalculatorModalState extends State<CalculatorModal> {
+  @override
+  void initState() {
+    widget.value ??= 0;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -99,7 +106,7 @@ class _CalculatorModalState extends State<CalculatorModal> {
         if (widget.onOkTap != null) widget.onOkTap!();
       } else if (txt == 'AC' || widget.toShow.isEmpty) {
         widget.toShow = "0";
-        widget.operationNum = 0;
+        widget.value = 0;
       } else if (txt == 'del') {
         widget.toShow = widget.toShow.substring(0, widget.toShow.length-1);
         if (widget.toShow != "0" && widget.toShow.isEmpty) widget.toShow = "0";
@@ -114,8 +121,8 @@ class _CalculatorModalState extends State<CalculatorModal> {
           return;
         }
 
-        widget.operationNum = _calculate(widget.toShow) ?? 0;
-        widget.toShow = widget.operationNum.toStringAsFixed(widget.operationNum > widget.operationNum.toInt() ? 2 : 0);
+        widget.value = _calculate(widget.toShow) ?? 0;
+        widget.toShow = widget.value!.toStringAsFixed(widget.value! > widget.value!.toInt() ? 2 : 0);
         if (aritmetic.hasMatch(txt)) widget.toShow += txt;
       } else if (widget.toShow.endsWith("%")) {
         widget.toShow += "x$txt";
@@ -126,10 +133,10 @@ class _CalculatorModalState extends State<CalculatorModal> {
         widget.toShow += txt;
       }
       if (isNumber.hasMatch(widget.toShow) && !aritmetic.hasMatch(widget.toShow)) {
-        widget.operationNum = double.parse(widget.toShow.replaceAll(",", ""));
+        widget.value = double.parse(widget.toShow.replaceAll(",", ""));
       }
     });
-    if (widget.onChange != null) widget.onChange!(widget.operationNum);
+    if (widget.onChange != null) widget.onChange!(widget.value!);
   }
 
   double? _calculate(String operation) {

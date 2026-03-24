@@ -34,6 +34,8 @@ class CustomPay extends StatelessWidget {
   final ValueNotifier<bool> _refusedSelected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _paidSelected = ValueNotifier<bool>(false);
 
+  TextEditingController amountController = TextEditingController();
+
   void setSelectedChipByOne({bool? boolean}) {
     _paidSelected.value = (boolean ?? false);
     _refusedSelected.value = !(boolean ?? false);
@@ -53,6 +55,7 @@ class CustomPay extends StatelessWidget {
   @override
   StatelessElement createElement() {
     dataToReturn.amount = lastAmount;
+    amountController.text = dataToReturn.amount != null ? dataToReturn.amount.toString() : '0';
     setSelectedChipByOne(boolean: isPaid);
     return super.createElement();
   }
@@ -131,7 +134,7 @@ class CustomPay extends StatelessWidget {
               ),
               if (!(onlyShowDate ?? false))
                 InputCalculator(
-                  controllerValue: dataToReturn.amount,
+                  controller: amountController,
                   onChange: (amount) => dataToReturn.amount = amount,
                 ),
               CButton(

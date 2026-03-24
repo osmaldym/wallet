@@ -34,6 +34,8 @@ class AccountModal extends StatefulWidget {
 class _AccountModalState extends State<AccountModal> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
+  TextEditingController amountController = TextEditingController();
+
   String? title;
   double? amount;
 
@@ -41,6 +43,7 @@ class _AccountModalState extends State<AccountModal> {
   void initState() {
     title = widget.account?.title;
     amount = widget.account?.amount;
+    amountController.text = amount != null ? amount.toString() : '0';
     super.initState();
   }
 
@@ -88,7 +91,7 @@ class _AccountModalState extends State<AccountModal> {
                 onChanged: (String val) => title = val,
               ),
               InputCalculator(
-                controllerValue: amount,
+                controller: amountController,
                 onChange: (amount) => this.amount = amount,
               ),
               CButton(

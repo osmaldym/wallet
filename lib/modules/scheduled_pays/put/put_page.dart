@@ -64,10 +64,13 @@ class _PutState extends State<Put> {
   final List<DropdownMenuItem> _itemsNotificationsSelect = [];
   dynamic _valueNotificationSelect;
 
+  TextEditingController amountController = TextEditingController();
+
   @override
   void initState() {
     _getAll();
     _resetFrecency();
+    amountController.text = pay.amount != null ? pay.amount.toString() : '0';
     if (widget.relatedScheduledPay != null) setAllDataFromRscheduledPay();
     super.initState();
   }
@@ -271,7 +274,7 @@ class _PutState extends State<Put> {
                 children: [
                   Expanded(
                     child: InputCalculator(
-                      controllerValue: pay.amount,
+                      controller: amountController,
                       onChange: (val) => pay.amount = val,
                     ),
                   ),
@@ -375,6 +378,7 @@ class _PutState extends State<Put> {
               setState(() {
                 pay.date = DateTime.now();
                 pay.automatic = false;
+                amountController.clear();
                 incomeSelected = false;
                 expendSelected = true;
                 selectedSubcategory = null;
