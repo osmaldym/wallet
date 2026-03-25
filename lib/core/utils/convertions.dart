@@ -2,6 +2,7 @@ import 'package:wallet/core/extensions/object_ext.dart';
 import 'package:wallet/modules/shared/drivers/local/models/account.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
 import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/goal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
@@ -222,6 +223,28 @@ class Convertions {
       name: response['name'] as String?,
       hexCode: response['hex_code'] as int?,
       iconFontFamily: response['icon_font_family'] as String?,
+    );
+  }
+
+  static List<Goal> responseToGoalList(List<Map<String, Object?>> response) {
+    return [ for (final resp in response) responseToGoal(resp) ];
+  }
+
+  static Goal responseToGoal(Map<String, Object?> response) {
+    return Goal(
+      id: response["id"] as int?,
+      userId: response["user_id"] as int?,
+      serverId: response["server_id"] as int?,
+      frecuencyId: response["frecuency_id"] as int?,
+      notificationId: response["notification_id"] as int?,
+      title: response["title"] as String?,
+      iconId: response["icon_id"] as int?,
+      autoSaving: response["auto_saving"] as double?,
+      saved: response["saved"] as double?,
+      total: response["total"] as double?,
+      dateFrom: response["date_from"] != null ? DateTime.fromMicrosecondsSinceEpoch(response["date_from"] as int) : null,
+      dateTo: response["date_to"] != null ? DateTime.fromMicrosecondsSinceEpoch(response["date_to"] as int) : null,
+      note: response["note"] as String?,
     );
   }
 

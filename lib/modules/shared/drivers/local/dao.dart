@@ -7,6 +7,7 @@ import 'package:wallet/modules/shared/drivers/http/web_dao.dart';
 import 'package:wallet/modules/shared/drivers/local/db.dart';
 import 'package:wallet/modules/shared/drivers/local/models/category.dart';
 import 'package:wallet/modules/shared/drivers/local/models/currency.dart';
+import 'package:wallet/modules/shared/drivers/local/models/goal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
@@ -901,5 +902,21 @@ class Dao {
 
   Future<model.Icon> icon(int id) async {
     return Convertions.responseToIcon(await getById(DBTables.icons, id));
+  }
+
+  // Goals operations
+  Future<int> insertGoal(Map<String, Object?> goal, {bool orReplace = false}) async {
+    User sessionUser = Convertions.responseToUser((await getActualSession())['user'] as Map<String, Object?>);
+    goal['user_id'] = sessionUser.id;
+    return await (orReplace ? put(DBTables.goal, goal) : insert(DBTables.goal, goal));
+  }
+
+  Future<int> putGoal(Map<String, Object?> goal) async {
+    return await insertGoal(goal, orReplace: true);
+  }
+
+  Future<Goal> goal(int id) async {
+    List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.goal, where: "id = ?", whereArgs: [id], limit: 1);
+    return Convertions.responseToGoalList(data).first;
   }
 }

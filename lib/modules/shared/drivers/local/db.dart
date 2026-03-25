@@ -166,6 +166,27 @@ class DB {
         icon_font_family TEXT
       )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS ${DBTables.goal}(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      server_id INTEGER,
+      frecuency_id INTEGER,
+      notification_id INTEGER,
+      title TEXT,
+      icon_id INTEGER,
+      auto_saving REAL,
+      saved REAL,
+      total REAL,
+      date_from INTEGER,
+      date_to INTEGER,
+      note TEXT,
+      FOREIGN KEY(user_id) REFERENCES ${DBTables.user}(id),
+      FOREIGN KEY(icon_id) REFERENCES ${DBTables.icons}(id),
+      FOREIGN KEY(frecuency_id) REFERENCES ${DBTables.recordRepetition}(id),
+      FOREIGN KEY(notification_id) REFERENCES ${DBTables.notifications}(id)
+    )
+    """,
   ];
 
   final List<String> allFillQueries = [
