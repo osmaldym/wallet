@@ -130,6 +130,11 @@
     "about_us": "Acerca de nosotros",
     "help_us": "Apoyanos :)",
     "version": "Versión",
+    "new_goal": "Nueva meta",
+    "saved": "Ahorrado",
+    "automatic": "Automático",
+    "manual": "Manual",
+    "automaticAdding": "Adición automática",
     "icon": "Icono",
     "unknown": "Desconocido",
     "errorLoading": "Error al cargar"

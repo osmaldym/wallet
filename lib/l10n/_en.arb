@@ -131,6 +131,11 @@
     "about_us": "About us",
     "help_us": "Help us :)",
     "version": "Version",
+    "new_goal": "New goal",
+    "saved": "Saved",
+    "automatic": "Automatic",
+    "manual": "Manual",
+    "automaticAdding": "Automatic adding",
     "icon": "Icon",
     "unknown": "Unknown",
     "errorLoading": "Error loading"
