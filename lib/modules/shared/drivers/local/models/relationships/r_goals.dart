@@ -22,5 +22,11 @@ class RelatedGoal extends Goal {
   });
 
   @override
+  void clear() {
+    super.clear();
+    icon = null;
+  }
+
+  @override
   String toString() => Convertions.classToString("RelatedGoal", toMap());
 }
