@@ -9,6 +9,7 @@ class InputCalculator extends StatefulWidget {
   final void Function()? onTap;
   final void Function(double value)? onChange;
   TextEditingController? controller;
+  double? currentValue;
   AppLocalizations? tr;
 
   InputCalculator({
@@ -18,6 +19,7 @@ class InputCalculator extends StatefulWidget {
     this.onTap,
     this.onChange,
     this.controller,
+    this.currentValue,
   });
 
   @override
@@ -26,28 +28,34 @@ class InputCalculator extends StatefulWidget {
 
 class _InputCalculatorState extends State<InputCalculator> {
   NumberFormat? nFormat;
-  double? currentValue;
+  TextEditingController? controller;
+  bool controllerWasNull = false;
 
-  void setControllerValue() {
-    String txt = widget.controller?.text ?? '';
-    if (txt.isEmpty || txt == '0') currentValue = 0;
-    widget.controller?.text = "\$ ${nFormat?.format(currentValue) ?? currentValue ?? 0}";
+  void setControllerValue(double? value) {
+    controller?.text = "\$ ${value != null ? nFormat?.format(value) : 0}";
   }
 
   @override
   void initState() {
     nFormat = NumberFormat("#,###.##", widget.tr != null ? widget.tr!.localeName : "en_US" );
-    widget.controller ??= TextEditingController();
-    widget.controller?.addListener(setControllerValue);
-    widget.controller?.text = '';
+    controllerWasNull = widget.controller == null;
+    widget.currentValue ??= 0;
+    controller = widget.controller ?? TextEditingController();
+    setControllerValue(widget.currentValue);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.controller?.dispose();
+    if (controllerWasNull) controller?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant InputCalculator oldWidget) {
+    if (controllerWasNull) setControllerValue(widget.currentValue);
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -57,16 +65,16 @@ class _InputCalculatorState extends State<InputCalculator> {
       decoration: widget.decoration ?? InputDecoration(
         labelText: widget.tr!.amount
       ),
-      controller: widget.controller,
+      controller: controller,
       readOnly: widget.readOnly ?? true,
       onTap: () {
         showModalBottomSheet(
           context: context,
           builder: (BuildContext context) => CalculatorModal(
-            value: currentValue,
+            value: widget.currentValue,
             onChange: (double value) {
-              currentValue = value;
-              widget.controller?.text = currentValue.toString();
+              widget.currentValue = value;
+              setControllerValue(widget.currentValue);
               if (widget.onChange != null) widget.onChange!(value);
             },
             onOkTap: () => Navigator.pop(context),

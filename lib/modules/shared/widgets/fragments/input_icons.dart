@@ -9,6 +9,7 @@ class InputIcon extends StatefulWidget {
   final InputDecoration? decoration;
   final void Function(model.Icon value)? onChange;
   model.Icon? selectedIcon;
+  TextEditingController? controller;
 
   InputIcon({
     super.key,
@@ -16,6 +17,7 @@ class InputIcon extends StatefulWidget {
     this.selectedIcon,
     this.decoration,
     this.onChange,
+    this.controller,
   });
 
   @override
@@ -24,21 +26,27 @@ class InputIcon extends StatefulWidget {
 
 class _InputIconState extends State<InputIcon> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  
-  model.Icon? selectedIcon;
+  bool controllerWasNull = false;
   TextEditingController? controller;
 
   @override
   void initState() {
-    selectedIcon = widget.selectedIcon;
-    controller = TextEditingController(text: selectedIcon?.name);
+    controllerWasNull = widget.controller == null;
+    controller = widget.controller ?? TextEditingController(text: widget.selectedIcon?.name ?? '');
     super.initState();
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    if (!controllerWasNull) controller?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant InputIcon oldWidget) {
+    widget.selectedIcon = widget.selectedIcon;
+    if (controllerWasNull) controller?.text = widget.selectedIcon?.name ?? '';
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -47,7 +55,7 @@ class _InputIconState extends State<InputIcon> {
       decoration: InputDecoration(
         labelText: widget.decoration?.labelText ?? context.l10n!.icon,
         suffixIcon: widget.decoration?.suffixIcon ?? const Icon(Icons.keyboard_arrow_down_sharp),
-        prefixIcon: Icon(selectedIcon == null ? Icons.mood : IconData(selectedIcon!.hexCode!, fontFamily: selectedIcon?.iconFontFamily)),
+        prefixIcon: Icon(widget.selectedIcon == null ? Icons.mood : IconData(widget.selectedIcon!.hexCode!, fontFamily: widget.selectedIcon?.iconFontFamily)),
         iconColor: widget.decoration?.iconColor ?? AppTheme.of(context).contrast,
         suffixIconConstraints: const BoxConstraints(maxWidth: 24),
       ),
@@ -57,14 +65,13 @@ class _InputIconState extends State<InputIcon> {
         context: context,
         isScrollControlled: true,
         builder: (BuildContext context) => IconsModal(
-          selectedIcon: selectedIcon,
+          selectedIcon: widget.selectedIcon,
           onChange: (icon) {
             if (widget.onChange != null) widget.onChange!(icon);
-            widget.selectedIcon = icon; 
             setState(() {
-              selectedIcon = widget.selectedIcon;
-              controller?.text = selectedIcon?.name ?? '';
+              widget.selectedIcon = icon;
             });
+            controller?.text = widget.selectedIcon?.name ?? '';
             Navigator.of(context).pop();
           },
         )
