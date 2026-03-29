@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
@@ -23,7 +24,7 @@ class _GoalsPageState extends State<GoalsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => print("Hello world!"),
+        onPressed: () => context.push(AppRoute.goalsPut),
       ),
     );
   }
