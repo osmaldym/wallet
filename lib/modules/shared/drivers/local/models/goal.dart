@@ -42,6 +42,7 @@ class Goal extends Defs {
     dateFrom = null;
     dateTo = null;
     note = null;
+    total = null;
   }
 
   Map<String, Object?> toMap() => {
