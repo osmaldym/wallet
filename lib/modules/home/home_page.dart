@@ -87,7 +87,7 @@ class _HomeState extends State<Home> {
           ExpandableFabItem(
             icon: Icons.money,
             helper: tr.newPay,
-            onTapped: () => context.push(AppRoute.scheduledPays).then((_) => setState(() { _reloadRecords(); })),
+            onTapped: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _reloadRecords(); })),
           ),
           ExpandableFabItem(
             icon: Icons.sports_score,
