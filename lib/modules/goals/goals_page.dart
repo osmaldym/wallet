@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:wallet/core/constants/app_route.dart';
+import 'package:wallet/core/constants/theme/app_theme.dart';
+import 'package:wallet/core/utils/utils.dart';
+import 'package:wallet/modules/goals/goals_controller.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 
@@ -15,16 +21,130 @@ class GoalsPage extends StatefulWidget {
 
 class _GoalsPageState extends State<GoalsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  GoalsController controller = GoalsController();
+  Utils utils = Utils();
+  NumberFormat? format;
+
+  Future<List<RelatedGoal>>? _goals;
+
+  void _reloadGoals() => _goals = controller.getRelatedGoals();
+
+  @override
+  void initState() {
+    _reloadGoals();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    format ??= NumberFormat("#,###.##", context.l10n?.localeName ?? "en_US");
+
     return Scaffold(
       appBar: CHeader(
         title: context.l10n!.goals,
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => context.push(AppRoute.goalsPut),
+        onPressed: () => context.push(AppRoute.goalsPut).then((_) => setState(() { _reloadGoals(); }))
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: FutureBuilder<List<RelatedGoal>>(
+          future: _goals,
+          builder: (BuildContext context, AsyncSnapshot<List<RelatedGoal>> snapshotRelatedGoal) {
+            if (snapshotRelatedGoal.connectionState == ConnectionState.done) {
+              if (snapshotRelatedGoal.hasData) {
+                List<RelatedGoal> rGoals = snapshotRelatedGoal.data!;
+                return ListView.builder(
+                  itemCount: rGoals.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, i) => ListTile(
+                    onTap: (){},
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    trailing: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.more_vert)
+                    ),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15))
+                    ),
+                    leading: Stack(
+                      alignment: AlignmentDirectional.centerStart,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppTheme.of(context).seedBgColor,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withAlpha(40),
+                                blurRadius: 20,
+                              )
+                            ]
+                          ),
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(
+                            value: (rGoals[i].saved ?? 0) / (rGoals[0].total ?? 0),
+                            strokeWidth: 2,
+                            backgroundColor: AppTheme.of(context).greenDark,
+                            color: AppTheme.of(context).greenContrast,
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              size: 24,
+                              color: AppTheme.of(context).textContrast,
+                              rGoals[i].icon?.hashCode != null ? IconData(rGoals[i].icon!.hexCode!, fontFamily: rGoals[i].icon?.iconFontFamily) : Icons.flag_outlined
+                            ),
+                          )
+                        )
+                      ],
+                    ),
+                    titleTextStyle: TextStyle(
+                      fontSize: 18,
+                      color: AppTheme.of(context).textContrast,
+                    ),
+                    title: Text(
+                      rGoals[i].title ?? 'My goal',
+                    ),
+                    subtitle: Row(
+                      spacing: 5,
+                      children: [
+                        Text(
+                          format!.format(rGoals[i].total ?? 0),
+                          style: TextStyle(
+                            color: AppTheme.of(context).greenContrast 
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius: 2.5,
+                          backgroundColor: AppTheme.of(context).textContrast,
+                        ),
+                        Text(
+                          utils.toReadableRelativeDate(rGoals[i].dateTo ?? DateTime.now(), context),
+                          style: TextStyle(
+                            color: AppTheme.of(context).textContrast,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return const Text('No data');
+              }
+            }
+
+            if (snapshotRelatedGoal.hasError) {
+              print(snapshotRelatedGoal.error);
+            }
+        
+            return const CircularProgressIndicator();
+          }
+        ),
       ),
     );
   }

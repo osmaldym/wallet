@@ -25,6 +25,19 @@ class FrecuencyData {
     this.forDate,
   });
 
+  void clear() {
+    repeatEvery = RepeatEvery.once;
+    rrFor = RRFor.ever;
+    timesPlaced = 1;
+    everyNumberDay = null;
+    forDate = null;
+    repeatedTimes = null;
+    selectedDaysOfWeek = null;
+    selectedMonthlyOption = null;
+    weekNumber = null;
+    title = null;
+  }
+
   @override
   String toString() {
     return """

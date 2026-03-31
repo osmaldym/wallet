@@ -13,6 +13,7 @@ import 'package:wallet/modules/shared/drivers/local/models/notifications.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_monthly.dart';
 import 'package:wallet/modules/shared/drivers/local/models/record_repetition_weekly.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_record_repetition.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
@@ -900,8 +901,8 @@ class Dao {
     return Convertions.responseToIconList(data);
   }
 
-  Future<model.Icon> icon(int id) async {
-    return Convertions.responseToIcon(await getById(DBTables.icons, id));
+  Future<model.Icon> icon(int? id) async {
+    return Convertions.responseToIcon(await getById(DBTables.icons, id ?? 0));
   }
 
   // Goals operations
@@ -918,5 +919,32 @@ class Dao {
   Future<Goal> goal(int id) async {
     List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.goal, where: "id = ?", whereArgs: [id], limit: 1);
     return Convertions.responseToGoalList(data).first;
+  }
+
+  Future<RelatedGoal> _toRelatedGoal(Goal goal) async {
+    return RelatedGoal(
+      id: goal.id,
+      frecuencyId: goal.frecuencyId,
+      notificationId: goal.notificationId,
+      userId: goal.userId,
+      serverId: goal.serverId,
+      title: goal.title,
+      total: goal.total,
+      autoSaving: goal.autoSaving,
+      dateFrom: goal.dateFrom,
+      dateTo: goal.dateTo,
+      note: goal.note,
+      saved: goal.saved,
+      icon: await icon(goal.iconId)
+    );
+  }
+
+  Future<List<RelatedGoal>> relatedGoals() async {
+    List<Map<String, Object?>> data = await (await _db.get()).query(DBTables.goal);
+    List<Goal> goals = Convertions.responseToGoalList(data);
+
+    List<RelatedGoal> relatedGoals = [ for (Goal goal in goals) await _toRelatedGoal(goal) ];
+
+    return relatedGoals;
   }
 }
