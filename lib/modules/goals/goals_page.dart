@@ -7,6 +7,7 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/goals/goals_controller.dart';
 import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dart';
+import 'package:wallet/modules/goals/widgets/fragments/goal_options_btn.dart';
 import 'package:wallet/modules/goals/widgets/modals/goal_modal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
@@ -75,9 +76,11 @@ class _GoalsPageState extends State<GoalsPage> {
                       )
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.more_vert)
+                    trailing: GoalOptionsBtn(
+                      onEditPressed: (){},
+                      onIncreaseSavingPressed: (){},
+                      onDecreaseSavingsPressed: (){},
+                      onDeletePressed: (){},
                     ),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15))

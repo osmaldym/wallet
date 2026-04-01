@@ -4,6 +4,7 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dart';
+import 'package:wallet/modules/goals/widgets/fragments/goal_options_btn.dart';
 import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 
 class GoalModal extends StatefulWidget {
@@ -61,9 +62,12 @@ class _GoalModalState extends State<GoalModal> {
               Positioned(
                 child: Align(
                   alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.more_horiz),
-                    onPressed: () {},
+                  child: GoalOptionsBtn(
+                      icon: const Icon(Icons.more_horiz),
+                      onEditPressed: (){},
+                      onIncreaseSavingPressed: (){},
+                      onDecreaseSavingsPressed: (){},
+                      onDeletePressed: (){},
                   )
                 ),
               ),
