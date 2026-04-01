@@ -6,6 +6,7 @@ import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/goals/goals_controller.dart';
+import 'package:wallet/modules/goals/widgets/modals/goal_modal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
@@ -59,7 +60,19 @@ class _GoalsPageState extends State<GoalsPage> {
                   itemCount: rGoals.length,
                   shrinkWrap: true,
                   itemBuilder: (context, i) => ListTile(
-                    onTap: (){},
+                    onTap: () => showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => GoalModal(
+                        icon: rGoals[i].icon,
+                        title: rGoals[i].title,
+                        automatic: rGoals[i].autoSaving != null,
+                        saved: rGoals[i].saved,
+                        dateTo: rGoals[i].dateTo,
+                        dateFrom: rGoals[i].dateFrom,
+                        total: rGoals[i].total,
+                      )
+                    ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     trailing: IconButton(
                       onPressed: () {},
@@ -69,7 +82,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       borderRadius: BorderRadius.all(Radius.circular(15))
                     ),
                     leading: Stack(
-                      alignment: AlignmentDirectional.centerStart,
+                      alignment: Alignment.center,
                       children: [
                         Container(
                           decoration: BoxDecoration(
@@ -85,23 +98,18 @@ class _GoalsPageState extends State<GoalsPage> {
                           width: 50,
                           height: 50,
                           child: CircularProgressIndicator(
-                            value: (rGoals[i].saved ?? 0) / (rGoals[0].total ?? 0),
+                            value: (rGoals[i].saved ?? 0) / (rGoals[i].total ?? 0),
                             strokeWidth: 2,
                             backgroundColor: AppTheme.of(context).greenDark,
                             color: AppTheme.of(context).greenContrast,
                           ),
                         ),
-                        Positioned.fill(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Icon(
-                              size: 24,
-                              color: AppTheme.of(context).textContrast,
-                              rGoals[i].icon?.hashCode != null ? IconData(rGoals[i].icon!.hexCode!, fontFamily: rGoals[i].icon?.iconFontFamily) : Icons.flag_outlined
-                            ),
-                          )
-                        )
-                      ],
+                        Icon(
+                          size: 24,
+                          color: AppTheme.of(context).textContrast,
+                          rGoals[i].icon?.hashCode != null ? IconData(rGoals[i].icon!.hexCode!, fontFamily: rGoals[i].icon?.iconFontFamily) : Icons.flag_outlined
+                        ),
+                      ]
                     ),
                     titleTextStyle: TextStyle(
                       fontSize: 18,
