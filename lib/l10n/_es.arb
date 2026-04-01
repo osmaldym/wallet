@@ -140,5 +140,9 @@
     "finalization": "Finalización",
     "suggestedAdding": "Adición recomendada",
     "savingType": "Tipo de ahorro",
+    "increaseSavings": "Increase savings",
+    "decreaseSavings": "Decrease savings",
+    "edit": "Editar",
+    "delete": "Eliminar",
     "errorLoading": "Error al cargar"
 }

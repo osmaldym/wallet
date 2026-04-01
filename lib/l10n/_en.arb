@@ -141,5 +141,9 @@
     "finalization": "Finalization",
     "suggestedAdding": "Suggested adding",
     "savingType": "Saving type",
+    "increaseSavings": "Increase savings",
+    "decreaseSavings": "Decrease savings",
+    "edit": "Edit",
+    "delete": "Delete",
     "errorLoading": "Error loading"
 }
