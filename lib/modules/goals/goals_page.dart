@@ -6,6 +6,7 @@ import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/goals/goals_controller.dart';
+import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dart';
 import 'package:wallet/modules/goals/widgets/modals/goal_modal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
@@ -81,35 +82,13 @@ class _GoalsPageState extends State<GoalsPage> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15))
                     ),
-                    leading: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppTheme.of(context).seedBgColor,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withAlpha(40),
-                                blurRadius: 20,
-                              )
-                            ]
-                          ),
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(
-                            value: (rGoals[i].saved ?? 0) / (rGoals[i].total ?? 0),
-                            strokeWidth: 2,
-                            backgroundColor: AppTheme.of(context).greenDark,
-                            color: AppTheme.of(context).greenContrast,
-                          ),
-                        ),
-                        Icon(
-                          size: 24,
-                          color: AppTheme.of(context).textContrast,
-                          rGoals[i].icon?.hashCode != null ? IconData(rGoals[i].icon!.hexCode!, fontFamily: rGoals[i].icon?.iconFontFamily) : Icons.flag_outlined
-                        ),
-                      ]
+                    leading: CCircularProgressIndicator(
+                      value: (rGoals[i].saved ?? 0) / (rGoals[i].total ?? 0),
+                      child: Icon(
+                        size: 24,
+                        color: AppTheme.of(context).textContrast,
+                        rGoals[i].icon?.hashCode != null ? IconData(rGoals[i].icon!.hexCode!, fontFamily: rGoals[i].icon?.iconFontFamily) : Icons.flag_outlined
+                      ),
                     ),
                     titleTextStyle: TextStyle(
                       fontSize: 18,

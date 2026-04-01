@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
+import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dart';
 import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 
 class GoalModal extends StatefulWidget {
@@ -73,47 +74,27 @@ class _GoalModalState extends State<GoalModal> {
                   Column(
                     spacing: 15,
                     children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppTheme.of(context).seedBgColor,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withAlpha(40),
-                                  blurRadius: 20,
-                                )
-                              ]
+                      CCircularProgressIndicator(
+                        size: 120,
+                        value: (widget.saved ?? 0) / (widget.total ?? 0),
+                        strokeWidth: 3,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Icon(
+                              size: 58,
+                              color: AppTheme.of(context).textContrast,
+                              widget.icon?.hashCode != null ? IconData(widget.icon!.hexCode!, fontFamily: widget.icon?.iconFontFamily) : Icons.flag_outlined,
                             ),
-                            width: 120,
-                            height: 120,
-                            child: CircularProgressIndicator(
-                              value: (widget.saved ?? 0) / (widget.total ?? 0),
-                              strokeWidth: 3,
-                              backgroundColor: AppTheme.of(context).greenDark,
-                              color: AppTheme.of(context).greenContrast,
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Icon(
-                                size: 58,
-                                color: AppTheme.of(context).textContrast,
-                                widget.icon?.hashCode != null ? IconData(widget.icon!.hexCode!, fontFamily: widget.icon?.iconFontFamily) : Icons.flag_outlined,
+                            Text(
+                              '${format!.format(((widget.saved ?? 0) / (widget.total ?? 0) * 100))}%',
+                              style: TextStyle(
+                                color: AppTheme.of(context).greenContrast,
+                                fontSize: 18,
                               ),
-                              Text(
-                                '${format!.format(((widget.saved ?? 0) / (widget.total ?? 0) * 100))}%',
-                                style: TextStyle(
-                                  color: AppTheme.of(context).greenContrast,
-                                  fontSize: 18,
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                       Text(
                         widget.title ?? 'My goal',
