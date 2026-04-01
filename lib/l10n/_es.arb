@@ -137,5 +137,8 @@
     "automaticAdding": "Adición automática",
     "icon": "Icono",
     "unknown": "Desconocido",
+    "finalization": "Finalización",
+    "suggestedAdding": "Adición recomendada",
+    "savingType": "Tipo de ahorro",
     "errorLoading": "Error al cargar"
 }

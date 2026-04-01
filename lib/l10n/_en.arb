@@ -138,5 +138,8 @@
     "automaticAdding": "Automatic adding",
     "icon": "Icon",
     "unknown": "Unknown",
+    "finalization": "Finalization",
+    "suggestedAdding": "Suggested adding",
+    "savingType": "Saving type",
     "errorLoading": "Error loading"
 }
