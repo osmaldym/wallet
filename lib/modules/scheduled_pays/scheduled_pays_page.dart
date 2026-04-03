@@ -125,7 +125,7 @@ class _ScheduledPaysState extends State<ScheduledPays> {
                       if (snapshot.hasData) {
                         return snapshot.data!.isEmpty ? FullSizeMessage(
                           iconData: Icons.money_off,
-                          title: context.l10n!.theresNoPaysToShowYet,
+                          title: context.l10n!.thereAreNoPaysToShowYet,
                           subtitle: GestureDetector(
                             onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { reloadPays(); })),
                             child: Row(

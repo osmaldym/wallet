@@ -176,7 +176,7 @@ class _HomeState extends State<Home> {
                         height: 300,
                         child: snapshot.data!.isEmpty ? FullSizeMessage(
                           iconData: Icons.money_off,
-                          title: context.l10n!.theresNoRecordsToShowYet,
+                          title: context.l10n!.thereAreNoRecordsToShowYet,
                           iconColor: AppTheme.of(context).primary,
                           fillColor: AppTheme.of(context).seedBgColor,
                           subtitle: GestureDetector(

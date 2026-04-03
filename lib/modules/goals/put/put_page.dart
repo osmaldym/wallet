@@ -195,8 +195,6 @@ class _PutPageState extends State<PutPage> {
               setState(() { loading = true; });
 
               Goal? insertedGoal = await _controller.putGoal(goal);
-              
-              print(insertedGoal);
 
               if (insertedGoal != null) {
                 resetDates();

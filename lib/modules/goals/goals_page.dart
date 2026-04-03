@@ -58,7 +58,7 @@ class _GoalsPageState extends State<GoalsPage> {
                 List<RelatedGoal> rGoals = snapshotRelatedGoal.data!;
                 return snapshotRelatedGoal.data!.isEmpty ? FullSizeMessage(
                   iconData: Icons.search_off,
-                  title: context.l10n!.theresNoGoalsToShowYet,
+                  title: context.l10n!.thereAreNoGoalsToShowYet,
                   subtitle: GestureDetector(
                     onTap: () => context.push(AppRoute.goalsPut).then((_) => setState(() { _reloadGoals(); })),
                     child: Row(

@@ -248,7 +248,7 @@ class _RecordsPageState extends State<RecordsPage> {
 
                         return snapshot.data!.isEmpty ? FullSizeMessage(
                           iconData: Icons.money_off,
-                          title: context.l10n!.theresNoRecordsToShowYet,
+                          title: context.l10n!.thereAreNoRecordsToShowYet,
                           subtitle: GestureDetector(
                             onTap: () => context.push(AppRoute.scheduledPaysPut).then((_) => setState(() { _relatedRecords = _controller.getRecords(dateFrom: filterData?.dateFrom, dateTo: filterData?.dateTo); })),
                             child: Row(
