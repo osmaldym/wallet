@@ -35,7 +35,7 @@ class CCircularProgressIndicator extends StatelessWidget {
             boxShadow: (blur ?? true) ? [
               BoxShadow(
                 color: blurColor ?? Colors.grey.withAlpha(40),
-                blurRadius: blurRadius ?? 20,
+                blurRadius: blurRadius ?? 15,
               )
             ] : null
           ),
