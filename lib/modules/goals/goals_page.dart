@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 import 'package:wallet/core/constants/app_route.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/utils.dart';
@@ -10,6 +9,7 @@ import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dar
 import 'package:wallet/modules/goals/widgets/fragments/goal_options_btn.dart';
 import 'package:wallet/modules/goals/widgets/modals/goal_modal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
+import 'package:wallet/modules/shared/widgets/fragments/full_size_message.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 
@@ -50,15 +50,38 @@ class _GoalsPageState extends State<GoalsPage> {
         child: const Icon(Icons.add),
         onPressed: () => context.push(AppRoute.goalsPut).then((_) => setState(() { _reloadGoals(); }))
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: FutureBuilder<List<RelatedGoal>>(
+      body: FutureBuilder<List<RelatedGoal>>(
           future: _goals,
           builder: (BuildContext context, AsyncSnapshot<List<RelatedGoal>> snapshotRelatedGoal) {
             if (snapshotRelatedGoal.connectionState == ConnectionState.done) {
               if (snapshotRelatedGoal.hasData) {
                 List<RelatedGoal> rGoals = snapshotRelatedGoal.data!;
-                return ListView.builder(
+                return snapshotRelatedGoal.data!.isEmpty ? FullSizeMessage(
+                  iconData: Icons.search_off,
+                  title: context.l10n!.theresNoGoalsToShowYet,
+                  subtitle: GestureDetector(
+                    onTap: () => context.push(AppRoute.goalsPut).then((_) => setState(() { _reloadGoals(); })),
+                    child: Row(
+                      spacing: 5,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          context.l10n!.createANewGoal,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: AppTheme.of(context).textContrast
+                          ),
+                        ),
+                        Icon(
+                          Icons.open_in_new,
+                          color: AppTheme.of(context).textContrast,
+                        )
+                      ],
+                    )
+                  ),
+                ) : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   itemCount: rGoals.length,
                   shrinkWrap: true,
                   itemBuilder: (context, i) => ListTile(
@@ -123,8 +146,6 @@ class _GoalsPageState extends State<GoalsPage> {
                     ),
                   ),
                 );
-              } else {
-                return const Text('No data');
               }
             }
 
@@ -135,7 +156,6 @@ class _GoalsPageState extends State<GoalsPage> {
             return const CircularProgressIndicator();
           }
         ),
-      ),
     );
   }
 }
