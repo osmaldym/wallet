@@ -57,6 +57,7 @@ class _GoalsPageState extends State<GoalsPage> {
               if (snapshotRelatedGoal.hasData) {
                 List<RelatedGoal> rGoals = snapshotRelatedGoal.data!;
                 return snapshotRelatedGoal.data!.isEmpty ? FullSizeMessage(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   iconData: Icons.search_off,
                   title: context.l10n!.thereAreNoGoalsToShowYet,
                   subtitle: GestureDetector(
