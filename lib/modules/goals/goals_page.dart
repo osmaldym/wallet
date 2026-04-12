@@ -32,6 +32,15 @@ class _GoalsPageState extends State<GoalsPage> {
 
   void _reloadGoals() => _goals = controller.getRelatedGoals();
 
+  Future<void> _editRelatedGoal(RelatedGoal rGoal) async {
+    RelatedGoal? newRG = await context.push(AppRoute.goalsPut, extra: rGoal) as RelatedGoal?;
+    if (newRG != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
+        rGoal = newRG;
+      }));
+    }
+  }
+
   @override
   void initState() {
     _reloadGoals();
@@ -97,11 +106,12 @@ class _GoalsPageState extends State<GoalsPage> {
                         dateTo: rGoals[i].dateTo,
                         dateFrom: rGoals[i].dateFrom,
                         total: rGoals[i].total,
+                        onEditPressed: () => _editRelatedGoal(rGoals[i]),
                       )
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     trailing: GoalOptionsBtn(
-                      onEditPressed: (){},
+                      onEditPressed: () => _editRelatedGoal(rGoals[i]),
                       onIncreaseSavingPressed: (){},
                       onDecreaseSavingsPressed: (){},
                       onDeletePressed: (){},
@@ -110,7 +120,7 @@ class _GoalsPageState extends State<GoalsPage> {
                       borderRadius: BorderRadius.all(Radius.circular(15))
                     ),
                     leading: CCircularProgressIndicator(
-                      value: (rGoals[i].saved ?? 0) / (rGoals[i].total ?? 0),
+                      value: (rGoals[i].saved ?? 1) / (rGoals[i].total ?? 1),
                       child: Icon(
                         size: 24,
                         color: AppTheme.of(context).textContrast,

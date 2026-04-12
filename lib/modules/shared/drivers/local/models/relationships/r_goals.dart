@@ -19,6 +19,7 @@ class RelatedGoal extends Goal {
     super.autoSaving,
     super.dateFrom,
     super.dateTo,
+    super.iconId,
   });
 
   @override

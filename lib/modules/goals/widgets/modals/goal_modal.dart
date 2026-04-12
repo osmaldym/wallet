@@ -15,6 +15,7 @@ class GoalModal extends StatefulWidget {
   DateTime? dateFrom;
   DateTime? dateTo;
   bool? automatic;
+  void Function()? onEditPressed;
 
   GoalModal({
     super.key,
@@ -25,6 +26,7 @@ class GoalModal extends StatefulWidget {
     this.saved,
     this.title,
     this.total,
+    this.onEditPressed,
   });
 
   @override
@@ -64,7 +66,7 @@ class _GoalModalState extends State<GoalModal> {
                   alignment: Alignment.topRight,
                   child: GoalOptionsBtn(
                       icon: const Icon(Icons.more_horiz),
-                      onEditPressed: (){},
+                      onEditPressed: widget.onEditPressed,
                       onIncreaseSavingPressed: (){},
                       onDecreaseSavingsPressed: (){},
                       onDeletePressed: (){},

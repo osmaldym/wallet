@@ -1,11 +1,12 @@
 import 'package:wallet/modules/shared/drivers/local/dao.dart';
 import 'package:wallet/modules/shared/drivers/local/models/goal.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 
 class PutController {
   Dao dao = Dao();
 
-  Future<Goal?> putGoal(Goal goal) async {
+  Future<RelatedGoal?> putGoal(Goal goal) async {
     int id = await dao.putGoal(goal.toMap());
-    return await dao.goal(id);
+    return await dao.relatedGoal(id);
   }
 }

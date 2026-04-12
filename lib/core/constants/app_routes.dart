@@ -10,6 +10,7 @@ import 'package:wallet/modules/scheduled_pays/info/pay_info_page.dart' as schedu
 import 'package:wallet/modules/scheduled_pays/scheduled_pays_page.dart';
 import 'package:wallet/modules/settings/about/settings_about_page.dart';
 import 'package:wallet/modules/settings/settings_page.dart';
+import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_scheduled_pay.dart';
 
 import '../../modules/auth/login/login_page.dart';
@@ -51,9 +52,12 @@ class AppRoutes {
             ]
           ),
           _newRoute(
-            '/goals', page: GoalsPage(),
+            'goals', page: GoalsPage(),
             childs: [
-              _newRoute('/put', page: goals.PutPage())
+              _newRoute(
+                'put',
+                builder: (context, state) => goals.PutPage(relatedGoal: state.extra as RelatedGoal?,),
+              )
             ]
           )
         ]

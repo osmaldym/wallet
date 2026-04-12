@@ -935,6 +935,7 @@ class Dao {
       dateTo: goal.dateTo,
       note: goal.note,
       saved: goal.saved,
+      iconId: goal.iconId,
       icon: await icon(goal.iconId)
     );
   }
@@ -946,5 +947,11 @@ class Dao {
     List<RelatedGoal> relatedGoals = [ for (Goal goal in goals) await _toRelatedGoal(goal) ];
 
     return relatedGoals;
+  }
+
+  Future<RelatedGoal> relatedGoal(int id) async {
+    Map<String, Object?> data = await getById(DBTables.goal, id);
+    Goal goal = Convertions.responseToGoal(data);
+    return await _toRelatedGoal(goal);
   }
 }

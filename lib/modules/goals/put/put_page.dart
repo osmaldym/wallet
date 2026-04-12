@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/modules/goals/put/put_controller.dart';
 import 'package:wallet/modules/scheduled_pays/put/widgets/fragments/input_frecuencies.dart';
@@ -14,7 +15,12 @@ import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/modules/shared/widgets/fragments/chip.dart' as component;
 
 class PutPage extends StatefulWidget {
-  PutPage({ super.key, });
+  RelatedGoal? relatedGoal;
+
+  PutPage({ 
+    super.key,
+    this.relatedGoal,
+  });
 
   @override
   State<StatefulWidget> createState() => _PutPageState();
@@ -23,7 +29,7 @@ class PutPage extends StatefulWidget {
 class _PutPageState extends State<PutPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  RelatedGoal goal = RelatedGoal();
+  RelatedGoal? goal;
   final PutController _controller = PutController();
   FrecuencyData frecuency = FrecuencyData();
   bool automatic = false;
@@ -35,17 +41,18 @@ class _PutPageState extends State<PutPage> {
 
   @override
   void initState() {
+    goal ??= widget.relatedGoal ?? RelatedGoal();
     super.initState();
     frecuency.clear();
     resetDates();
 
-    title.text = goal.title ?? '';
-    note.text = goal.note ?? '';
+    title.text = goal!.title ?? '';
+    note.text = goal!.note ?? '';
   }
 
   void resetDates() {
-    goal.dateTo ??= DateTime.now();
-    goal.dateFrom ??= DateTime.now();
+    goal!.dateTo ??= DateTime.now();
+    goal!.dateFrom ??= DateTime.now();
   }
 
   @override
@@ -59,7 +66,7 @@ class _PutPageState extends State<PutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CHeader(
-        title: context.l10n!.new_goal,
+        title: goal?.id != null ? context.l10n!.editGoal : context.l10n!.new_goal,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -75,28 +82,28 @@ class _PutPageState extends State<PutPage> {
                     labelText: context.l10n!.title,
                   ),
                   controller: title,
-                  onChanged: (val) => goal.title = val,
+                  onChanged: (val) => goal!.title = val,
                 ),
                 InputIcon(
-                  selectedIcon: goal.icon,
+                  selectedIcon: goal!.icon,
                   onChange: (icon) {
-                    goal.icon = icon;
-                    goal.iconId = goal.icon?.id;
+                    goal!.icon = icon;
+                    goal!.iconId = goal!.icon?.id;
                   }
                 ),
                 InputCalculator(
                   decoration: InputDecoration(
                     labelText: context.l10n!.total
                   ),
-                  currentValue: goal.total,
-                  onChange: (double? val) => goal.total = val,
+                  currentValue: goal!.total,
+                  onChange: (double? val) => goal!.total = val,
                 ),
                 InputCalculator(
                   decoration: InputDecoration(
                     labelText: context.l10n!.saved
                   ),
-                  currentValue: goal.saved,
-                  onChange: (double? val) => goal.saved = val,
+                  currentValue: goal!.saved,
+                  onChange: (double? val) => goal!.saved = val,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -133,8 +140,8 @@ class _PutPageState extends State<PutPage> {
                     decoration: InputDecoration(
                       labelText: context.l10n!.automaticAdding
                     ),
-                    currentValue: goal.autoSaving,
-                    onChange: (double? val) => goal.autoSaving = val,
+                    currentValue: goal!.autoSaving,
+                    onChange: (double? val) => goal!.autoSaving = val,
                   ),
                 
                 Text(
@@ -151,8 +158,8 @@ class _PutPageState extends State<PutPage> {
                         InputDate(
                           title: context.l10n!.from,
                           // enabled: widget.relatedScheduledPay == null,
-                          selectedDate: goal.dateFrom ?? DateTime.now(),
-                          onChanged: (val) => goal.dateFrom = val
+                          selectedDate: goal!.dateFrom ?? DateTime.now(),
+                          onChanged: (val) => goal!.dateFrom = val
                         ),
                     ),
                     Expanded(
@@ -160,8 +167,8 @@ class _PutPageState extends State<PutPage> {
                       InputDate(
                         title: context.l10n!.to,
                         // enabled: widget.relatedScheduledPay == null,
-                        selectedDate: goal.dateTo ?? DateTime.now(),
-                        onChanged: (val) => goal.dateTo = val
+                        selectedDate: goal!.dateTo ?? DateTime.now(),
+                        onChanged: (val) => goal!.dateTo = val
                       ),
                     ),
 
@@ -179,7 +186,7 @@ class _PutPageState extends State<PutPage> {
                     labelText: context.l10n!.note,
                   ),
                   controller: note,
-                  onChanged: (val) => goal.note = val,
+                  onChanged: (val) => goal!.note = val,
                 ),
               ],
             ),
@@ -194,11 +201,15 @@ class _PutPageState extends State<PutPage> {
             onPressed: () async {
               setState(() { loading = true; });
 
-              Goal? insertedGoal = await _controller.putGoal(goal);
+              RelatedGoal? insertedGoal = await _controller.putGoal(goal!);
+              if (goal?.id != null && context.mounted) context.pop(insertedGoal);
 
               if (insertedGoal != null) {
                 resetDates();
-                goal.clear();
+
+                if (goal?.id == null)
+                  // If I clear the original instance, doesn't update with the new intance for some reason if editing
+                  goal!.clear(); 
 
                 note.clear();
                 title.clear();
