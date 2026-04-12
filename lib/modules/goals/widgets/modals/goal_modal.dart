@@ -45,6 +45,7 @@ class _GoalModalState extends State<GoalModal> {
   @override
   Widget build(BuildContext context) {
     format ??= NumberFormat("#,###.##", context.l10n?.localeName ?? "en_US");
+    int monthQuantity = DateUtils.monthDelta(widget.dateFrom ?? DateTime.now(), widget.dateTo ?? DateTime.now());
 
     return SingleChildScrollView(
       key: _scaffoldKey,
@@ -159,7 +160,7 @@ class _GoalModalState extends State<GoalModal> {
                           ),
                         ),
                         Text(
-                          format!.format(((widget.total ?? 0) - (widget.saved ?? 0)) / DateUtils.monthDelta(widget.dateFrom ?? DateTime.now(), widget.dateTo ?? DateTime.now())),
+                          format!.format(((widget.total ?? 0) - (widget.saved ?? 0)) / (monthQuantity > 0 ? monthQuantity : 1)),
                           style: TextStyle(fontSize: fontSize),
                         ),
                         Text(
