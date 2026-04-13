@@ -4,7 +4,6 @@ import 'package:wallet/core/constants/theme/app_theme.dart';
 import 'package:wallet/core/utils/app_localizations_x.dart';
 import 'package:wallet/core/utils/utils.dart';
 import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dart';
-import 'package:wallet/modules/goals/widgets/fragments/goal_options_btn.dart';
 import 'package:wallet/modules/shared/drivers/local/models/icon.dart' as model;
 
 class GoalModal extends StatefulWidget {
@@ -15,7 +14,6 @@ class GoalModal extends StatefulWidget {
   DateTime? dateFrom;
   DateTime? dateTo;
   bool? automatic;
-  void Function()? onEditPressed;
 
   GoalModal({
     super.key,
@@ -26,7 +24,6 @@ class GoalModal extends StatefulWidget {
     this.saved,
     this.title,
     this.total,
-    this.onEditPressed,
   });
 
   @override
@@ -60,127 +57,111 @@ class _GoalModalState extends State<GoalModal> {
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.all(25),
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              Positioned(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: GoalOptionsBtn(
-                      icon: const Icon(Icons.more_horiz),
-                      onEditPressed: widget.onEditPressed,
-                      onIncreaseSavingPressed: (){},
-                      onDecreaseSavingsPressed: (){},
-                      onDeletePressed: (){},
-                  )
-                ),
-              ),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
+                spacing: 15,
                 children: [
-                  Column(
-                    spacing: 15,
-                    children: [
-                      CCircularProgressIndicator(
-                        size: 120,
-                        value: (widget.saved ?? 0) / (widget.total ?? 0),
-                        strokeWidth: 3,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Icon(
-                              size: 58,
-                              color: AppTheme.of(context).textContrast,
-                              widget.icon?.hashCode != null ? IconData(widget.icon!.hexCode!, fontFamily: widget.icon?.iconFontFamily) : Icons.flag_outlined,
-                            ),
-                            Text(
-                              '${format!.format(((widget.saved ?? 0) / (widget.total ?? 0) * 100))}%',
-                              style: TextStyle(
-                                color: AppTheme.of(context).greenContrast,
-                                fontSize: 18,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Text(
-                        widget.title ?? 'My goal',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: double.maxFinite,
+                  CCircularProgressIndicator(
+                    size: 120,
+                    value: (widget.saved ?? 0) / (widget.total ?? 0),
+                    strokeWidth: 3,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 3,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
-                        Text(
-                          context.l10n!.total,
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: fontWeight
-                            ),
+                        Icon(
+                          size: 58,
+                          color: AppTheme.of(context).textContrast,
+                          widget.icon?.hashCode != null ? IconData(widget.icon!.hexCode!, fontFamily: widget.icon?.iconFontFamily) : Icons.flag_outlined,
                         ),
                         Text(
-                          format!.format(widget.total ?? 0),
-                          style: TextStyle(fontSize: fontSize),
-                        ),
-                        Text(
-                          context.l10n!.saved,
+                          '${format!.format(((widget.saved ?? 0) / (widget.total ?? 0) * 100))}%',
                           style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: fontWeight
+                            color: AppTheme.of(context).greenContrast,
+                            fontSize: 18,
                           ),
-                        ),
-                        Text(
-                          format!.format(widget.saved ?? 0),
-                          style: TextStyle(fontSize: fontSize),
-                        ),
-                        Text(
-                          context.l10n!.finalization,
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: fontWeight
-                          ),
-                        ),
-                        Text(
-                          utils.toReadableRelativeDate(widget.dateTo ?? DateTime.now(), context),
-                          style: TextStyle(fontSize: fontSize),
-                        ),
-                        Text(
-                          context.l10n!.suggestedAdding,
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: fontWeight,
-                          ),
-                        ),
-                        Text(
-                          format!.format(((widget.total ?? 0) - (widget.saved ?? 0)) / (monthQuantity > 0 ? monthQuantity : 1)),
-                          style: TextStyle(fontSize: fontSize),
-                        ),
-                        Text(
-                          context.l10n!.savingType,
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: fontWeight,
-                          ),
-                        ),
-                        Text(
-                          (widget.automatic ?? false) ? context.l10n!.automatic : context.l10n!.manual,
-                          style: TextStyle(fontSize: fontSize),
-                        ),
+                        )
                       ],
                     ),
-                  )
-                ]
+                  ),
+                  Text(
+                    widget.title ?? 'My goal',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18
+                    ),
+                  ),
+                ],
               ),
-            ],
-          )
+              Container(
+                width: double.maxFinite,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 3,
+                  children: [
+                    Text(
+                      context.l10n!.total,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: fontWeight
+                        ),
+                    ),
+                    Text(
+                      format!.format(widget.total ?? 0),
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    Text(
+                      context.l10n!.saved,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: fontWeight
+                      ),
+                    ),
+                    Text(
+                      format!.format(widget.saved ?? 0),
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    Text(
+                      context.l10n!.finalization,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: fontWeight
+                      ),
+                    ),
+                    Text(
+                      utils.toReadableRelativeDate(widget.dateTo ?? DateTime.now(), context),
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    Text(
+                      context.l10n!.suggestedAdding,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: fontWeight,
+                      ),
+                    ),
+                    Text(
+                      format!.format(((widget.total ?? 0) - (widget.saved ?? 0)) / (monthQuantity > 0 ? monthQuantity : 1)),
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                    Text(
+                      context.l10n!.savingType,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: fontWeight,
+                      ),
+                    ),
+                    Text(
+                      (widget.automatic ?? false) ? context.l10n!.automatic : context.l10n!.manual,
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                  ],
+                ),
+              )
+            ]
+          ),
         ),
       )
     );

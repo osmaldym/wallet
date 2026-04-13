@@ -106,7 +106,6 @@ class _GoalsPageState extends State<GoalsPage> {
                         dateTo: rGoals[i].dateTo,
                         dateFrom: rGoals[i].dateFrom,
                         total: rGoals[i].total,
-                        onEditPressed: () => _editRelatedGoal(rGoals[i]),
                       )
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
