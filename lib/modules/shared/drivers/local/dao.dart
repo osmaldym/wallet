@@ -954,4 +954,7 @@ class Dao {
     Goal goal = Convertions.responseToGoal(data);
     return await _toRelatedGoal(goal);
   }
+
+  Future<int> updateGoalSaved(int id, double newSaved) async =>
+    await (await _db.get()).rawUpdate("UPDATE ${DBTables.goal} SET saved = ? WHERE id = ?", [newSaved, id]);
 }
