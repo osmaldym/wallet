@@ -11,6 +11,7 @@ class GoalModal extends StatefulWidget {
   model.Icon? icon;
   double? total;
   double? saved;
+  String? suggestedAdding;
   DateTime? dateFrom;
   DateTime? dateTo;
   bool? automatic;
@@ -24,6 +25,7 @@ class GoalModal extends StatefulWidget {
     this.saved,
     this.title,
     this.total,
+    this.suggestedAdding,
   });
 
   @override
@@ -143,7 +145,7 @@ class _GoalModalState extends State<GoalModal> {
                       ),
                     ),
                     Text(
-                      format!.format(((widget.total ?? 0) - (widget.saved ?? 0)) / (monthQuantity > 0 ? monthQuantity : 1)),
+                      widget.suggestedAdding ?? '0',
                       style: TextStyle(fontSize: fontSize),
                     ),
                     Text(
