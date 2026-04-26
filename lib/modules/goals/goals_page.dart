@@ -8,7 +8,7 @@ import 'package:wallet/modules/goals/goals_controller.dart';
 import 'package:wallet/modules/goals/widgets/fragments/circular_progress_bar.dart';
 import 'package:wallet/modules/goals/widgets/fragments/goal_options_btn.dart';
 import 'package:wallet/modules/goals/widgets/modals/goal_modal.dart';
-import 'package:wallet/modules/goals/widgets/modals/increase_savings.dart';
+import 'package:wallet/modules/goals/widgets/modals/saving_operation_modal.dart';
 import 'package:wallet/modules/shared/drivers/local/models/relationships/r_goals.dart';
 import 'package:wallet/modules/shared/widgets/fragments/full_size_message.dart';
 import 'package:wallet/modules/shared/widgets/header.dart';
@@ -52,6 +52,29 @@ class _GoalsPageState extends State<GoalsPage> {
     int monthQuantity = DateUtils.monthDelta(goal.dateFrom ?? DateTime.now(), goal.dateTo ?? DateTime.now());
     return format!.format(((goal.total ?? 0) - (goal.saved ?? 0)) / (monthQuantity > 0 ? monthQuantity : 1));
   }
+
+  Future showModalSavingOperation(RelatedGoal goal, { bool decrease = false }) => showModalBottomSheet(
+    context: context,
+    useSafeArea: true,
+    showDragHandle: true,
+    isDismissible: true,
+    isScrollControlled: true,
+    backgroundColor: AppTheme.of(context).seedBgColor,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadiusDirectional.vertical(top: Radius.circular(15))
+    ),
+    builder: (context) => SavingOperationModal(
+      onPress: (amount) async {
+        int updated = await controller.operationUpdateGoalSaved(goal.id!, goal.saved ?? 0, amount ?? 0, decrease: decrease);
+        if (updated > 0) {
+          if (context.mounted) context.pop();
+          setState(() { _reloadGoals(); });
+        }
+      },
+      decrease: decrease,
+      suggested: decrease ? null : getSuggestedAdding(goal),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -118,41 +141,8 @@ class _GoalsPageState extends State<GoalsPage> {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     trailing: GoalOptionsBtn(
                       onEditPressed: () => _editRelatedGoal(rGoals[i]),
-                      onIncreaseSavingPressed: () => showModalBottomSheet(
-                        context: context,
-                        useSafeArea: true,
-                        showDragHandle: true,
-                        isDismissible: true,
-                        isScrollControlled: true,
-                        backgroundColor: AppTheme.of(context).seedBgColor,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadiusDirectional.vertical(top: Radius.circular(15))
-                        ),
-                        builder: (context) => DraggableScrollableSheet(
-                          expand: false,
-                          maxChildSize: 1,
-                          initialChildSize: .62,
-                          minChildSize: .4,
-                          snap: true,
-                          snapSizes: const [.62, 1],
-                          builder: (context, scrollController) => ListView(
-                            controller: scrollController,
-                            children: [
-                              IncreaseSavingsModal(
-                                onPress: (amount) async {
-                                  int updated = await controller.operationUpdateGoalSaved(rGoals[i].id!, rGoals[i].saved ?? 0, amount ?? 0);
-                                  if (updated > 0) {
-                                    if (context.mounted) context.pop();
-                                    setState(() { _reloadGoals(); });
-                                  }
-                                },
-                                suggested: getSuggestedAdding(rGoals[i]),
-                              )
-                            ],
-                          )
-                        ),
-                      ),
-                      onDecreaseSavingsPressed: (){},
+                      onIncreaseSavingPressed: () => showModalSavingOperation(rGoals[i]),
+                      onDecreaseSavingsPressed: () => showModalSavingOperation(rGoals[i], decrease: true),
                       onDeletePressed: (){},
                     ),
                     shape: const RoundedRectangleBorder(
